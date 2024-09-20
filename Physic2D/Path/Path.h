@@ -10,13 +10,14 @@ private:
 	RigidBody frame;
 public:
 	Path() = default;
-	Path(const sf::Vector2f& pos, const sf::Vector2f& size);
+	Path(const sf::Vector2f& pos, const sf::Vector2f& size, const sf::Vector2f& velocity,
+		const sf::Vector2f& accleration, const float& mass);
 	inline sf::RectangleShape& GetShape() { return path; }
 	inline RigidBody& GetFrame() { return frame; }
 	
 public:
 	void Load();
-	void Update();
+	void Update(const float& DT);
 	void Draw(std::shared_ptr<sf::RenderWindow> window);
 };
 

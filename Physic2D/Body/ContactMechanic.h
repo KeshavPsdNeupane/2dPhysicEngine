@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include<iostream>
 #include"RigidBody.h"
-class Collision {
+class ContactMech {
 	sf::FloatRect B1;
 	sf::FloatRect B2;
 	sf::Vector2f resolution;
@@ -13,16 +13,26 @@ class Collision {
 	sf::Vector2f v1;
 	sf::Vector2f v2;
 	sf::Vector2f e;
+	sf::Vector2f accleration;
+	sf::Vector2f coeffOfFriction;
 	float horizontalOverlap;
 	float verticalOverlap;
 	float eEffective;
 	float M1;
 	float M2;
-
+	float gravity;
+	float frictionDeceleratedVelocity;
+	
 public: 
-	Collision() = default;
+	ContactMech();
+
+
+public:
 	 void CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
 		sf::RectangleShape& R2, RigidBody& F2);
+	 void Friction(sf::RectangleShape& R1, RigidBody& F1,
+		sf::RectangleShape& R2, RigidBody& F2 , const float& dt);
+	 
 
 
 private:

@@ -30,7 +30,10 @@
     <ClCompile Include="Path\Path.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Body\Collision.cpp">
+    <ClCompile Include="Body\ContactMechanic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\Resources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,7 +56,10 @@
     <ClInclude Include="Path\Path.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Body\Collision.h">
+    <ClInclude Include="Body\ContactMechanic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
