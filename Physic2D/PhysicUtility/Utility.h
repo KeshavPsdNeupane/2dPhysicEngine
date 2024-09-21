@@ -21,9 +21,9 @@ struct GMNumber {
 	static constexpr float COLLISION_VELOCITY_THRESHOLD = 2.5f;
 	static constexpr float MASS_THRESHOLD = 1000.0f;
 	
-	static constexpr float COEFF_OF_RESTITUTION_PATH = 0.15f;
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT = 0.1f;
-	static constexpr float COEFF_OF_FRICTION_PATH = 0.5f;
+	static constexpr float COEFF_OF_RESTITUTION_PATH = .0f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT = .1f;
+	static constexpr float COEFF_OF_FRICTION_PATH = 0.9f;
 	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.0f;
 };
 
@@ -39,8 +39,7 @@ public:
 	}
 	static inline sf::Vector2f Normalize(sf::Vector2f& vector) {
 		auto M = Magnitude(vector);
-		if (M == 0) {// std::cerr << " division by zero " << std::endl;
-			M = 1; }
+		if (M == 0) { M = 1; }   // std::cerr << " division by zero " << std::endl;}
 		return { vector.x / M , vector.y / M };
 	}
 };

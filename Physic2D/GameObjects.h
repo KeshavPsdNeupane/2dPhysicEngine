@@ -9,7 +9,7 @@
 #include<vector>
 struct GameObject {
 	Resources resource;
-	Rect rectangle{ 1,sf::Vector2f(400, 200), sf::Vector2f(25,50)};
+	Rect rectangle{ 1,sf::Vector2f(400, 200), sf::Vector2f(25,25)};
 	std::vector<Path>path = { {{10.0f,530.0f} , {780.0f,50.0f},{0,0},{0,0} , 40000} , 
 		{{10.0f,100.0f} , {70.0f,430.0f},{0,0},{0,0} , 400000},
 	{{720.0f,100.0f} , {70.0f,430.0f},{0,0},{0,0} , 400000} };

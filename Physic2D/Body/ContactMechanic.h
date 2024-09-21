@@ -33,8 +33,6 @@ public:
 	 void Friction(sf::RectangleShape& R1, RigidBody& F1,
 		sf::RectangleShape& R2, RigidBody& F2 , const float& dt);
 	 
-
-
 private:
 	void ResetForNewCollision();
 	inline void DirectionFinder();

@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Body\ContactMechanic.cpp" />
+    <ClCompile Include="Body\RigidBody.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Path\Path.cpp" />
     <ClCompile Include="PhysicLoop.cpp" />
@@ -163,9 +164,9 @@
     <ClInclude Include="Path\Path.h" />
     <ClInclude Include="PhysicLoop.h" />
     <ClInclude Include="PhysicUtility\Utility.h" />
-    <ClInclude Include="Body\RigidBody.h" />
     <ClInclude Include="Objects\Rect.h" />
     <ClInclude Include="Resources\Resources.h" />
+    <ClInclude Include="Body\RigidBody.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
