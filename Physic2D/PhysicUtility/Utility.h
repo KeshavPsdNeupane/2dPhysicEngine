@@ -7,7 +7,8 @@
 struct GMNumber {
 	//  FOR WINDOWS 
 	static constexpr float WINDOW_WIDTH = 800.0f;
-	static constexpr float WINDOW_HEIGHT = 600.0f	;
+	static constexpr float WINDOW_HEIGHT = 600.0f;
+	static constexpr int MAX_FRAME_RATE = 60; ;
 
 	// FOR ALL
 	static constexpr float  ZERO = 0.0f;
@@ -20,11 +21,27 @@ struct GMNumber {
 	static constexpr float ABSOLUTE_MAX_VELOCITY_Y = 800.0f;
 	static constexpr float COLLISION_VELOCITY_THRESHOLD = 2.5f;
 	static constexpr float MASS_THRESHOLD = 1000.0f;
-	
-	static constexpr float COEFF_OF_RESTITUTION_PATH = .0f;
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT = .1f;
-	static constexpr float COEFF_OF_FRICTION_PATH = 0.9f;
+
+	static constexpr float COEFF_OF_RESTITUTION_PATH_X = 1.0f;
+	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = 0.05f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = 0.50f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = 0.05f;
+	static constexpr float COEFF_OF_FRICTION_PATH = 0.90f;
 	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.0f;
+
+	// RECT
+	static constexpr float GRAVITY = 50.0f * 10.0f;
+	// HERE 50 IS A MODIFIER AND 10 IS ACTUAL VALUE JUST LIKE IRL G OF 9.8 OR 10M/S
+
+	//  FOR GRID OF GAME
+	static constexpr float WORLD_SIZE_X = WINDOW_WIDTH;
+	static constexpr float WORLD_SIZE_Y = WINDOW_HEIGHT;
+	static constexpr float BASE_GRID_SIZE_X = 80.0F *2;
+	static constexpr float BASE_GRID_SIZE_Y = 60.0F *2;// THIS IS OPTIMIZED FOR THE 800X600 SCREEN
+	static constexpr float GRID_COUNT_X = WORLD_SIZE_X / BASE_GRID_SIZE_X;
+	static constexpr float GRID_COUNT_Y = WORLD_SIZE_Y / BASE_GRID_SIZE_Y;
+	// WILL FILL MORE GRID ON SIZE 
+
 };
 
 

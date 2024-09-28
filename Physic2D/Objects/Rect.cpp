@@ -3,49 +3,55 @@
 #include"../GameObjects.h"
 #include"../PhysicUtility/Utility.h"
 
-Rect::Rect(const int index, const sf::Vector2f& pos, const sf::Vector2f& size)
-	:RigidBody(index, 60.0f, pos, size, { GMNumber::ZERO, GMNumber::ZERO }, { GMNumber::ZERO , GMNumber::ZERO },
-	//	{1,0.3f} , {0,0}),
-	{ GMNumber::COEFF_OF_RESTITUTION_OBJECT , GMNumber::COEFF_OF_RESTITUTION_OBJECT },
+Rect::Rect(const int id, const sf::Vector2f& pos, const sf::Vector2f& size)
+	:shape(std::make_shared<sf::RectangleShape>()), RigidBody(id, 60.0f, pos, size, {GMNumber::ZERO, GMNumber::ZERO}, {GMNumber::ZERO , GMNumber::ZERO},
+	{ GMNumber::COEFF_OF_RESTITUTION_OBJECT_X , GMNumber::COEFF_OF_RESTITUTION_OBJECT_Y },
 		{ GMNumber::COEFF_OF_FRICTION_OBJECT , GMNumber::COEFF_OF_FRICTION_OBJECT }),
-	DT(0.0f), gravity(0.f, 10.0f * 50.f) {
-	this->shape.setPosition(pos);
-	this->shape.setSize(size);
+	DT(0.0f) {
+	
+	this->shape->setSize(size);
+	this->shape->setPosition(pos);
+	FindMaxVelocities();
 	this->font = gameObject.resource.GetFont();
 	this->text.setFont(this->font);
+	gameObject.grid.AddObject(shape , this->ID);
 }
 
 
 
 void Rect::Load(){
-	this->shape.setFillColor(sf::Color::Red);
-	this->shape.setOutlineColor(sf::Color::Black);
-	this->shape.setOutlineThickness(2.0f);
+	this->shape->setFillColor(sf::Color::Red);
+	this->shape->setOutlineColor(sf::Color::Black);
+	this->shape->setOutlineThickness(2.0f);
 	this->text.setCharacterSize(15);
-	this->text.setPosition({ 50,00 });
+	this->text.setPosition({ 50.0f,00.0f });
 }
 
 void Rect::Update(const float& dt) {
 	this->DT = dt;
 	MovementUpdate();
-	AddAcceleration(this->gravity);
+	AddAcceleration(sf::Vector2f(GMNumber::ZERO, GMNumber::GRAVITY));
+	DisplayPositionAndVelocity();
 	for (int i = 0; i < gameObject.path.size(); ++i) {
-		this->contact.Friction(this->shape, *this,
-			gameObject.path[i].GetShape(), gameObject.path[i].GetFrame(), this->DT);
+		Friction(*this->shape, *this,
+			*gameObject.path[i].GetShape(), gameObject.path[i].GetFrame(), this->DT);
 	}
 	//std::cout << " acceleration = " << acceleration.x << " " << acceleration.y << std::endl;
-	this->shape.setPosition(NewPosition(DT));
-	for (int i = 0; i < gameObject.path.size(); ++i) {
-		this->contact.CollisionDetection(this->shape, *this,
-			gameObject.path[i].GetShape(), gameObject.path[i].GetFrame());
-	}
-	DisplayPositionAndVelocity();
+	auto oldPosition = this->shape->getPosition();
+	this->shape->setPosition(NewPosition(DT));
+	gameObject.grid.PotentialCollision(this->shape ,this->ID);
+	gameObject.grid.MoveObject(this->shape,oldPosition, this->ID);
 	ReCentered();
+}
+
+void Rect::CollisionUpdate(sf::RectangleShape& R2, RigidBody& F2, ContactMech& contact) {
+	PlayerCollisionDetection(*this->shape, *this, R2, F2, contact);
+	//gameObject.path[i].GetShape(), gameObject.path[i].GetFrame(), gameObject.path[i].GetContactHandler());
 }
 
 
 void Rect::Draw(std::shared_ptr<sf::RenderWindow> window){
-	window->draw(shape);
+	window->draw(*shape);
 	window->draw(text);
 }
 
@@ -53,13 +59,12 @@ void Rect::ReCentered(){
 	auto& pos = this->position;
 	if (pos.y > 600 - 50) {
 		this->position = sf::Vector2f(pos.x, 0.0f);
-		this->shape.setPosition(this->position);
+		this->shape->setPosition(this->position);
 	}
 	if (pos.x > 800 - 50) {
 		this->position = sf::Vector2f(0.0f, pos.y);
-		this->shape.setPosition(this->position);
+		this->shape->setPosition(this->position);
 	}
-
 }
 
 void Rect::MovementUpdate() {
@@ -88,4 +93,28 @@ void Rect::DisplayPositionAndVelocity(){
 		+ std::to_string((int)this->velocity.y) + "\n"
 		+ "Accleration = " + std::to_string((int)this->acceleration.x) + " "
 		+ std::to_string((int)this->acceleration.y));
+}
+
+inline void Rect::FindMaxVelocities() {
+	if (this->mass == 0) { this->mass = 1.0f; }
+	this->maxvelocity = { GMNumber::COEFF_MAX_VELOCITY_X / this->mass ,
+   GMNumber::COEFF_MAX_VELOCITY_Y * std::sqrt(mass) / this->shape->getGlobalBounds().width};
+
+	if (std::abs(maxvelocity.x) > GMNumber::ABSOLUTE_MAX_VELOCITY_X) {
+		maxvelocity.x = GMNumber::ABSOLUTE_MAX_VELOCITY_X;
+	}
+	if (std::abs(maxvelocity.y) > GMNumber::ABSOLUTE_MAX_VELOCITY_Y) {
+		maxvelocity.y = GMNumber::ABSOLUTE_MAX_VELOCITY_Y;
+	}
+}
+
+inline sf::Vector2f& Rect::NewPosition(const float& dt){
+	this->velocity += this->acceleration * dt;
+	if (this->velocity.y > maxvelocity.y) this->velocity.y = maxvelocity.y;
+	if (this->velocity.y < -maxvelocity.y) this->velocity.y = -maxvelocity.y;
+	if (this->velocity.x > maxvelocity.x) this->velocity.x = maxvelocity.x;
+	if (this->velocity.x < -maxvelocity.x) this->velocity.x = -maxvelocity.x;
+	this->position += this->velocity * dt;
+	this->acceleration.y = 0;
+	return this->position;
 }

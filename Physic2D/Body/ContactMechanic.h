@@ -3,6 +3,7 @@
 #include<iostream>
 #include"RigidBody.h"
 class ContactMech {
+protected:
 	sf::FloatRect B1;
 	sf::FloatRect B2;
 	sf::Vector2f resolution;
@@ -22,18 +23,25 @@ class ContactMech {
 	float M2;
 	float gravity;
 	float frictionDeceleratedVelocity;
-	
-public: 
+
+public:
 	ContactMech();
 
 
-public:
-	 void CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
+protected:
+	void PlayerCollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
+		sf::RectangleShape& R2, RigidBody& F2, ContactMech& contact);
+	virtual void PathBasedCollisionHandle(sf::FloatRect& Bound1, RigidBody& F1,
+		sf::FloatRect& Bound2, RigidBody& F2);
+	void Friction(sf::RectangleShape& R1, RigidBody& F1,
+		sf::RectangleShape& R2, RigidBody& F2, const float& dt);
+
+
+	// THIS IS PREVIOUS IMPLEMENTATION OF COLLISION DETECTION SO JUST KEEPING THIS FOR LEGACY 
+	void CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
 		sf::RectangleShape& R2, RigidBody& F2);
-	 void Friction(sf::RectangleShape& R1, RigidBody& F1,
-		sf::RectangleShape& R2, RigidBody& F2 , const float& dt);
-	 
-private:
+
+protected:
 	void ResetForNewCollision();
 	inline void DirectionFinder();
 	void PenetrationResoluter(RigidBody& F1, RigidBody& F2);

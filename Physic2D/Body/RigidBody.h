@@ -6,34 +6,40 @@
 #include"../PhysicUtility/Utility.h"
 class RigidBody {
 public:
-    int index;
+    int ID;
     sf::Vector2f position;
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     sf::Vector2f coefficientOfRestitution;
     sf::Vector2f ceofficientOfFriction;
     float mass;
-private:
+protected:
     sf::Vector2f maxvelocity;
+
 public:
     RigidBody()
-        : position(0.0f, 0.0f), velocity(0.0f, 0.0f), acceleration(0.0f, 0.0f), mass(1.0f), index()
-        , coefficientOfRestitution(0.0f, 0.0f), ceofficientOfFriction(0.0f, 0.0f) {}
+        : position(0.0f, 0.0f),
+        velocity(0.0f, 0.0f),
+        acceleration(0.0f, 0.0f),
+        mass(1.0f), ID(),
+        coefficientOfRestitution(0.0f, 0.0f),
+        ceofficientOfFriction(0.0f, 0.0f), 
+        maxvelocity(0,0) {}
 
     RigidBody(const int& id, const float& mass, const sf::Vector2f& position, const sf::Vector2f& size,
         const sf::Vector2f& velocity, const sf::Vector2f& acceleration,
         const sf::Vector2f& coefficientOfRestitution, const sf::Vector2f& ceofficientOfFriction)
-        :index(id), mass(mass),
+        :ID(id), mass(mass),
         position(position),
         velocity(velocity),
         acceleration(acceleration), 
         coefficientOfRestitution(coefficientOfRestitution),
-        ceofficientOfFriction(ceofficientOfFriction) { SetLengthForTerminalVelocity(size.x);}
+        ceofficientOfFriction(ceofficientOfFriction) {}
 
 
 
 public:
-    inline void SetIndex(const int& index) { this->index = index; }
+    inline void SetIndex(const int& index) { this->ID = index; }
     inline void SetMass(const float& mass) { this->mass = mass; }
     inline void SetPosition(const sf::Vector2f& position) { this->position = position; }
     inline void SetVelocity(const sf::Vector2f& velocity) { this->velocity = velocity; }
@@ -80,19 +86,9 @@ public:
     }
 
 
-private:
-    virtual inline void SetLengthForTerminalVelocity(const float& length) {
+protected:
+    virtual inline void FindMaxVelocities() {
         if (this->mass == 0) { this->mass = 1.0f; }
-        if (this->mass <= 10000) {
-            this->maxvelocity = { GMNumber::COEFF_MAX_VELOCITY_X / this->mass ,
-           GMNumber::COEFF_MAX_VELOCITY_Y * std::sqrt(mass) / length };
-        }
         else { this->maxvelocity = this->velocity; }
-        if (std::abs(maxvelocity.x) > GMNumber::ABSOLUTE_MAX_VELOCITY_X) {
-            maxvelocity.x = GMNumber::ABSOLUTE_MAX_VELOCITY_X;
-        }
-        if (std::abs(maxvelocity.y) > GMNumber::ABSOLUTE_MAX_VELOCITY_Y) {
-            maxvelocity.y = GMNumber::ABSOLUTE_MAX_VELOCITY_Y;
-        }
     }
 };

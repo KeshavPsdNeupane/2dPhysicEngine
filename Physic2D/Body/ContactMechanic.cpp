@@ -7,6 +7,63 @@ ContactMech::ContactMech():
     eEffective(GMNumber::ZERO) , M1(GMNumber::ZERO) , M2(GMNumber::ZERO),
     gravity(GMNumber::ZERO) , frictionDeceleratedVelocity(GMNumber::ZERO){}
 
+void ContactMech::PlayerCollisionDetection(sf::RectangleShape& R1, RigidBody& F1, 
+    sf::RectangleShape& R2, RigidBody& F2 , ContactMech& contact){
+    this->B1 = R1.getGlobalBounds();
+    this->B2 = R2.getGlobalBounds();
+    if (B1.intersects(B2)) {
+        contact.PathBasedCollisionHandle(B1,F1,B2,F2);
+    }
+}
+
+
+
+void ContactMech::PathBasedCollisionHandle(sf::FloatRect& Bound1, RigidBody& F1
+    , sf::FloatRect& Bound2, RigidBody& F2){     // THIS IS A DEFAULT IMPLEMENTATION FOR COLLISION BUT YOUR HAVE TO
+    // IMPLEMENT THIS TO EVERYPATH WITH UNIQUE PROPERTIES
+    std::cout << " parent called " << std::endl;
+    this->B1 = Bound1;  this->B2 = Bound2; 
+    DirectionFinder();
+    this->M1 = F1.mass;
+    this->M2 = F2.mass;
+    PenetrationResoluter(F1, F2);
+    EffectiveEFinder(F1, F2);
+    if (this->horizontalOverlap < this->verticalOverlap) {
+        this->eEffective = e.x;
+        // std::cout << "effective e H = " << eEffective << std::endl;
+        if (M2 > GMNumber::MASS_THRESHOLD * M1 && std::abs(v2.x) < GMNumber::COLLISION_VELOCITY_THRESHOLD) {
+            v1.x = -eEffective * u1.x; v2.x = GMNumber::ZERO;
+        }
+        else if (M1 > GMNumber::MASS_THRESHOLD * M2 && std::abs(v1.x) < GMNumber::COLLISION_VELOCITY_THRESHOLD) {
+            v2.x = -eEffective * u2.x; v1.x = GMNumber::ZERO;
+        }
+        else {
+            v1.x = ((M1 - eEffective * M2) * u1.x + (1 + eEffective) * M2 * u2.x) / (M1 + M2);
+            v2.x = ((M2 - eEffective * M1) * u2.x + (1 + eEffective) * M1 * u1.x) / (M1 + M2);
+        }
+        v1.y = u1.y; v2.y = u2.y;
+    }
+    else {
+        this->eEffective = e.y;
+        //std::cout << "effective e V = " << eEffective << std::endl;
+        if (M2 > GMNumber::MASS_THRESHOLD * M1 && std::abs(v2.y) < GMNumber::COLLISION_VELOCITY_THRESHOLD) {
+            v1.y = -eEffective * u1.y; v2.y = GMNumber::ZERO;
+        }
+        else if (M1 > GMNumber::MASS_THRESHOLD * M2 && std::abs(v1.y) < GMNumber::COLLISION_VELOCITY_THRESHOLD) {
+            v2.y = -eEffective * u2.y; v1.y = GMNumber::ZERO;
+        }
+        else {
+            v1.y = ((M1 - eEffective * M2) * u1.y + (1 + eEffective) * M2 * u2.y) / (M1 + M2);
+            v2.y = ((M2 - eEffective * M1) * u2.y + (1 + eEffective) * M1 * u1.y) / (M1 + M2);
+        }
+        v1.x = u1.x; v2.x = u2.x;
+    }
+    CollisionThreshold();
+    F1.velocity = v1;  F2.velocity = v2;
+    ResetForNewCollision();
+
+}
+
 void ContactMech::CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
     sf::RectangleShape& R2, RigidBody& F2) {
     this->B1 = R1.getGlobalBounds();
@@ -20,7 +77,7 @@ void ContactMech::CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
         EffectiveEFinder(F1, F2);
         if (this->horizontalOverlap < this->verticalOverlap) {
             this->eEffective = e.x;
-           // std::cout << "effective e H = " << eEffective << std::endl;
+           //std::cout << "effective e H = " << eEffective << std::endl;
             if (M2 > GMNumber::MASS_THRESHOLD * M1 && std::abs(v2.x) < GMNumber::COLLISION_VELOCITY_THRESHOLD) {
                 v1.x = -eEffective * u1.x; v2.x = GMNumber::ZERO;
             }
@@ -35,7 +92,7 @@ void ContactMech::CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
         }
         else {
             this->eEffective = e.y;
-           // std::cout << "effective e V = " << eEffective << std::endl;
+            //std::cout << "effective e V = " << eEffective << std::endl;
             if (M2 > GMNumber::MASS_THRESHOLD * M1 && std::abs(v2.y) < GMNumber::COLLISION_VELOCITY_THRESHOLD) {
                 v1.y = -eEffective * u1.y; v2.y = GMNumber::ZERO;
             }
@@ -50,7 +107,6 @@ void ContactMech::CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
         }
         CollisionThreshold();
         F1.velocity = v1;  F2.velocity = v2;
-
         ResetForNewCollision();
     }
 }
@@ -80,9 +136,9 @@ void ContactMech::Friction(sf::RectangleShape& R1, RigidBody& F1, sf::RectangleS
 }
 
 
-void ContactMech::ResetForNewCollision() {  // LEAVING 0 AS IT IS ,SINCE IT WILL BE CALLSED AND
-    // ASKING VALUE FROM GMNUMBER MIGHT BE LONGER
-    v1 = { 0,0 }; v2 = { 0,0 };
+void ContactMech::ResetForNewCollision() {  // LEAVING 0 AS IT IS ,SINCE IT WILL BE CALLED AND
+    // ASKING VALUE FROM GMNUMBER MIGHT BE LONGER FOR PROCRSSING
+    v1 = { 0.0f,0.0f }; v2 = { 0.0f,0.0f };
     resolution = { 0.0f, 0.0f };
     horizontalOverlap = 0.0f;
     verticalOverlap = 0.0f;

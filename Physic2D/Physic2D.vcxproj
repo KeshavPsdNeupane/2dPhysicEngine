@@ -150,7 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Body\ContactMechanic.cpp" />
-    <ClCompile Include="Body\RigidBody.cpp" />
+    <ClCompile Include="GameGrid\GameGrid.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Path\Path.cpp" />
     <ClCompile Include="PhysicLoop.cpp" />
@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Body\ContactMechanic.h" />
+    <ClInclude Include="GameGrid\GameGrid.h" />
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="Path\Path.h" />
     <ClInclude Include="PhysicLoop.h" />
