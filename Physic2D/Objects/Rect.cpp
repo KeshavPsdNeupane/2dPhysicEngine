@@ -39,7 +39,8 @@ void Rect::Update(const float& dt) {
 	//std::cout << " acceleration = " << acceleration.x << " " << acceleration.y << std::endl;
 	auto oldPosition = this->shape->getPosition();
 	this->shape->setPosition(NewPosition(DT));
-	gameObject.grid.PotentialCollision(this->shape ,this->ID);
+	auto potentialCollision = gameObject.grid.PotentialCollision(this->shape ,this->ID);
+	if(potentialCollision.size()!=0){ std::cout << " potentialCollision size = " << potentialCollision.size() << std::endl; }
 	gameObject.grid.MoveObject(this->shape,oldPosition, this->ID);
 	ReCentered();
 }

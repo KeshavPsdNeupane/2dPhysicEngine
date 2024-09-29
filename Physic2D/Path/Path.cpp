@@ -1,5 +1,6 @@
 #include "Path.h"
 #include"../PhysicUtility/Utility.h"
+#include"../GameObjects.h"
 Path::Path(const int id, const sf::Vector2f& pos, const sf::Vector2f& size, const sf::Vector2f& velocity,
 	const sf::Vector2f& accleration, const float& mass)
 	:path(std::make_shared<sf::RectangleShape>()),
@@ -8,6 +9,7 @@ Path::Path(const int id, const sf::Vector2f& pos, const sf::Vector2f& size, cons
 		sf::Vector2f(GMNumber::COEFF_OF_FRICTION_PATH, GMNumber::COEFF_OF_FRICTION_PATH)) {
 	this->path->setPosition(pos);
 	this->path->setSize(size);
+    gameObject.grid.AddObject(this->path ,this->ID);
 } 
 
 void Path::Load(){

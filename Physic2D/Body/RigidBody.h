@@ -8,6 +8,7 @@ class RigidBody {
 public:
     int ID;
     sf::Vector2f position;
+    sf::Vector2f size;
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     sf::Vector2f coefficientOfRestitution;
@@ -30,7 +31,7 @@ public:
         const sf::Vector2f& velocity, const sf::Vector2f& acceleration,
         const sf::Vector2f& coefficientOfRestitution, const sf::Vector2f& ceofficientOfFriction)
         :ID(id), mass(mass),
-        position(position),
+        position(position), size(0.0f,0.0f),
         velocity(velocity),
         acceleration(acceleration), 
         coefficientOfRestitution(coefficientOfRestitution),
@@ -54,20 +55,37 @@ public:
 public:
     inline void ApplyForce(const sf::Vector2f& force) {
         if (mass != 0) {
-            if ((force.x > 0 && velocity.x < maxvelocity.x) || (force.x < 0 && velocity.x > -maxvelocity.x)) {
-                acceleration.x += force.x / mass;     // Calculate the force in x direction
+            //LEAVE IF MIGHT BE NEEDED 
+            //if ((force.x > 0 && velocity.x < maxvelocity.x) || (force.x < 0 && velocity.x > -maxvelocity.x)) {
+            //    acceleration.x += force.x / mass;
+            //}
+            //else if ((force.x < 0 && velocity.x >= 0) || (force.x > 0 && velocity.x <= 0)) {
+            //    acceleration.x += force.x / mass;      // Allow instant change in direction
+            //}
+            //if ((force.y > 0 && velocity.y < maxvelocity.y) || (force.y < 0 && velocity.y > -maxvelocity.y)) {
+            //    acceleration.y += force.y / mass;      // Calculate the force in y direction
+            //}
+            //else if ((force.y < 0 && velocity.y >= 0) || (force.y > 0 && velocity.y <= 0)) {
+            //    acceleration.y += force.y / mass;       // Allow instant change in direction
+            //}
+            this->acceleration += force / this->mass;
+            if (acceleration.x > GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
+                acceleration.x = GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
             }
-            else if ((force.x < 0 && velocity.x >= 0) || (force.x > 0 && velocity.x <= 0)) {
-                acceleration.x += force.x / mass;      // Allow instant change in direction
+            else if (acceleration.x < -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
+                acceleration.x = -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
             }
-            if ((force.y > 0 && velocity.y < maxvelocity.y) || (force.y < 0 && velocity.y > -maxvelocity.y)) {
-                acceleration.y += force.y / mass;      // Calculate the force in y direction
+            if (acceleration.y > GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
+                acceleration.y = GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
             }
-            else if ((force.y < 0 && velocity.y >= 0) || (force.y > 0 && velocity.y <= 0)) {
-                acceleration.y += force.y / mass;       // Allow instant change in direction
+            else if (acceleration.y < -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
+                acceleration.y = -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
             }
         }
     }
+
+
+
 
     inline void AddAcceleration(const sf::Vector2f& acceleration) { this->acceleration += acceleration; }
     inline void AddVelocity(const sf::Vector2f& deltaVelocity) { velocity += deltaVelocity; }
