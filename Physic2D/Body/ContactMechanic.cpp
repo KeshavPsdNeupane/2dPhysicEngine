@@ -17,15 +17,13 @@ void ContactMech::PlayerCollisionDetection(sf::RectangleShape& R1, RigidBody& F1
 }
 
 
-
 void ContactMech::PathBasedCollisionHandle(sf::FloatRect& Bound1, RigidBody& F1
     , sf::FloatRect& Bound2, RigidBody& F2){     // THIS IS A DEFAULT IMPLEMENTATION FOR COLLISION BUT YOUR HAVE TO
-    // IMPLEMENT THIS TO EVERYPATH WITH UNIQUE PROPERTIES
-    std::cout << " parent called " << std::endl;
+    // OVERRITE TO EVERYPATH WITH UNIQUE PROPERTIES
     this->B1 = Bound1;  this->B2 = Bound2; 
     DirectionFinder();
-    this->M1 = F1.mass;
-    this->M2 = F2.mass;
+    this->M1 = F1.GetMass();
+    this->M2 = F2.GetMass();
     PenetrationResoluter(F1, F2);
     EffectiveEFinder(F1, F2);
     if (this->horizontalOverlap < this->verticalOverlap) {
@@ -59,9 +57,8 @@ void ContactMech::PathBasedCollisionHandle(sf::FloatRect& Bound1, RigidBody& F1
         v1.x = u1.x; v2.x = u2.x;
     }
     CollisionThreshold();
-    F1.velocity = v1;  F2.velocity = v2;
+    F1.SetVelocity(v1);  F2.SetVelocity(v2);
     ResetForNewCollision();
-
 }
 
 void ContactMech::CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
@@ -71,8 +68,8 @@ void ContactMech::CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
 
     if (B1.intersects(B2)) {
         DirectionFinder();
-        this->M1 = F1.mass;
-        this->M2 = F2.mass;
+        this->M1 = F1.GetMass();
+        this->M2 = F2.GetMass();
         PenetrationResoluter(F1, F2);
         EffectiveEFinder(F1, F2);
         if (this->horizontalOverlap < this->verticalOverlap) {
@@ -106,7 +103,7 @@ void ContactMech::CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
             v1.x = u1.x; v2.x = u2.x;
         }
         CollisionThreshold();
-        F1.velocity = v1;  F2.velocity = v2;
+        F1.SetVelocity(v1);  F2.SetVelocity(v2);
         ResetForNewCollision();
     }
 }
@@ -115,10 +112,10 @@ void ContactMech::Friction(sf::RectangleShape& R1, RigidBody& F1, sf::RectangleS
     this->B1 = R1.getGlobalBounds();
     this->B2 = R2.getGlobalBounds();
     if (B1.intersects(B2)) {
-        this->coeffOfFriction = F2.ceofficientOfFriction;
-        this->u1 = F1.velocity;
+        this->coeffOfFriction = F2.GetCoefficientOfFriction();
+        this->u1 = F1.GetVelocity();
         this->Vunit = VectorOperation::Normalize(u1);
-        gravity = std::abs(F1.acceleration.y);
+        gravity = std::abs(F1.GetAcceleration().y);
         DirectionFinder();
         if (this->horizontalOverlap > this->verticalOverlap) {
             this->frictionDeceleratedVelocity = -this->coeffOfFriction.x * gravity * this->Vunit.x * dt;
@@ -131,7 +128,7 @@ void ContactMech::Friction(sf::RectangleShape& R1, RigidBody& F1, sf::RectangleS
             if (std::abs(this->u1.y) < GMNumber::COLLISION_VELOCITY_THRESHOLD) { this->u1.y = GMNumber::ZERO; }
             this->u1 += {GMNumber::ZERO, this->frictionDeceleratedVelocity };
         }
-        F1.velocity = this->u1;
+        F1.SetVelocity(this->u1);
     }
 }
 
@@ -161,22 +158,22 @@ void ContactMech::PenetrationResoluter(RigidBody& F1, RigidBody& F2) {
         this->resolution.y = (B1.top < B2.top)
             ? - verticalOverlap : verticalOverlap;
     }
-    if (this->M1 * 1000 < this->M2) { F1.position += this->resolution; }
-    else if (this->M1 > 1000 * this->M2) { F2.position -= this->resolution; }
+    if (this->M1 * 1000 < this->M2) { F1.SetPosition(F1.GetPosition() + this->resolution) ; }
+    else if (this->M1 > 1000 * this->M2) { F2.SetPosition(F2.GetPosition() - this->resolution); }
     else {
-        F1.position += this->resolution * (this->M2 / (this->M1 + this->M2));
-        F2.position -= this->resolution * (this->M1 / (this->M1 + this->M2));
+        F1.SetPosition(F1.GetPosition() + this->resolution * (this->M2 / (this->M1 + this->M2)));
+        F2.SetPosition(F2.GetPosition() - this->resolution * (this->M1 / (this->M1 + this->M2)));
     }
 }
 
 void ContactMech::EffectiveEFinder(RigidBody& F1, RigidBody& F2){
-    u1 = F1.velocity;
-    u2 = F2.velocity;
+    u1 = F1.GetVelocity();
+    u2 = F2.GetVelocity();
     Vrelative = u2 - u1;
     Vunit = VectorOperation::Normalize(Vrelative);
     Vunit = { std::abs(Vunit.x) , std::abs(Vunit.y) };
-   this->e = { (F2.coefficientOfRestitution.x + F1.coefficientOfRestitution.x) / 2 ,
-        (F2.coefficientOfRestitution.y + F1.coefficientOfRestitution.y) / 2 };
+   this->e = { (F2.GetCoefficientOfRestitution().x + F1.GetCoefficientOfRestitution().x) / 2 ,
+        (F2.GetCoefficientOfRestitution().y + F1.GetCoefficientOfRestitution().y) / 2 };
 }
 
 inline void ContactMech::CollisionThreshold(){

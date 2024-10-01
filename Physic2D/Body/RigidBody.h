@@ -5,24 +5,22 @@
 #include<cmath>
 #include"../PhysicUtility/Utility.h"
 class RigidBody {
-public:
+protected:
     int ID;
+    float mass;
     sf::Vector2f position;
     sf::Vector2f size;
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     sf::Vector2f coefficientOfRestitution;
     sf::Vector2f ceofficientOfFriction;
-    float mass;
-protected:
     sf::Vector2f maxvelocity;
-
 public:
     RigidBody()
         : position(0.0f, 0.0f),
         velocity(0.0f, 0.0f),
         acceleration(0.0f, 0.0f),
-        mass(1.0f), ID(),
+        mass(1.0f), ID(), size(0.0f,0.0f),
         coefficientOfRestitution(0.0f, 0.0f),
         ceofficientOfFriction(0.0f, 0.0f), 
         maxvelocity(0,0) {}
@@ -31,7 +29,8 @@ public:
         const sf::Vector2f& velocity, const sf::Vector2f& acceleration,
         const sf::Vector2f& coefficientOfRestitution, const sf::Vector2f& ceofficientOfFriction)
         :ID(id), mass(mass),
-        position(position), size(0.0f,0.0f),
+        position(position),
+        size(size),
         velocity(velocity),
         acceleration(acceleration), 
         coefficientOfRestitution(coefficientOfRestitution),
@@ -43,14 +42,21 @@ public:
     inline void SetIndex(const int& index) { this->ID = index; }
     inline void SetMass(const float& mass) { this->mass = mass; }
     inline void SetPosition(const sf::Vector2f& position) { this->position = position; }
+    inline void SetSize(const sf::Vector2f& size) { this->size = size; }
     inline void SetVelocity(const sf::Vector2f& velocity) { this->velocity = velocity; }
-    inline void SetAccleration(const sf::Vector2f& accleration) { this->acceleration = accleration; }
+    inline void SetAcceleration(const sf::Vector2f& accleration) { this->acceleration = accleration; }
     inline void SetCoefficientOfRestitution(const sf::Vector2f& E) { this->coefficientOfRestitution = E; }
     inline void SetCoefficientOfFriction(const sf::Vector2f& u) { this->ceofficientOfFriction = u; }
 
 
-
-
+    inline int& GetIndex() { return this->ID;}
+    inline float& GetMass() { return this->mass; }
+    inline sf::Vector2f& GetPosition() { return this->position; }
+    inline sf::Vector2f& GetSize() { return this->size; }
+    inline sf::Vector2f& GetVelocity() { return this->velocity; }
+    inline sf::Vector2f&  GetAcceleration() { return this->acceleration; }
+    inline sf::Vector2f& GetCoefficientOfRestitution() { return this->coefficientOfRestitution; }
+    inline sf::Vector2f& GetCoefficientOfFriction() { return this->ceofficientOfFriction; }
 
 public:
     inline void ApplyForce(const sf::Vector2f& force) {
@@ -89,7 +95,7 @@ public:
 
     inline void AddAcceleration(const sf::Vector2f& acceleration) { this->acceleration += acceleration; }
     inline void AddVelocity(const sf::Vector2f& deltaVelocity) { velocity += deltaVelocity; }
-    inline sf::Vector2f& GetVelocity() { return this->velocity; }
+   // inline sf::Vector2f& GetVelocity() { return this->velocity; }
 
 
     virtual inline sf::Vector2f& NewPosition(const float& dt) {

@@ -27,8 +27,8 @@ void Path::PathBasedCollisionHandle(sf::FloatRect& Bound1, RigidBody& F1, sf::Fl
     this->B1 = Bound1;
     this->B2 = Bound2;
     DirectionFinder();
-    this->M1 = F1.mass;
-    this->M2 = F2.mass;
+    this->M1 = F1.GetMass();
+    this->M2 = F2.GetMass();
     PenetrationResoluter(F1, F2);
     EffectiveEFinder(F1, F2);
     if (this->horizontalOverlap < this->verticalOverlap) {
@@ -62,7 +62,7 @@ void Path::PathBasedCollisionHandle(sf::FloatRect& Bound1, RigidBody& F1, sf::Fl
         v1.x = u1.x; v2.x = u2.x;
     }
     CollisionThreshold();
-    F1.velocity = v1;  F2.velocity = v2;
+    F1.SetVelocity(v1);  F2.SetVelocity(v2);
     ResetForNewCollision();
 }
 

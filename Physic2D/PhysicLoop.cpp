@@ -39,9 +39,9 @@ void PhysicLoop::Update() {
 	Deltatime();
 	gameObject.rectangle.Update(this->DT);
 	for (int i = 0; i < gameObject.path.size(); ++i) {
+		gameObject.path[i].Update(DT);
 		gameObject.rectangle.CollisionUpdate(*gameObject.path[i].GetShape(),
 			gameObject.path[i].GetFrame(), gameObject.path[i].GetContactHandler());
-		gameObject.path[i].Update(DT);
 	}
 }
 

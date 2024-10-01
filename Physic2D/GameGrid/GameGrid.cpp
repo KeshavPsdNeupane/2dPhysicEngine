@@ -2,16 +2,16 @@
 #include "GameGrid.h"
 #include <cmath>
 GameGrid::GameGrid() {
-    gridVisual.reserve(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));  // Reserve space for grid visuals
-    gridCell.resize(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));     // Resize the grid cells
+    gridVisual.reserve(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));
+    gridCell.resize(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));     
     VisualGridInit();
 }
 
 void GameGrid::AddObject(std::shared_ptr<sf::RectangleShape> rect, const int& id) {
     auto pos = rect->getPosition();
-    std::cout << " position = " << pos.x << " " << pos.y << std::endl;
+    //std::cout << " position = " << pos.x << " " << pos.y << std::endl;
     int index = GetIndex(pos);
-    std::cout << "index = " << index << std::endl;
+    //std::cout << "index = " << index << std::endl;
     AddObjectAtIndex(rect, id, index);
 }
 
@@ -71,25 +71,22 @@ void GameGrid::MoveObject(std::shared_ptr<sf::RectangleShape> rect, const sf::Ve
 
 void GameGrid::Draw(std::shared_ptr<sf::RenderWindow> window) {
     for (int i = 0; i < gridVisual.size(); ++i) {
-        window->draw(*gridVisual[i]);  // Draw each visual grid cell
+        window->draw(*gridVisual[i]); 
     }
 }
 
 void GameGrid::VisualGridInit() {
     for (int y = 0; y < GMNumber::GRID_COUNT_Y; ++y) {
         for (int x = 0; x < GMNumber::GRID_COUNT_X; ++x) {
-            int index = x + y * (int)GMNumber::GRID_COUNT_X;
-            //std::cout << " index = " << index << std::endl;
+            int index = x + y * (int)GMNumber::GRID_COUNT_X;;
             std::shared_ptr<sf::RectangleShape> Trect = std::make_shared<sf::RectangleShape>();
             Trect->setSize(sf::Vector2f(GMNumber::BASE_GRID_SIZE_X, GMNumber::BASE_GRID_SIZE_Y));
             Trect->setPosition(x * GMNumber::BASE_GRID_SIZE_X, y * GMNumber::BASE_GRID_SIZE_Y);
             Trect->setOutlineThickness(.5f);
-            Trect->setOutlineColor(sf::Color(165, 42, 42, 128));  // Brownish color with transparency
+            Trect->setOutlineColor(sf::Color(165, 42, 42, 128));  
             Trect->setFillColor(sf::Color::Transparent);
-            gridVisual.push_back(Trect);  // Store visual part of grid
-            gridCell[index] = std::vector<GridObject>();  // Initialize grid cell for objects
-            //sf::Vector2f pos = Trect->getPosition();
-            //std::cout << "positions = " << pos.x << " " << pos.y << std::endl << std::endl;
+            gridVisual.push_back(Trect);
+            gridCell[index] = std::vector<GridObject>();
         }
     }
 }
@@ -118,6 +115,7 @@ void GameGrid::AddObjectAtIndex(const std::shared_ptr<sf::RectangleShape>& rect,
     }
     else {
        // std::cerr << "Error: Calculated grid index (" << index << ") is out of bounds!" << std::endl;
+        return;
     }
 }
 
@@ -129,5 +127,6 @@ void GameGrid::RemoveObjectAtIndex(const int& id, const int& index) {
     }
     else {
        // std::cerr << "Error: Calculated grid index (" << index << ") is out of bounds!" << std::endl;
+        return;
     }
 }

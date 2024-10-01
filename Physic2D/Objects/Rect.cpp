@@ -9,8 +9,8 @@ Rect::Rect(const int id, const sf::Vector2f& pos, const sf::Vector2f& size)
 		{ GMNumber::COEFF_OF_FRICTION_OBJECT , GMNumber::COEFF_OF_FRICTION_OBJECT }),
 	DT(0.0f) {
 	
-	this->shape->setSize(size);
-	this->shape->setPosition(pos);
+	this->shape->setSize(GetSize());
+	this->shape->setPosition(GetPosition());
 	FindMaxVelocities();
 	this->font = gameObject.resource.GetFont();
 	this->text.setFont(this->font);
@@ -25,6 +25,7 @@ void Rect::Load(){
 	this->shape->setOutlineThickness(2.0f);
 	this->text.setCharacterSize(15);
 	this->text.setPosition({ 50.0f,00.0f });
+	size = { 25,50 };
 }
 
 void Rect::Update(const float& dt) {
@@ -40,14 +41,13 @@ void Rect::Update(const float& dt) {
 	auto oldPosition = this->shape->getPosition();
 	this->shape->setPosition(NewPosition(DT));
 	auto potentialCollision = gameObject.grid.PotentialCollision(this->shape ,this->ID);
-	if(potentialCollision.size()!=0){ std::cout << " potentialCollision size = " << potentialCollision.size() << std::endl; }
+	//if(potentialCollision.size()!=0){ std::cout << " potentialCollision size = " << potentialCollision.size() << std::endl; }
 	gameObject.grid.MoveObject(this->shape,oldPosition, this->ID);
 	ReCentered();
 }
 
 void Rect::CollisionUpdate(sf::RectangleShape& R2, RigidBody& F2, ContactMech& contact) {
 	PlayerCollisionDetection(*this->shape, *this, R2, F2, contact);
-	//gameObject.path[i].GetShape(), gameObject.path[i].GetFrame(), gameObject.path[i].GetContactHandler());
 }
 
 

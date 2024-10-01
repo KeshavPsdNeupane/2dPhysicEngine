@@ -23,16 +23,16 @@ struct GMNumber {
 	static constexpr float MASS_THRESHOLD = 1000.0f;
 
 	static constexpr float COEFF_OF_RESTITUTION_PATH_X = 1.0f;
-	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = 0.05f;
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = 0.50f;
+	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = .05f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = .50f;
 	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = 0.05f;
 	static constexpr float COEFF_OF_FRICTION_PATH = 0.7f;
 	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.0f;
 
 	// RECT
 	static constexpr float GRAVITY = 50.0f * 10.0f;
-	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_X = 5000.0F;
-	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_Y = 1000.0F;
+	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_X = 5000.0f;
+	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_Y = 1000.0f;
 	// HERE 50 IS A MODIFIER AND 10 IS ACTUAL VALUE JUST LIKE IRL G OF 9.8 OR 10M/S
 
 	//  FOR GRID OF GAME

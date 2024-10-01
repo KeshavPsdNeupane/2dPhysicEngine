@@ -13,12 +13,11 @@ public:
     GridObject() = default;
     GridObject(const int id, std::shared_ptr<sf::RectangleShape> rect) :
         ID(id), Object(rect), previousGridId() {}
-    inline void Move(sf::Vector2f& newPosition) { Object->setPosition(newPosition); }
 };
 
 class GameGrid {
-    std::vector<std::shared_ptr<sf::RectangleShape>> gridVisual;    // Visual representation of the grid
-    std::vector<std::vector<GridObject>> gridCell;                  // Holds objects in grid cells
+    std::vector<std::shared_ptr<sf::RectangleShape>> gridVisual;    
+    std::vector<std::vector<GridObject>> gridCell;                 
 public:
     GameGrid();
 public:
