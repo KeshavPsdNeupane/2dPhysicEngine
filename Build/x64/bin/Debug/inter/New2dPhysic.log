@@ -1,0 +1,32 @@
+﻿  ContactMechanic.cpp
+  GameGrid.cpp
+  Rect.cpp
+  Path.cpp
+  PhysicLoop.cpp
+  Utility.cpp
+  main.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include\xutility(403,82): warning C4244: 'argument': conversion from '_Ty' to 'const float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include\xutility(403,82): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include\xutility(403,82): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include\xutility(403,82): warning C4244:             _Ty=int
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include\xutility(403,82): warning C4244:         ]
+  (compiling source file 'main.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include\xutility(403,82):
+      the template instantiation context (the oldest one first) is
+          C:\Users\kesha\source\repos\Physic2D\New2dPhysic\GameObjects.h(17,11):
+          see reference to function template instantiation 'std::shared_ptr<Path> std::make_shared<Path,int,int,sf::Vector2f,sf::Vector2f,sf::Vector2f,sf::Vector2f>(int &&,int &&,sf::Vector2f &&,sf::Vector2f &&,sf::Vector2f &&,sf::Vector2f &&)' being compiled
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include\memory(2906,46):
+          see reference to function template instantiation 'std::_Ref_count_obj2<Path>::_Ref_count_obj2<_Ty,_Ty,sf::Vector2<float>,sf::Vector2<float>,sf::Vector2<float>,sf::Vector2<float>>(_Ty &&,_Ty &&,sf::Vector2<float> &&,sf::Vector2<float> &&,sf::Vector2<float> &&,sf::Vector2<float> &&)' being compiled
+          with
+          [
+              _Ty=int
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include\memory(2095,18):
+          see reference to function template instantiation 'void std::_Construct_in_place<_Ty,int,int,sf::Vector2<float>,sf::Vector2<float>,sf::Vector2<float>,sf::Vector2<float>>(_Ty &,int &&,int &&,sf::Vector2<float> &&,sf::Vector2<float> &&,sf::Vector2<float> &&,sf::Vector2<float> &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=Path
+          ]
+  
+  Generating Code...
+  New2dPhysic.vcxproj -> C:\Users\kesha\source\repos\Physic2D\Build\x64\bin\Debug\output\New2dPhysic.exe
