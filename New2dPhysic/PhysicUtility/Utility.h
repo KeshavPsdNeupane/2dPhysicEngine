@@ -22,18 +22,15 @@ namespace GMNumber {
 	static constexpr float COLLISION_VELOCITY_THRESHOLD = 2.5f;
 	static constexpr float MASS_THRESHOLD = 1000.0f;
 
+	//FOR COEFF OF RESTITUTION
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = 0.2f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = 0.2f;
+	static constexpr float COEFF_OF_RESTITUTION_PATH_X = 0.7f;
+	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = 0.3f;
 
-
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = .2f;
-	static constexpr float COEFF_OF_RESTITUTION_PATH_X = .7f;
-
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = .6f;
-	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = .8f;
-
-
-	
+	// FOR COEFFICIENT OF FRICTION
 	static constexpr float COEFF_OF_FRICTION_PATH = 0.7f;
-	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.0f;
+	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.5f;
 
 	// RECT
 	static constexpr float GRAVITY = 50.0f * 10.0f;
@@ -48,13 +45,11 @@ namespace GMNumber {
 	static constexpr float BASE_GRID_SIZE_Y = 60.0F ;// THIS IS OPTIMIZED FOR THE 800X600 SCREEN
 	static constexpr float GRID_COUNT_X = WORLD_SIZE_X / BASE_GRID_SIZE_X;
 	static constexpr float GRID_COUNT_Y = WORLD_SIZE_Y / BASE_GRID_SIZE_Y;
-	// WILL FILL MORE GRID ON SIZE 
 };
 
 
 
 class VectorOperation {
-	float a;
 public:
 	static inline float DotProduct(const sf::Vector2f& vector) { return (vector.x * vector.x) +(vector.y * vector.y); }
 	static inline float DotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2) { return (v1.x * v2.x) + (v1.y * v2.y); }
@@ -67,6 +62,8 @@ public:
 		if (M == 0) { M = 1; }   // std::cerr << " division by zero " << std::endl;}
 		return { vector.x / M , vector.y / M };
 	}
+
+	VectorOperation() = default;
 };
 
 
@@ -78,4 +75,6 @@ public:
 	static float GetTime2(const sf::Vector2f& u, const sf::Vector2f& a , const sf::Vector2f& s);
 	static sf::Vector2f FinalVelocity1(const sf::Vector2f& u, const sf::Vector2f& a, const float& t);
 	static sf::Vector2f FinalVelocity2(const sf::Vector2f& u, const sf::Vector2f& a, const sf::Vector2f& s);
+
+	BasicKinematic() = default;
 };

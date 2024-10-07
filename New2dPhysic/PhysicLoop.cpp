@@ -31,7 +31,6 @@ void PhysicLoop::SFMLEvent(){
 
 void PhysicLoop::Load(){
 	gameObject.rectangle->Load();
-	//gameObject.path.Load();
 	for (int i = 0; i < gameObject.path.size(); ++i) {
 		gameObject.path[i]->Load();
 	}
@@ -41,11 +40,10 @@ void PhysicLoop::Update() {
 	Deltatime();
 	gameObject.rectangle->Update(this->DT);
 	for (int i = 0; i < gameObject.path.size(); ++i) {
+		this->collisionAndFriction.ApplyFriction(gameObject.rectangle, gameObject.path[i], DT);
 		gameObject.path[i]->Update(DT);
-		//this->collisionAndFriction.PLayerCollisionWIthShape(gameObject.rectangle,
-		//	gameObject.path[i] , this->collisionAndFriction);
-		gameObject.rectangle->CollisionUpdate(*gameObject.path[i]->GetShape(),
-			gameObject.path[i]->GetFrame(), gameObject.path[i]->GetContactHandler());
+		this->collisionAndFriction.PLayerCollisionWIthShape(gameObject.rectangle,
+		gameObject.path[i] , this->collisionAndFriction);
 	}
 }
 

@@ -34,26 +34,15 @@ void Rect::Update(const float& dt) {
 	MovementUpdate();
 	AddAcceleration(sf::Vector2f(GMNumber::ZERO, GMNumber::GRAVITY));
 	DisplayPositionAndVelocity();
-	for (int i = 0; i < gameObject.path.size(); ++i) {
-		Friction(*this->shape, *this,
-			*gameObject.path[i]->GetShape(), gameObject.path[i]->GetFrame(), this->DT);
-	}
-	//std::cout << " acceleration = " << acceleration.x << " " << acceleration.y << std::endl;
 	auto oldPosition = this->shape->getPosition();
 	this->shape->setPosition(NewPosition(DT));
-	//auto potentialCollision = gameObject.grid.PotentialCollision(this->shape ,this->ID);
-	//if(potentialCollision.size()!=0){ std::cout << " potentialCollision size = " << potentialCollision.size() << std::endl; }
-	//gameObject.grid.MoveObject(this->shape,oldPosition, this->ID);
 	ReCentered();
 }
 
-void Rect::CollisionUpdate(sf::RectangleShape& R2, RigidBody& F2, ContactMech& contact) {
-	PlayerCollisionDetection(*this->shape, *this, R2, F2, contact);
-}
 
 void Rect::CollisionRedirection(std::shared_ptr<GameShape> playerShape,
 	std::shared_ptr<GameShape> otherShape,ContactMech& contact){
-	std::cout << " Player only detect dont handle collision" << std::endl;
+	std::cout << " Player only detect, dont handle collision" << std::endl;
 }
 
 
