@@ -22,7 +22,7 @@ public:
         acceleration(0.0f, 0.0f),
         mass(1.0f), ID(), size(0.0f,0.0f),
         coefficientOfRestitution(0.0f, 0.0f),
-        ceofficientOfFriction(0.0f, 0.0f), 
+        ceofficientOfFriction( 0.0f, 0.0f), 
         maxvelocity(0,0) {}
 
     RigidBody(const int& id, const float& mass, const sf::Vector2f& position, const sf::Vector2f& size,
@@ -61,7 +61,7 @@ public:
 public:
     inline void ApplyForce(const sf::Vector2f& force) {
         if (mass != 0) {
-            //LEAVE IF MIGHT BE NEEDED 
+            //LEAVE IT MIGHT BE NEEDED 
             //if ((force.x > 0 && velocity.x < maxvelocity.x) || (force.x < 0 && velocity.x > -maxvelocity.x)) {
             //    acceleration.x += force.x / mass;
             //}
@@ -108,11 +108,9 @@ public:
         this->acceleration.y = 0;
         return this->position;
     }
-
-
 protected:
     virtual inline void FindMaxVelocities() {
         if (this->mass == 0) { this->mass = 1.0f; }
-        else { this->maxvelocity = this->velocity; }
+        this->maxvelocity = this->velocity; 
     }
 };

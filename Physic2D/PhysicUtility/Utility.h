@@ -22,10 +22,11 @@ struct GMNumber {
 	static constexpr float COLLISION_VELOCITY_THRESHOLD = 2.5f;
 	static constexpr float MASS_THRESHOLD = 1000.0f;
 
-	static constexpr float COEFF_OF_RESTITUTION_PATH_X = 1.0f;
-	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = .05f;
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = .50f;
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = 0.05f;
+	static constexpr float COEFF_OF_RESTITUTION_PATH_X = .8f;
+	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = .9f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = .7f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = .8f;
+
 	static constexpr float COEFF_OF_FRICTION_PATH = 0.7f;
 	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.0f;
 

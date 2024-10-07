@@ -7,12 +7,16 @@ GameGrid::GameGrid() {
     VisualGridInit();
 }
 
-void GameGrid::AddObject(std::shared_ptr<sf::RectangleShape> rect, const int& id) {
+void GameGrid::AddObject(std::shared_ptr<sf::RectangleShape> rect,
+    RigidBody& rigidbody, ContactMech& contact) {
     auto pos = rect->getPosition();
     //std::cout << " position = " << pos.x << " " << pos.y << std::endl;
     int index = GetIndex(pos);
     //std::cout << "index = " << index << std::endl;
-    AddObjectAtIndex(rect, id, index);
+    auto rigidBodyPointer = std::make_shared<RigidBody>(rigidbody);
+    auto contactPointer = std::make_shared<ContactMech>(contact);
+    AddObjectAtIndex(rect, rigidBodyPointer, contactPointer, index);
+    //AddObjectAtIndex(rect, index);
 }
 
 void GameGrid::RemoveObject(std::shared_ptr<sf::RectangleShape> rect, const int& id) {
@@ -32,7 +36,7 @@ std::vector<std::shared_ptr<sf::RectangleShape>> GameGrid::PotentialCollision(st
                 && potentialGridNumber.y >= 0 && potentialGridNumber.y < GMNumber::GRID_COUNT_Y) {
                 int tempIndex = GetIndex(potentialGridNumber);
                 for (const auto& obj : gridCell[tempIndex]) {
-                    if (obj.ID != id) {
+                    if (obj.rigidbody->GetIndex() != id) {
                         potentialCollider.push_back(obj.Object);
                     }
                 }
@@ -65,7 +69,7 @@ void GameGrid::MoveObject(std::shared_ptr<sf::RectangleShape> rect, const sf::Ve
     if (oldIndex != newIndex) {
         // std::cout << "  different old index = "<< oldIndex << " NewIndex = " << newIndex << std::endl << std::endl;
         RemoveObjectAtIndex(oldIndex, id);
-        AddObjectAtIndex(rect, id, newIndex);
+       // AddObjectAtIndex(rect, id, newIndex);
     }
 }
 
@@ -107,14 +111,15 @@ inline sf::Vector2i GameGrid::GetGridNumber(sf::Vector2f pos) {
     return { x, y };
 }
 
-void GameGrid::AddObjectAtIndex(const std::shared_ptr<sf::RectangleShape>& rect, const int& id, const int& index) {
+void GameGrid::AddObjectAtIndex(const std::shared_ptr<sf::RectangleShape>& rect
+    , std::shared_ptr<RigidBody> rigidbody, std::shared_ptr<ContactMech> contact,const int& index) {
     if (index >= 0 && index < gridCell.size()) {
-        GridObject object(id, rect);
+        GridObject object(rect , rigidbody , contact);
         object.previousGridId = index;
         gridCell[index].push_back(object);  // Add object to the appropriate grid cell
     }
     else {
-       // std::cerr << "Error: Calculated grid index (" << index << ") is out of bounds!" << std::endl;
+        // std::cerr << "Error: Calculated grid index (" << index << ") is out of bounds!" << std::endl;
         return;
     }
 }
@@ -123,7 +128,7 @@ void GameGrid::RemoveObjectAtIndex(const int& id, const int& index) {
     if (index >= 0 && index < gridCell.size()) {
         auto& objects = gridCell[index];
         objects.erase(std::remove_if(objects.begin(), objects.end(),
-            [id](const GridObject& obj) { return obj.ID == id; }), objects.end());  // Remove object by ID
+            [id](const GridObject& obj) { return obj.rigidbody->GetIndex() == id; }), objects.end());  // Remove object by ID
     }
     else {
        // std::cerr << "Error: Calculated grid index (" << index << ") is out of bounds!" << std::endl;

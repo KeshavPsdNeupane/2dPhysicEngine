@@ -1,29 +1,30 @@
 #pragma once
-#include<SFML/Graphics.hpp>
-#include<iostream>
-#include"../Body/RigidBody.h"
-#include"../Body/ContactMechanic.h"
-class Path : public 	RigidBody , public ContactMech {
-private:
-	std::shared_ptr<sf::RectangleShape> path;
+#include <iostream>
+#include <SFML/Graphics.hpp>
+#include "../Body/GameShapes.h"
+#include "../Body/ContactMechanic.h"
 
+class Path : public GameShape, public ContactMech {
 public:
-	Path() = default;
+    Path() = default;
+    Path(const int id, const float& mass, const sf::Vector2f& pos,
+        const sf::Vector2f& size, const sf::Vector2f& velocity,
+        const sf::Vector2f& accleration);
 
-	Path(const int id, const sf::Vector2f& pos, const sf::Vector2f& size, const sf::Vector2f& velocity,
-		const sf::Vector2f& accleration, const float& mass);
-	inline std::shared_ptr<sf::RectangleShape> GetShape() { return path; }
-	inline RigidBody& GetFrame() { return *this; }
-	inline ContactMech& GetContactHandler() { return *this; }
+    inline std::shared_ptr<sf::RectangleShape> GetShape() { return shape; }
+    inline RigidBody& GetFrame() { return *this; }
+    inline ContactMech& GetContactHandler() { return *this; }
 
-public:
-	void Load();
-	void Update(const float& DT);
-	void PathBasedCollisionHandle(sf::FloatRect& Bound1, RigidBody& F1,
-		sf::FloatRect& Bound2, RigidBody& F2) override;
-	void Draw(std::shared_ptr<sf::RenderWindow> window);
+
+    void Load() override;
+    void Update(const float& dt) override;
+    void CollisionRedirection(std::shared_ptr<GameShape> playerShape,
+        std::shared_ptr<GameShape> otherShape, ContactMech& contact) override;
+    void Draw(std::shared_ptr<sf::RenderWindow>window) override;
+
+    void PathBasedCollisionHandle(sf::FloatRect& Bound1, RigidBody& F1,
+        sf::FloatRect& Bound2, RigidBody& F2);
 
 private:
-	inline void FindMaxVelocities() override;
+    inline void FindMaxVelocities() override;
 };
-

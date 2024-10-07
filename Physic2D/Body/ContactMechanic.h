@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include<iostream>
 #include"RigidBody.h"
+class GameShape;
 class ContactMech {
 protected:
 	sf::FloatRect B1;
@@ -27,21 +28,32 @@ protected:
 public:
 	ContactMech();
 
-
-protected:
+public:
 	void PlayerCollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
 		sf::RectangleShape& R2, RigidBody& F2, ContactMech& contact);
+	void PLayerCollisionWIthShape(std::shared_ptr<GameShape> playerShape ,
+		std::shared_ptr<GameShape> otherShape , ContactMech& contact);
+
+	void PathCollsionHandleWithShape(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
+
+
+
 	virtual void PathBasedCollisionHandle(sf::FloatRect& Bound1, RigidBody& F1,
 		sf::FloatRect& Bound2, RigidBody& F2);
+
+
+
+	// FRICTION
 	void Friction(sf::RectangleShape& R1, RigidBody& F1,
 		sf::RectangleShape& R2, RigidBody& F2, const float& dt);
-
 
 	// THIS IS PREVIOUS IMPLEMENTATION OF COLLISION DETECTION SO JUST KEEPING THIS FOR LEGACY 
 	void CollisionDetection(sf::RectangleShape& R1, RigidBody& F1,
 		sf::RectangleShape& R2, RigidBody& F2);
 
 protected:
+	bool AABBIntersect(std::shared_ptr<GameShape> playerShape, std::shared_ptr<GameShape> otherShape);
 	void ResetForNewCollision();
 	inline void DirectionFinder();
 	void PenetrationResoluter(RigidBody& F1, RigidBody& F2);

@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Body\ContactMechanic.cpp" />
+    <ClCompile Include="Body\GameShapes.h" />
     <ClCompile Include="GameGrid\GameGrid.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Path\Path.cpp" />

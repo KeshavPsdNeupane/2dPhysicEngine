@@ -4,12 +4,14 @@ PhysicLoop::PhysicLoop()
 : window(std::make_shared<sf::RenderWindow>(sf::VideoMode(static_cast<int>(GMNumber::WINDOW_WIDTH),
 	static_cast<int>(GMNumber::WINDOW_HEIGHT)),
 	" Physic Engine")),
-event(), clock(), DT(0.0f) {
+event(), clock(), collisionAndFriction(), DT(0.0f) {
 	this->window->setFramerateLimit(GMNumber::MAX_FRAME_RATE);
 }
 
 void PhysicLoop::RunPlysicLoop(){
 	Load();
+	auto& rect = gameObject.rectangle;
+	//gameObject.grid.AddObject(rect->GetShape(), rect->GetRigidBody(), rect->GetCollisionHandling());
 	while (window->isOpen()) {
 		SFMLEvent();
 		Update();
@@ -25,31 +27,32 @@ void PhysicLoop::SFMLEvent(){
 		if (event.type == sf::Event::Closed)
 			window->close();
 	}
-}
+}  
 
 void PhysicLoop::Load(){
-	gameObject.rectangle.Load();
+	gameObject.rectangle->Load();
 	//gameObject.path.Load();
 	for (int i = 0; i < gameObject.path.size(); ++i) {
-		gameObject.path[i].Load();
+		gameObject.path[i]->Load();
 	}
 }
 
 void PhysicLoop::Update() {
 	Deltatime();
-	gameObject.rectangle.Update(this->DT);
+	gameObject.rectangle->Update(this->DT);
 	for (int i = 0; i < gameObject.path.size(); ++i) {
-		gameObject.path[i].Update(DT);
-		gameObject.rectangle.CollisionUpdate(*gameObject.path[i].GetShape(),
-			gameObject.path[i].GetFrame(), gameObject.path[i].GetContactHandler());
+		gameObject.path[i]->Update(DT);
+		//this->collisionAndFriction.PLayerCollisionWIthShape(gameObject.rectangle,
+		//	gameObject.path[i] , this->collisionAndFriction);
+		gameObject.rectangle->CollisionUpdate(*gameObject.path[i]->GetShape(),
+			gameObject.path[i]->GetFrame(), gameObject.path[i]->GetContactHandler());
 	}
 }
 
 void PhysicLoop::Draw(){
-	gameObject.rectangle.Draw(window);
-	//gameObject.path.Draw(window);
+	gameObject.rectangle->Draw(window);
 	for (int i = 0; i < gameObject.path.size(); ++i) {
-		gameObject.path[i].Draw(window);
+		gameObject.path[i]->Draw(window);
 	}
 	gameObject.grid.Draw(window);
 }

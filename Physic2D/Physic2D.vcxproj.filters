@@ -39,6 +39,9 @@
     <ClCompile Include="GameGrid\GameGrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Body\GameShapes.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PhysicLoop.h">
