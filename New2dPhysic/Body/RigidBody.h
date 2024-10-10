@@ -15,12 +15,13 @@ protected:
     sf::Vector2f coefficientOfRestitution;
     sf::Vector2f ceofficientOfFriction;
     sf::Vector2f maxvelocity;
+    sf::Vector2f oldPosition;
 public:
     RigidBody()
         : position(0.0f, 0.0f),
         velocity(0.0f, 0.0f),
         acceleration(0.0f, 0.0f),
-        mass(1.0f), ID(), size(0.0f,0.0f),
+        mass(1.0f), ID(-1), size(0.0f,0.0f),
         coefficientOfRestitution(0.0f, 0.0f),
         ceofficientOfFriction( 0.0f, 0.0f), 
         maxvelocity(0,0) {}
@@ -49,14 +50,15 @@ public:
     inline void SetCoefficientOfFriction(const sf::Vector2f& u) { this->ceofficientOfFriction = u; }
 
 
-    inline int& GetIndex() { return this->ID;}
-    inline float& GetMass() { return this->mass; }
-    inline sf::Vector2f& GetPosition() { return this->position; }
-    inline sf::Vector2f& GetSize() { return this->size; }
-    inline sf::Vector2f& GetVelocity() { return this->velocity; }
-    inline sf::Vector2f&  GetAcceleration() { return this->acceleration; }
-    inline sf::Vector2f& GetCoefficientOfRestitution() { return this->coefficientOfRestitution; }
-    inline sf::Vector2f& GetCoefficientOfFriction() { return this->ceofficientOfFriction; }
+   const inline int& GetIndex() const { return this->ID; }
+   const inline float& GetMass() const { return this->mass; }
+   const inline sf::Vector2f& GetPosition() const { return this->position; }
+   const inline sf::Vector2f& GetSize() const { return this->size; }
+   const inline sf::Vector2f& GetVelocity() const { return this->velocity; }
+   const inline sf::Vector2f& GetAcceleration() const { return this->acceleration; }
+   const inline sf::Vector2f& GetCoefficientOfRestitution() const { return this->coefficientOfRestitution; }
+   const inline sf::Vector2f& GetCoefficientOfFriction() const { return this->ceofficientOfFriction; }
+   const inline sf::Vector2f& GetOldPosition()const { return this->oldPosition;}
 
 public:
     inline void ApplyForce(const sf::Vector2f& force) {
@@ -95,15 +97,23 @@ public:
 
     inline void AddAcceleration(const sf::Vector2f& acceleration) { this->acceleration += acceleration; }
     inline void AddVelocity(const sf::Vector2f& deltaVelocity) { velocity += deltaVelocity; }
-   // inline sf::Vector2f& GetVelocity() { return this->velocity; }
-
 
     virtual inline sf::Vector2f& NewPosition(const float& dt) {
+        /**
+         * @brief Updates the position based on the current velocity and acceleration.
+         *
+         * @param dt Time delta for position update.
+         *
+         * @warning Don't forget to do this->oldPosition = this->position; before changing position!
+         *
+         * @return Reference to the updated position.
+         */
         this->velocity += this->acceleration * dt;
         if (this->velocity.y > maxvelocity.y) this->velocity.y = maxvelocity.y;
         if (this->velocity.y < -maxvelocity.y) this->velocity.y = -maxvelocity.y;
         if (this->velocity.x > maxvelocity.x) this->velocity.x = maxvelocity.x;
         if (this->velocity.x < -maxvelocity.x) this->velocity.x = -maxvelocity.x;
+        this->oldPosition = this->position;
         this->position += this->velocity * dt;
         this->acceleration.y = 0;
         return this->position;

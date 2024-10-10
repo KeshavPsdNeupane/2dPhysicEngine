@@ -24,6 +24,7 @@
     <ProjectGuid>{4eff0f0b-a3f3-4eee-a85b-0eeb8b67c329}</ProjectGuid>
     <RootNamespace>New2dPhysic</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Physic2DEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

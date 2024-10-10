@@ -27,11 +27,14 @@ protected:
 public:
 	ContactMech();
 public:
-	void PLayerCollisionWIthShape(std::shared_ptr<GameShape> playerShape ,
+	void CollsionDetection(std::shared_ptr<GameShape> playerShape ,
 		std::shared_ptr<GameShape> otherShape , ContactMech& contact);
 
-	void PathCollsionHandleWithShape(std::shared_ptr<GameShape> playerShape,
-		std::shared_ptr<GameShape> otherShape);
+	void HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		GameShape& otherShape);
+
+	void LightObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		GameShape& otherShape);
 
 
 	// FRICTION

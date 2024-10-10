@@ -30,12 +30,14 @@ namespace GMNumber {
 
 	// FOR COEFFICIENT OF FRICTION
 	static constexpr float COEFF_OF_FRICTION_PATH = 0.7f;
-	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.5f;
+	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.f;
+
 
 	// RECT
 	static constexpr float GRAVITY = 50.0f * 10.0f;
 	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_X = 5000.0f;
 	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_Y = 1000.0f;
+	static constexpr float MOVEMENT_FORCE = 35775.0f;
 	// HERE 50 IS A MODIFIER AND 10 IS ACTUAL VALUE JUST LIKE IRL G OF 9.8 OR 10M/S
 
 	//  FOR GRID OF GAME

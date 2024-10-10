@@ -20,6 +20,6 @@ public:
 	virtual void Load() = 0;
 	virtual void Update(const float& dt) = 0;
 	virtual void CollisionRedirection(std::shared_ptr<GameShape> playerShape,
-		std::shared_ptr<GameShape> otherShape, ContactMech& contact) = 0;
+	 ContactMech& contact) = 0;
 	virtual void Draw(std::shared_ptr<sf::RenderWindow>window) = 0;
 };

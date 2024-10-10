@@ -23,8 +23,7 @@ private:
 	void Load();
 	void Update();
 	void Draw();
-private:
-	void Deltatime();
+
 
 };
 

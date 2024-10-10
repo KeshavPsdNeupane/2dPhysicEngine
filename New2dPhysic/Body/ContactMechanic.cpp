@@ -9,27 +9,27 @@ ContactMech::ContactMech():
     gravity(0.0f) , frictionDeceleratedVelocity(0.0f){}
 
 
-void ContactMech::PLayerCollisionWIthShape(std::shared_ptr<GameShape> playerShape,
+void ContactMech::CollsionDetection(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape, ContactMech& contact) {
     sf::FloatRect playerBound = sf::FloatRect(playerShape->GetPosition(), playerShape->GetSize());
     sf::FloatRect otherBound = sf::FloatRect(otherShape->GetPosition(), otherShape->GetSize());
     if (playerBound.intersects(otherBound)) {
-        otherShape->CollisionRedirection(playerShape, otherShape, contact);
+       otherShape->CollisionRedirection(playerShape, contact);
     }
 }
 
 
-void ContactMech::PathCollsionHandleWithShape(std::shared_ptr<GameShape> playerShape,
-    std::shared_ptr<GameShape> otherShape){
+void ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
+    GameShape& otherShape){
     this->B1 = sf::FloatRect(playerShape->GetPosition(), playerShape->GetSize());
-    this->B2 = sf::FloatRect(otherShape->GetPosition(), otherShape->GetSize());
+    this->B2 = sf::FloatRect(otherShape.GetPosition(), otherShape.GetSize());
     DirectionFinder();
     this->M1 = playerShape->GetMass();
-    this->M2 = otherShape->GetMass();
+    this->M2 = otherShape.GetMass();
     this->u1 = playerShape->GetVelocity();
-    this->u2 = otherShape->GetVelocity();
-    PenetrationResoluter(*playerShape,*otherShape);
-    EffectiveEFinder(*playerShape, *otherShape);
+    this->u2 = otherShape.GetVelocity();
+    PenetrationResoluter(*playerShape,otherShape);
+    EffectiveEFinder(*playerShape, otherShape);
     if (this->horizontalOverlap < this->verticalOverlap) {
         this->eEffective = e.x;
        // std::cout << "effective e H = " << eEffective << std::endl;
@@ -63,8 +63,31 @@ void ContactMech::PathCollsionHandleWithShape(std::shared_ptr<GameShape> playerS
     }
     CollisionThreshold();
     playerShape->SetVelocity(v1);
-    otherShape->SetVelocity(v2);
+    otherShape.SetVelocity(v2);
     ResetForNewCollision();
+}
+
+void ContactMech::LightObjectCollisionHandle(std::shared_ptr<GameShape> playerShape, GameShape& otherShape) {
+    this->B1 = sf::FloatRect(playerShape->GetPosition(), playerShape->GetSize());
+    this->B2 = sf::FloatRect(otherShape.GetPosition(), otherShape.GetSize());
+    this->M1 = playerShape->GetMass();
+    this->M2 = otherShape.GetMass();
+    this->u1 = playerShape->GetVelocity();
+    this->u2 = otherShape.GetVelocity();
+    PenetrationResoluter(*playerShape, otherShape);
+    EffectiveEFinder(*playerShape, otherShape);
+
+    v1.x = ((M1 - eEffective * M2) * u1.x + (1 + e.x) * M2 * u2.x) / (M1 + M2);
+    v1.y = ((M1 - eEffective * M2) * u1.y + (1 + e.y) * M2 * u2.y) / (M1 + M2);
+
+    v2.x = ((M2 - eEffective * M1) * u2.x + (1 + eEffective) * M1 * u1.x) / (M1 + M2);
+    v2.y = ((M2 - eEffective * M1) * u2.y + (1 + eEffective) * M1 * u1.y) / (M1 + M2);
+
+    CollisionThreshold();
+    playerShape->SetVelocity(v1);
+    otherShape.SetVelocity(v2);
+    ResetForNewCollision();
+
 }
 
 
@@ -78,7 +101,6 @@ void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::sha
         gravity = GMNumber::GRAVITY;
         DirectionFinder();
         if (this->horizontalOverlap > this->verticalOverlap) {
-           // std::cout << " woeking " << playerShape->GetAcceleration().y <<std::endl;
             this->frictionDeceleratedVelocity = -this->coeffOfFriction.x * gravity * this->Vunit.x * dt;
             if (std::abs(this->u1.x) < GMNumber::COLLISION_VELOCITY_THRESHOLD) { this->u1.x = GMNumber::ZERO; }
             this->u1 += { this->frictionDeceleratedVelocity, 0.0f};
@@ -89,7 +111,6 @@ void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::sha
             if (std::abs(this->u1.y) < GMNumber::COLLISION_VELOCITY_THRESHOLD) { this->u1.y = GMNumber::ZERO; }
             this->u1 += {GMNumber::ZERO, this->frictionDeceleratedVelocity };
         }
-        //std::cout << "player velocity =  " << u1.x << " " << u1.y << std::endl << std::endl;
         playerShape->SetVelocity(this->u1);
     }
 }
