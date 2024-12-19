@@ -24,13 +24,13 @@ namespace GMNumber {
 
 	//FOR COEFF OF RESTITUTION
 	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = 0.2f;
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = 0.2f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = 0.3f;
 	static constexpr float COEFF_OF_RESTITUTION_PATH_X = 0.7f;
 	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = 0.3f;
 
 	// FOR COEFFICIENT OF FRICTION
-	static constexpr float COEFF_OF_FRICTION_PATH = 0.7f;
-	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.f;
+	static constexpr float COEFF_OF_FRICTION_PATH = 0.5f;
+	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.0f;
 
 
 	// RECT
@@ -47,8 +47,16 @@ namespace GMNumber {
 	static constexpr float BASE_GRID_SIZE_Y = 60.0F ;// THIS IS OPTIMIZED FOR THE 800X600 SCREEN
 	static constexpr float GRID_COUNT_X = WORLD_SIZE_X / BASE_GRID_SIZE_X;
 	static constexpr float GRID_COUNT_Y = WORLD_SIZE_Y / BASE_GRID_SIZE_Y;
+	static constexpr int EXPECTED_POTENTIAL_COLLISION = 10;
+
 };
 
+
+enum CollisionId {
+	PlayerId = 0 ,
+	LightPathId = 2 ,
+	HeavyPathId = 3 ,
+};
 
 
 class VectorOperation {
@@ -64,19 +72,18 @@ public:
 		if (M == 0) { M = 1; }   // std::cerr << " division by zero " << std::endl;}
 		return { vector.x / M , vector.y / M };
 	}
-
 	VectorOperation() = default;
 };
 
-
-class BasicKinematic:public VectorOperation {
-public:
-	static sf::Vector2f Distance(const sf::Vector2f& u, const sf::Vector2f& a, const float& t);
-	static sf::Vector2f Distance(const sf::Vector2f& u, const sf::Vector2f& v, const sf::Vector2f& a);
-	static float GetTime(const sf::Vector2f& u, const sf::Vector2f& v, const sf::Vector2f& a);
-	static float GetTime2(const sf::Vector2f& u, const sf::Vector2f& a , const sf::Vector2f& s);
-	static sf::Vector2f FinalVelocity1(const sf::Vector2f& u, const sf::Vector2f& a, const float& t);
-	static sf::Vector2f FinalVelocity2(const sf::Vector2f& u, const sf::Vector2f& a, const sf::Vector2f& s);
-
-	BasicKinematic() = default;
-};
+//
+//class BasicKinematic:public VectorOperation {
+//public:
+//	static sf::Vector2f Distance(const sf::Vector2f& u, const sf::Vector2f& a, const float& t);
+//	static sf::Vector2f Distance(const sf::Vector2f& u, const sf::Vector2f& v, const sf::Vector2f& a);
+//	static float GetTime(const sf::Vector2f& u, const sf::Vector2f& v, const sf::Vector2f& a);
+//	static float GetTime2(const sf::Vector2f& u, const sf::Vector2f& a , const sf::Vector2f& s);
+//	static sf::Vector2f FinalVelocity1(const sf::Vector2f& u, const sf::Vector2f& a, const float& t);
+//	static sf::Vector2f FinalVelocity2(const sf::Vector2f& u, const sf::Vector2f& a, const sf::Vector2f& s);
+//
+//	BasicKinematic() = default;
+//};

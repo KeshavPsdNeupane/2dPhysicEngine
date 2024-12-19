@@ -2,9 +2,9 @@
 #include "../PhysicUtility/Utility.h"
 #include "../GameObjects.h"
 
-Path::Path(const int id, const float mass, const sf::Vector2f pos, const sf::Vector2f size, const sf::Vector2f velocity,
+Path::Path(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size, const sf::Vector2f velocity,
     const sf::Vector2f accleration, const sf::Vector2f coeffOfRest, const sf::Vector2f ceoffOfFriction)
-    : GameShape(id, mass, pos, size, velocity, accleration,coeffOfRest,ceoffOfFriction) {
+    : GameShape(id , colid, mass, pos, size, velocity, accleration,coeffOfRest,ceoffOfFriction) {
     this->shape->setPosition(this->position);
     this->shape->setSize(this->size);
 }
@@ -15,6 +15,7 @@ void Path::Load() {
     this->shape->setFillColor(sf::Color::Blue);
     this->shape->setOutlineThickness(1.0f);
     this->shape->setOutlineColor(sf::Color::Black);
+    //std::cout << "col id of id " << this->id << " " << this->collisionId << std::endl;
 }
 
 void Path::Update(const float& dT) {
@@ -23,9 +24,6 @@ void Path::Update(const float& dT) {
     }
 }
 
-void Path::CollisionRedirection(std::shared_ptr<GameShape> playerShape, ContactMech& contact) {
-    contact.HeavyObjectCollisionHandle(playerShape, *this);
-}
 
 void Path::Draw(std::shared_ptr<sf::RenderWindow>window) {
     window->draw(*this->shape);

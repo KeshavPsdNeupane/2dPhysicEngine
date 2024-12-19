@@ -4,9 +4,9 @@
 #include"../PhysicUtility/Utility.h"
 
 
-Rect::Rect(const int id, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
+Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
 	const sf::Vector2f velocity, const sf::Vector2f accleration, const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction)
-	:GameShape(id, 60.0f, pos, size, velocity, accleration, coeffOfRest,coeffOfFriction),
+	:GameShape(id, colid, 60.0f, pos, size, velocity, accleration, coeffOfRest,coeffOfFriction),
 	DT(0.0f) {
 	this->shape->setSize(GetSize());
 	this->shape->setPosition(GetPosition());
@@ -15,29 +15,25 @@ Rect::Rect(const int id, const float mass, const sf::Vector2f pos, const sf::Vec
 	this->text.setFont(this->font);
 }
 
-//
-//
+
 void Rect::Load() {
 	this->shape->setFillColor(sf::Color::Red);
 	this->shape->setOutlineColor(sf::Color::Black);
 	this->shape->setOutlineThickness(2.0f);
 	this->text.setCharacterSize(15);
 	this->text.setPosition({ 50.0f,00.0f });
+	//std::cout << "col id of id " << this->id << " " << this->collisionId << std::endl;
 }
 
 void Rect::Update(const float& dt) {
 	this->DT = dt;
 	MovementUpdate();
 	AddAcceleration(sf::Vector2f(GMNumber::ZERO, GMNumber::GRAVITY));
-	DisplayPositionAndVelocity();
 	this->shape->setPosition(NewPosition(DT));
 	ReCentered();
 }
 
 
-void Rect::CollisionRedirection(std::shared_ptr<GameShape> playerShape,ContactMech& contact){
-	std::cout << " Player only detect, dont handle collision" << std::endl;
-}
 
 
 void Rect::Draw(std::shared_ptr<sf::RenderWindow> window) {

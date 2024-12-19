@@ -6,7 +6,6 @@
 #include"../PhysicUtility/Utility.h"
 class RigidBody {
 protected:
-    int ID;
     float mass;
     sf::Vector2f position;
     sf::Vector2f size;
@@ -21,15 +20,15 @@ public:
         : position(0.0f, 0.0f),
         velocity(0.0f, 0.0f),
         acceleration(0.0f, 0.0f),
-        mass(1.0f), ID(-1), size(0.0f,0.0f),
+        mass(1.0f), size(0.0f,0.0f),
         coefficientOfRestitution(0.0f, 0.0f),
         ceofficientOfFriction( 0.0f, 0.0f), 
         maxvelocity(0,0) {}
 
-    RigidBody(const int& id, const float& mass, const sf::Vector2f& position, const sf::Vector2f& size,
+    RigidBody( const float& mass, const sf::Vector2f& position, const sf::Vector2f& size,
         const sf::Vector2f& velocity, const sf::Vector2f& acceleration,
         const sf::Vector2f& coefficientOfRestitution, const sf::Vector2f& ceofficientOfFriction)
-        :ID(id), mass(mass),
+        :mass(mass),
         position(position),
         size(size),
         velocity(velocity),
@@ -40,7 +39,7 @@ public:
 
 
 public:
-    inline void SetIndex(const int& index) { this->ID = index; }
+   // inline void SetIndex(const int& index) { this->ID = index; }
     inline void SetMass(const float& mass) { this->mass = mass; }
     inline void SetPosition(const sf::Vector2f& position) { this->position = position; }
     inline void SetSize(const sf::Vector2f& size) { this->size = size; }
@@ -50,7 +49,7 @@ public:
     inline void SetCoefficientOfFriction(const sf::Vector2f& u) { this->ceofficientOfFriction = u; }
 
 
-   const inline int& GetIndex() const { return this->ID; }
+   //const inline int& GetIndex() const { return this->ID; }
    const inline float& GetMass() const { return this->mass; }
    const inline sf::Vector2f& GetPosition() const { return this->position; }
    const inline sf::Vector2f& GetSize() const { return this->size; }

@@ -7,7 +7,7 @@
 class Path : public GameShape {
 public:
     Path() = default;
-    Path(const int id, const float mass, const sf::Vector2f pos,
+    Path(const int id, const int colid, const float mass, const sf::Vector2f pos,
         const sf::Vector2f size, const sf::Vector2f velocity,
         const sf::Vector2f accleration , const sf::Vector2f coeffOfRest , const sf::Vector2f ceoffOfFriction);
 
@@ -17,8 +17,6 @@ public:
     public:
     void Load() override;
     void Update(const float& dt) override;
-    void CollisionRedirection(std::shared_ptr<GameShape> playerShape,
-        ContactMech& contact) override;
     void Draw(std::shared_ptr<sf::RenderWindow>window) override;
 
 private:

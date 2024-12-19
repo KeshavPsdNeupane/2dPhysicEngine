@@ -28,24 +28,23 @@ public:
 	ContactMech();
 public:
 	void CollsionDetection(std::shared_ptr<GameShape> playerShape ,
-		std::shared_ptr<GameShape> otherShape , ContactMech& contact);
-
-	void HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
-		GameShape& otherShape);
-
-	void LightObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
-		GameShape& otherShape);
-
+		std::shared_ptr<GameShape> otherShape);
 
 	// FRICTION
 	void ApplyFriction(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape, const float& dt);
 
 protected:
+	void CollisionDetermination(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
+	void HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
+	void LightObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
 	void ResetForNewCollision();
 	inline void DirectionFinder();
-	void PenetrationResoluter(RigidBody& F1, RigidBody& F2);
-	void EffectiveEFinder(RigidBody& F1, RigidBody& F2);
+	inline void PenetrationResoluter(RigidBody& F1, RigidBody& F2);
+	inline void EffectiveEFinder(RigidBody& F1, RigidBody& F2);
 	inline void CollisionThreshold();
 };
 
