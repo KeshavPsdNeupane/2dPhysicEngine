@@ -2,13 +2,7 @@
 #include "GameGrid.h"
 #include <cmath>
 
-GameGrid::GameGrid() : 
-    offsetsForPlayerCollision{ {
-       {0, 0}, {-1, -1}, {-1, 0}, 
-       {-1, 1}, {0, -1}, {0, 1},
-       {1, -1}, {1, 0}, {1, 1}
-   } }
-{
+GameGrid::GameGrid() {
     gridVisual.reserve(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));
     staticGridCell.resize(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));
     dynamicGridCell.resize(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));
@@ -24,36 +18,13 @@ void GameGrid::RemoveObject(std::shared_ptr<GameShape> shape, bool isStatic) {
 }
 
 
-std::vector<std::shared_ptr<GameShape>> GameGrid::PotentialCollision(std::shared_ptr<GameShape> shape) {
-    std::vector<std::shared_ptr<GameShape>> potentialCollider;
-    sf::Vector2f pos = shape->GetPosition();
-    int id = shape->GetShapeID();
-    sf::Vector2i objectGridNumber = GetGridNumber(pos);
-    potentialCollider.reserve(GMNumber::EXPECTED_POTENTIAL_COLLISION);
-
-    for (const auto& offset : offsetsForPlayerCollision) {
-
-        sf::Vector2i potentialGridNumber = objectGridNumber + offset;
-        if (IsValidGridIndex(potentialGridNumber)) {
-            int gridCellIndex = CalculateIndex(potentialGridNumber);
-
-            for (const auto& obj : staticGridCell[gridCellIndex]) {
-                if (obj->GetShapeID() != id) {
-                    potentialCollider.push_back(obj);
-                }
-            }
-            for (const auto& obj : dynamicGridCell[gridCellIndex]) {
-                if (obj->GetShapeID() != id) {
-                    potentialCollider.push_back(obj);
-                }
-            }
-
-        }
-    }
-
-    return potentialCollider;
+GridResult GameGrid::PotentialCollision(std::shared_ptr<GameShape> shape) {
+    return FindObjectsInRange(shape, GMNumber::POTENTIAL_COLLISION_RANGE, true);
 }
 
+GridResult GameGrid::FindUpdatableAndDrawableBlock(std::shared_ptr<GameShape> shape) {
+    return FindObjectsInRange(shape, GMNumber::UPDATE_DRAW_RANGE, false);
+}
 
 void GameGrid::AddObject(std::shared_ptr<GameShape> shape, bool isStatic){
     auto  position = shape->GetPosition();
@@ -68,10 +39,9 @@ void GameGrid::MoveObject(std::shared_ptr<GameShape> shape) {
     sf::Vector2f oldPos = shape->GetOldPosition();
     int oldIndex = CalculateIndex(oldPos);
     int newIndex = CalculateIndex(newPos);
-
     if (oldIndex != newIndex) {
-    int id = shape->GetShapeID();
-        RemoveObjectAtIndex(oldIndex, id,false);
+        int id = shape->GetShapeID();
+        RemoveObjectAtIndex(id, oldIndex,false);
         AddObjectAtIndex(shape , newIndex, false);
     }
 }
@@ -126,17 +96,74 @@ inline sf::Vector2i GameGrid::GetGridNumber(sf::Vector2f pos) {
     return { x, y };
 }
 
+inline bool GameGrid::IsValidGridIndex(sf::Vector2i gridNumber) const{
+    return gridNumber.x >= 0 && gridNumber.x < GMNumber::GRID_COUNT_X &&
+        gridNumber.y >= 0 && gridNumber.y < GMNumber::GRID_COUNT_Y;
+}
+
 void GameGrid::AddObjectAtIndex(std::shared_ptr<GameShape> shape, int index, bool isStatic) {
     auto& vectorType = (isStatic) ? staticGridCell : dynamicGridCell;
-    if (index >= 0 && index < (int)vectorType.size()) {
+    if (index >= 0 && index < (int)vectorType.size()) {;
         vectorType[index].push_back(shape);
     }
 }
 
 void GameGrid::RemoveObjectAtIndex(int id, int index, bool isStatic) {
-    if (index >= 0 && index < (int)staticGridCell.size()) {
-        auto& shapeVector = isStatic ? staticGridCell[index] : dynamicGridCell[index];
-        shapeVector.erase(std::remove_if(shapeVector.begin(), shapeVector.end(),
-            [id](std::shared_ptr<GameShape> obj) { return obj->GetShapeID() == id; }), shapeVector.end());
+    auto& shapeVector = isStatic ? staticGridCell : dynamicGridCell;
+
+    if (index >= 0 && index < shapeVector.size()) {
+        auto& objectsInCell = shapeVector[index];
+
+        auto it = std::remove_if(objectsInCell.begin(), objectsInCell.end(),
+            [id](std::shared_ptr<GameShape> obj) { return obj->GetShapeID() == id; });
+
+        if (it != objectsInCell.end()) {
+            objectsInCell.erase(it, objectsInCell.end());
+        }
     }
+}
+
+
+
+
+GridResult GameGrid::FindObjectsInRange(std::shared_ptr<GameShape> shape, int range, bool skipSelf) {
+    GridResult result;
+
+    sf::Vector2f pos = shape->GetPosition();
+    int id = shape->GetShapeID();
+    sf::Vector2i objectGridNumber = GetGridNumber(pos);
+
+    for (int y = -range; y <= range; ++y) {
+        for (int x = -range; x <= range; ++x) {
+
+            sf::Vector2i potentialGridNumber = objectGridNumber + sf::Vector2i(x, y);
+
+            if (IsValidGridIndex(potentialGridNumber)) {
+                int gridCellIndex = CalculateIndex(potentialGridNumber);
+
+                // Process static objects
+                for (const auto& obj : staticGridCell[gridCellIndex]) {
+                    if (skipSelf && obj->GetShapeID() != id) {
+                        result.staticResult.push_back(obj);
+                    }
+                    else if (!skipSelf) {
+                        result.staticResult.push_back(obj);
+                    }
+                }
+
+                // Process dynamic objects
+                for (const auto& obj : dynamicGridCell[gridCellIndex]) {
+                    if (skipSelf && obj->GetShapeID() != id) {
+                        result.dynamicResult.push_back(obj);
+                    }
+                    else if (!skipSelf) {
+                        result.dynamicResult.push_back(obj);
+                    }
+                }
+            }
+        }
+    }
+
+    // Return the struct holding both static and dynamic objects
+    return result;
 }

@@ -4,12 +4,15 @@
 #include<iostream>
 #include"Objects/Rect.h"
 #include"Body/ContactMechanic.h"
+#include"GameGrid/GameGrid.h"
 class PhysicLoop{
 private:
 	std::shared_ptr<sf::RenderWindow>window;
 	sf::Event event;
 	sf::Clock clock;
 	ContactMech collisionAndFriction;
+	GridResult updateDrawResultFromGrid;
+	GridResult collisionResultFromGrid;
 	float DT;
 
 public:

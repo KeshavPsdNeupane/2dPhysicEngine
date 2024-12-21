@@ -4,12 +4,16 @@ PhysicLoop::PhysicLoop()
 : window(std::make_shared<sf::RenderWindow>(sf::VideoMode(static_cast<int>(GMNumber::WINDOW_WIDTH),
 	static_cast<int>(GMNumber::WINDOW_HEIGHT)),
 	" Physic Engine")),
-event(), clock(), collisionAndFriction(), DT(0.0f) {
+event(), clock(),
+collisionAndFriction(),
+updateDrawResultFromGrid(),
+collisionResultFromGrid(),
+DT(0.0f) {
 	this->window->setFramerateLimit(GMNumber::MAX_FRAME_RATE);
 
 	// for player  this is a temp
 	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
-	gameObject.rectangle = std::make_shared<Rect>(1,CollisionId::PlayerId, 60.0f, sf::Vector2f(400.0f, 200.0f),
+	gameObject.rectangle = std::make_shared<Rect>(1,CollisionId::PlayerId, 60.0f, sf::Vector2f(410.0f, 200.0f),
 		sf::Vector2f(25.0f, 25.0f), nil, nil,
 		sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_OBJECT_X, GMNumber::COEFF_OF_RESTITUTION_OBJECT_Y)
 		, sf::Vector2f(GMNumber::COEFF_OF_FRICTION_OBJECT, GMNumber::COEFF_OF_FRICTION_OBJECT)
@@ -63,33 +67,31 @@ void PhysicLoop::Load(){
 
 void PhysicLoop::Update() {
 	this->DT = clock.restart().asSeconds();
-	gameObject.rectangle->Update(this->DT);
-	gameObject.grid.MoveObject(gameObject.rectangle);
-	auto potential = gameObject.grid.PotentialCollision(gameObject.rectangle);
-	int size = (int)potential.size();
 
-	//if (size > 0) {
-	//	std::cout << " potential " << size << std::endl;
-	//	for (int i = 0; i < size; ++i) {
-	//		std::cout << "collision with id =  " << potential[i]->GetShapeID() << std::endl;
-	//	}
-	//	std::cout<<std::endl;
-	//}
+	this->updateDrawResultFromGrid = gameObject.grid.FindUpdatableAndDrawableBlock(gameObject.rectangle);
+	for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
+		this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
+		gameObject.grid.MoveObject(this->updateDrawResultFromGrid.dynamicResult[i]);
+	}
 
-	for (int i = 0; i < gameObject.path.size(); ++i) {
-		this->collisionAndFriction.ApplyFriction(gameObject.rectangle, gameObject.path[i], DT);
-		gameObject.path[i]->Update(DT);
+	collisionResultFromGrid = gameObject.grid.PotentialCollision(gameObject.rectangle);
 
-		this->collisionAndFriction.CollsionDetection(gameObject.rectangle,
-			gameObject.path[i]);
+	for ( auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
+		this->collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
+	}
+	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
+		this->collisionAndFriction.ApplyFriction(gameObject.rectangle, obj ,this->DT);
+		collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
 	}
 	gameObject.rectangle->DisplayPositionAndVelocity();
 }
 
 void PhysicLoop::Draw(){
-	gameObject.rectangle->Draw(window);
-	for (int i = 0; i < gameObject.path.size(); ++i) {
-		gameObject.path[i]->Draw(window);
+	for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
+		obj->Draw(window);
+	}
+	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
+		obj->Draw(window);
 	}
 	gameObject.grid.Draw(window);
 }

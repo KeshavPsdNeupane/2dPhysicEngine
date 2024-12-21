@@ -47,8 +47,10 @@ namespace GMNumber {
 	static constexpr float BASE_GRID_SIZE_Y = 60.0F ;// THIS IS OPTIMIZED FOR THE 800X600 SCREEN
 	static constexpr float GRID_COUNT_X = WORLD_SIZE_X / BASE_GRID_SIZE_X;
 	static constexpr float GRID_COUNT_Y = WORLD_SIZE_Y / BASE_GRID_SIZE_Y;
-	static constexpr int EXPECTED_POTENTIAL_COLLISION = 10;
-
+	static constexpr unsigned int EXPECTED_POTENTIAL_COLLISION = 10;
+	static constexpr unsigned int EXPECTED_UPDATABLE_DRAWABLE_BLOCKS = (1 + 3+ 2 + 4 + 4 ); //(centre + above +below + left + right )
+	static constexpr unsigned int POTENTIAL_COLLISION_RANGE = 1; // this is a grid mean it checks 1 block out of player in all direction
+	static constexpr unsigned int UPDATE_DRAW_RANGE = 2; // this is a grid mean it checks 3 block out of player in all direction
 };
 
 

@@ -22,7 +22,6 @@ void Rect::Load() {
 	this->shape->setOutlineThickness(2.0f);
 	this->text.setCharacterSize(15);
 	this->text.setPosition({ 50.0f,00.0f });
-	//std::cout << "col id of id " << this->id << " " << this->collisionId << std::endl;
 }
 
 void Rect::Update(const float& dt) {

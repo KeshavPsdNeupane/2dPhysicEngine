@@ -30,6 +30,7 @@ public:
         const sf::Vector2f& coefficientOfRestitution, const sf::Vector2f& ceofficientOfFriction)
         :mass(mass),
         position(position),
+        oldPosition(position),
         size(size),
         velocity(velocity),
         acceleration(acceleration), 
