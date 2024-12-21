@@ -26,8 +26,23 @@
 *.out
 *.app
 
-#visual std
-*.vs
+# Visual Studio files
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-#build
-build
+# Build directories
+Build/
+bin/
+obj/
+CMakeFiles/
+CMakeCache.txt
+
+# Log and temporary files
+*.log
+*.tmp
+*.swp
+*.bak
