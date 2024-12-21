@@ -132,7 +132,8 @@ GridResult GameGrid::FindObjectsInRange(std::shared_ptr<GameShape> shape, int ra
     sf::Vector2f pos = shape->GetPosition();
     int id = shape->GetShapeID();
     sf::Vector2i objectGridNumber = GetGridNumber(pos);
-
+    result.dynamicResult.reserve((2 * range + 1) * (2 * range + 1));
+    result.staticResult.reserve((2 * range + 1) * (2 * range + 1));
     for (int y = -range; y <= range; ++y) {
         for (int x = -range; x <= range; ++x) {
 
@@ -141,7 +142,6 @@ GridResult GameGrid::FindObjectsInRange(std::shared_ptr<GameShape> shape, int ra
             if (IsValidGridIndex(potentialGridNumber)) {
                 int gridCellIndex = CalculateIndex(potentialGridNumber);
 
-                // Process static objects
                 for (const auto& obj : staticGridCell[gridCellIndex]) {
                     if (skipSelf && obj->GetShapeID() != id) {
                         result.staticResult.push_back(obj);
@@ -151,7 +151,6 @@ GridResult GameGrid::FindObjectsInRange(std::shared_ptr<GameShape> shape, int ra
                     }
                 }
 
-                // Process dynamic objects
                 for (const auto& obj : dynamicGridCell[gridCellIndex]) {
                     if (skipSelf && obj->GetShapeID() != id) {
                         result.dynamicResult.push_back(obj);

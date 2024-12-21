@@ -68,30 +68,49 @@ void PhysicLoop::Load(){
 void PhysicLoop::Update() {
 	this->DT = clock.restart().asSeconds();
 
-	this->updateDrawResultFromGrid = gameObject.grid.FindUpdatableAndDrawableBlock(gameObject.rectangle);
-	for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
-		this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
-		gameObject.grid.MoveObject(this->updateDrawResultFromGrid.dynamicResult[i]);
+	if (!GMNumber::USE_GRID) {
+		gameObject.rectangle->Update(DT);
+		gameObject.grid.MoveObject(gameObject.rectangle);
+		for (int i = 0; i < gameObject.path.size(); ++i) {
+			collisionAndFriction.ApplyFriction(gameObject.rectangle, gameObject.path[i], this->DT);
+			collisionAndFriction.CollsionDetection(gameObject.rectangle, gameObject.path[i]);
+		}
+
+	}
+	else {
+		this->updateDrawResultFromGrid = gameObject.grid.FindUpdatableAndDrawableBlock(gameObject.rectangle);
+		for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
+			this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
+			gameObject.grid.MoveObject(this->updateDrawResultFromGrid.dynamicResult[i]);
+		}
+		collisionResultFromGrid = gameObject.grid.PotentialCollision(gameObject.rectangle);
+		for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
+			this->collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
+		}
+		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
+			this->collisionAndFriction.ApplyFriction(gameObject.rectangle, obj, this->DT);
+			collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
+		}
 	}
 
-	collisionResultFromGrid = gameObject.grid.PotentialCollision(gameObject.rectangle);
 
-	for ( auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
-		this->collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
-	}
-	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
-		this->collisionAndFriction.ApplyFriction(gameObject.rectangle, obj ,this->DT);
-		collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
-	}
 	gameObject.rectangle->DisplayPositionAndVelocity();
 }
 
 void PhysicLoop::Draw(){
-	for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
-		obj->Draw(window);
+	if (!GMNumber::USE_GRID) {
+		gameObject.rectangle->Draw(this->window);
+		for (int i = 0; i < gameObject.path.size(); ++i) {
+			gameObject.path[i]->Draw(this->window);
+		}
 	}
-	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
-		obj->Draw(window);
+	else {
+		for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
+			obj->Draw(window);
+		}
+		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
+			obj->Draw(window);
+		}
 	}
 	gameObject.grid.Draw(window);
 }
