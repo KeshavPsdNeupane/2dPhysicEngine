@@ -1,3 +1,4 @@
+
 # Prerequisites
 *.d
 
@@ -37,6 +38,7 @@
 # Build directories
 Build/
 bin/
+.vs/
 obj/
 CMakeFiles/
 CMakeCache.txt
