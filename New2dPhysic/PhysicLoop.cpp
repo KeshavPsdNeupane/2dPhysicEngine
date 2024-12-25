@@ -1,19 +1,20 @@
 #include "PhysicLoop.h"
 #include"GameObjects.h"
 PhysicLoop::PhysicLoop()
-: window(std::make_shared<sf::RenderWindow>(sf::VideoMode(static_cast<int>(GMNumber::WINDOW_WIDTH),
-	static_cast<int>(GMNumber::WINDOW_HEIGHT)),
-	" Physic Engine")),
-event(), clock(),
-collisionAndFriction(),
-updateDrawResultFromGrid(),
-collisionResultFromGrid(),
-DT(0.0f) {
+	: window(std::make_shared<sf::RenderWindow>(sf::VideoMode(static_cast<int>(GMNumber::WINDOW_WIDTH),
+		static_cast<int>(GMNumber::WINDOW_HEIGHT)),
+		" Physic Engine")),
+	event(), clock(),
+	collisionAndFriction(),
+	updateDrawResultFromGrid(),
+	collisionResultFromGrid(),
+	text(),
+	DT(0.0f) {
 	this->window->setFramerateLimit(GMNumber::MAX_FRAME_RATE);
 
 	// for player  this is a temp
 	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
-	gameObject.rectangle = std::make_shared<Rect>(1,CollisionId::PlayerId, 60.0f, sf::Vector2f(410.0f, 200.0f),
+	gameObject.rectangle = std::make_shared<Rect>(1, CollisionId::PlayerId, 60.0f, sf::Vector2f(410.0f, 200.0f),
 		sf::Vector2f(25.0f, 25.0f), nil, nil,
 		sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_OBJECT_X, GMNumber::COEFF_OF_RESTITUTION_OBJECT_Y)
 		, sf::Vector2f(GMNumber::COEFF_OF_FRICTION_OBJECT, GMNumber::COEFF_OF_FRICTION_OBJECT)
@@ -29,11 +30,12 @@ DT(0.0f) {
 	gameObject.path.push_back(std::make_shared<Path>(3, CollisionId::HeavyPathId, mass, sf::Vector2f(660.0f, 504.0f), blockSize, nil, nil,
 		E, u));
 	for (int i = 0; i < 11; ++i) {
-		gameObject.path.push_back(std::make_shared<Path>(4 + i, CollisionId::HeavyPathId, mass, sf::Vector2f( blockSize.x * (i+1) , 550.0f),
+		gameObject.path.push_back(std::make_shared<Path>(4 + i, CollisionId::HeavyPathId, mass, sf::Vector2f(blockSize.x * (i + 1), 550.0f),
 			blockSize, nil, nil, E, u));
 	}
-	
-
+	this->text.setFont(gameObject.resource.GetFont());
+	this->text.setPosition({ 250.0f,10.0f });
+	this->text.setCharacterSize(15);
 }
 
 void PhysicLoop::RunPlysicLoop(){
@@ -62,7 +64,7 @@ void PhysicLoop::Load(){
 		gameObject.path[i]->Load();
 		gameObject.grid.AddObject(gameObject.path[i] , true);
 	}
-	gameObject.grid.ShowGirdObjectCound();
+	//gameObject.grid.ShowGirdObjectCound();
 }
 
 void PhysicLoop::Update() {
@@ -70,34 +72,60 @@ void PhysicLoop::Update() {
 
 	if (!GMNumber::USE_GRID) {
 		gameObject.rectangle->Update(DT);
-		gameObject.grid.MoveObject(gameObject.rectangle);
 		for (int i = 0; i < gameObject.path.size(); ++i) {
 			collisionAndFriction.ApplyFriction(gameObject.rectangle, gameObject.path[i], this->DT);
 			collisionAndFriction.CollsionDetection(gameObject.rectangle, gameObject.path[i]);
 		}
+		gameObject.grid.MoveObject(gameObject.rectangle);
 
+		this->text.setString(
+			"Number of Objects Updated and Rendered: " + std::to_string(gameObject.path.size() + 1)
+			+ " / " + std::to_string(gameObject.path.size() + 1) + "\n" +
+			"Number of Objects in Collision Checking: "
+			+std::to_string(gameObject.path.size()) 
+			+" / " + std::to_string(gameObject.path.size())
+		);
 	}
 	else {
 		this->updateDrawResultFromGrid = gameObject.grid.FindUpdatableAndDrawableBlock(gameObject.rectangle);
 		for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
 			this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
-			gameObject.grid.MoveObject(this->updateDrawResultFromGrid.dynamicResult[i]);
 		}
+
 		collisionResultFromGrid = gameObject.grid.PotentialCollision(gameObject.rectangle);
 		for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
 			this->collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
 		}
+
 		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
 			this->collisionAndFriction.ApplyFriction(gameObject.rectangle, obj, this->DT);
 			collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
 		}
+
+		for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
+			gameObject.grid.MoveObject(this->updateDrawResultFromGrid.dynamicResult[i]);
+		}
+
+		this->text.setString(
+			"Objects Updated & Rendered: "
+			+ std::to_string((int)(updateDrawResultFromGrid.dynamicResult.size()
+				+ updateDrawResultFromGrid.staticResult.size()))
+			+ " / " + std::to_string(gameObject.path.size() + 1) + "\n" +
+
+			"Objects for Collision Checking: "
+			+ std::to_string((int)(collisionResultFromGrid.dynamicResult.size()
+				+ collisionResultFromGrid.staticResult.size()))
+			+ " / " + std::to_string(gameObject.path.size())
+		);
+
+
 	}
-
-
+	gameObject.rectangle->ReCentered();
 	gameObject.rectangle->DisplayPositionAndVelocity();
 }
 
 void PhysicLoop::Draw(){
+
 	if (!GMNumber::USE_GRID) {
 		gameObject.rectangle->Draw(this->window);
 		for (int i = 0; i < gameObject.path.size(); ++i) {
@@ -105,12 +133,13 @@ void PhysicLoop::Draw(){
 		}
 	}
 	else {
-		for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
+		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
 			obj->Draw(window);
 		}
-		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
+		for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
 			obj->Draw(window);
 		}
 	}
 	gameObject.grid.Draw(window);
+	window->draw(text);
 }

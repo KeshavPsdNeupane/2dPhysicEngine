@@ -9,7 +9,6 @@ class Rect : public GameShape  {
 	sf::Font font;
 	sf::Text text;
 	float DT;
-
 public:
 	Rect() = default;
 	Rect(const int id , const int colid, const float mass , const sf::Vector2f pos, const sf::Vector2f size,
@@ -22,11 +21,9 @@ public:
 	void Update(const float& dt) override;
 	void Draw(std::shared_ptr<sf::RenderWindow>window) override;
 	void DisplayPositionAndVelocity();
-private:
 	void ReCentered();
+private:
 	void MovementUpdate();
 	inline void FindMaxVelocities() override;
-	//inline void Friction(std::shared_ptr<GameShape> other, ContactMech& contact);
 	inline sf::Vector2f& NewPosition(const float& dt) override;
 };
-

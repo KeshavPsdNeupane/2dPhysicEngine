@@ -5,6 +5,7 @@
 #include"Objects/Rect.h"
 #include"Body/ContactMechanic.h"
 #include"GameGrid/GameGrid.h"
+#include"string"
 class PhysicLoop{
 private:
 	std::shared_ptr<sf::RenderWindow>window;
@@ -13,6 +14,8 @@ private:
 	ContactMech collisionAndFriction;
 	GridResult updateDrawResultFromGrid;
 	GridResult collisionResultFromGrid;
+	sf::Text text;
+	sf::Font font;
 	float DT;
 
 public:

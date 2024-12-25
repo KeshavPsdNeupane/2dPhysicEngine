@@ -29,7 +29,7 @@ void Rect::Update(const float& dt) {
 	MovementUpdate();
 	AddAcceleration(sf::Vector2f(GMNumber::ZERO, GMNumber::GRAVITY));
 	this->shape->setPosition(NewPosition(DT));
-	ReCentered();
+
 }
 
 
@@ -41,16 +41,25 @@ void Rect::Draw(std::shared_ptr<sf::RenderWindow> window) {
 }
 
 void Rect::ReCentered() {
-	auto& pos = this->position;
-	if (pos.y > 600 - 50) {
-		this->position = sf::Vector2f(pos.x, 0.0f);
-		this->shape->setPosition(this->position);
+	if (position.y > 600 - size.y) {
+		position.y = 600 - size.y;
+		oldPosition.y = 600 - size.y;
 	}
-	if (pos.x > 800 - 50) {
-		this->position = sf::Vector2f(0.0f, pos.y);
-		this->shape->setPosition(this->position);
+	if (position.y < 0) {
+		position.y = 0;
+		oldPosition.y = 0;
 	}
+	if (position.x > 800 - size.x) {
+		position.x = 800 - size.x;
+		oldPosition.x = 800 - size.x;
+	}
+	if (position.x < 0) {
+		position.x = 0;
+		oldPosition.x = 0;
+	}
+	this->shape->setPosition(position);
 }
+
 
 void Rect::MovementUpdate() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {

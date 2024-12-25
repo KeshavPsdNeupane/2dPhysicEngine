@@ -11,8 +11,8 @@ GameGrid::GameGrid() {
 
 
 void GameGrid::RemoveObject(std::shared_ptr<GameShape> shape, bool isStatic) {
-    sf::Vector2f pos = shape->GetPosition();
-    int index = CalculateIndex(pos);
+    sf::Vector2f position = shape->GetPosition();
+    int index = CalculateIndex(position);
     int id = shape->GetShapeID();
     RemoveObjectAtIndex(id, index, isStatic);
 }
@@ -39,9 +39,9 @@ void GameGrid::MoveObject(std::shared_ptr<GameShape> shape) {
     sf::Vector2f oldPos = shape->GetOldPosition();
     int oldIndex = CalculateIndex(oldPos);
     int newIndex = CalculateIndex(newPos);
-    if (oldIndex != newIndex) {
-        int id = shape->GetShapeID();
-        RemoveObjectAtIndex(id, oldIndex,false);
+
+    if (oldIndex != newIndex && newIndex < this->dynamicGridCell.size()) {
+        RemoveObjectAtIndex(shape->GetShapeID(), oldIndex,false);
         AddObjectAtIndex(shape , newIndex, false);
     }
 }
@@ -110,10 +110,8 @@ void GameGrid::AddObjectAtIndex(std::shared_ptr<GameShape> shape, int index, boo
 
 void GameGrid::RemoveObjectAtIndex(int id, int index, bool isStatic) {
     auto& shapeVector = isStatic ? staticGridCell : dynamicGridCell;
-
     if (index >= 0 && index < shapeVector.size()) {
         auto& objectsInCell = shapeVector[index];
-
         auto it = std::remove_if(objectsInCell.begin(), objectsInCell.end(),
             [id](std::shared_ptr<GameShape> obj) { return obj->GetShapeID() == id; });
 
@@ -128,7 +126,6 @@ void GameGrid::RemoveObjectAtIndex(int id, int index, bool isStatic) {
 
 GridResult GameGrid::FindObjectsInRange(std::shared_ptr<GameShape> shape, int range, bool skipSelf) {
     GridResult result;
-
     sf::Vector2f pos = shape->GetPosition();
     int id = shape->GetShapeID();
     sf::Vector2i objectGridNumber = GetGridNumber(pos);
@@ -162,7 +159,7 @@ GridResult GameGrid::FindObjectsInRange(std::shared_ptr<GameShape> shape, int ra
             }
         }
     }
-
-    // Return the struct holding both static and dynamic objects
+    result.dynamicResult.shrink_to_fit();
+    result.staticResult.shrink_to_fit();
     return result;
 }

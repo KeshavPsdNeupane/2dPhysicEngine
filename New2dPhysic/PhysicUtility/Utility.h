@@ -35,8 +35,8 @@ namespace GMNumber {
 
 	// RECT
 	static constexpr float GRAVITY = 50.0f * 10.0f;
-	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_X = 5000.0f;
-	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_Y = 1000.0f;
+	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_X = 4000.0f;
+	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_Y = 800.0f;
 	static constexpr float MOVEMENT_FORCE = 35775.0f;
 	// HERE 50 IS A MODIFIER AND 10 IS ACTUAL VALUE JUST LIKE IRL G OF 9.8 OR 10M/S
 
@@ -47,11 +47,14 @@ namespace GMNumber {
 	static constexpr float BASE_GRID_SIZE_Y = 60.0F ;// THIS IS OPTIMIZED FOR THE 800X600 SCREEN
 	static constexpr float GRID_COUNT_X = WORLD_SIZE_X / BASE_GRID_SIZE_X;
 	static constexpr float GRID_COUNT_Y = WORLD_SIZE_Y / BASE_GRID_SIZE_Y;
-	static constexpr unsigned int EXPECTED_POTENTIAL_COLLISION = 10;
-	static constexpr unsigned int EXPECTED_UPDATABLE_DRAWABLE_BLOCKS = (1 + 3+ 2 + 4 + 4 ); //(centre + above +below + left + right )
-	static constexpr unsigned int POTENTIAL_COLLISION_RANGE = 1; // this is a grid mean it checks 1 block out of player in all direction
-	static constexpr unsigned int UPDATE_DRAW_RANGE = 2; // this is a grid mean it checks 3 block out of player in all direction
-	static constexpr bool USE_GRID = true;
+
+
+	// Just make sure UPDATE_DRAW_RANGE is always greater than POTENTIAL_COLLISION_RANGE
+	// It wont make any problem but u r just processing extra chunks of object
+	// which wont ever gets updated or drawn
+	static constexpr unsigned int POTENTIAL_COLLISION_RANGE = 1; // this is a grid range, means it checks n block out of player in all direction
+	static constexpr unsigned int UPDATE_DRAW_RANGE = 1; // this is a grid range ,means it checks n block out of player in all direction
+	static constexpr bool USE_GRID = true;   //  true   ,  false
 };
 
 
@@ -77,16 +80,3 @@ public:
 	}
 	VectorOperation() = default;
 };
-
-//
-//class BasicKinematic:public VectorOperation {
-//public:
-//	static sf::Vector2f Distance(const sf::Vector2f& u, const sf::Vector2f& a, const float& t);
-//	static sf::Vector2f Distance(const sf::Vector2f& u, const sf::Vector2f& v, const sf::Vector2f& a);
-//	static float GetTime(const sf::Vector2f& u, const sf::Vector2f& v, const sf::Vector2f& a);
-//	static float GetTime2(const sf::Vector2f& u, const sf::Vector2f& a , const sf::Vector2f& s);
-//	static sf::Vector2f FinalVelocity1(const sf::Vector2f& u, const sf::Vector2f& a, const float& t);
-//	static sf::Vector2f FinalVelocity2(const sf::Vector2f& u, const sf::Vector2f& a, const sf::Vector2f& s);
-//
-//	BasicKinematic() = default;
-//};
