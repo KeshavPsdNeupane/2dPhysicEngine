@@ -24,9 +24,9 @@ namespace GMNumber {
 
 	//FOR COEFF OF RESTITUTION
 	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = 0.2f;
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = 0.3f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = .3f;
 	static constexpr float COEFF_OF_RESTITUTION_PATH_X = 0.7f;
-	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = 0.3f;
+	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = .2f;
 
 	// FOR COEFFICIENT OF FRICTION
 	static constexpr float COEFF_OF_FRICTION_PATH = 0.5f;
@@ -53,8 +53,12 @@ namespace GMNumber {
 	// It wont make any problem but u r just processing extra chunks of object
 	// which wont ever gets updated or drawn
 	static constexpr unsigned int POTENTIAL_COLLISION_RANGE = 1; // this is a grid range, means it checks n block out of player in all direction
-	static constexpr unsigned int UPDATE_DRAW_RANGE = 1; // this is a grid range ,means it checks n block out of player in all direction
-	static constexpr bool USE_GRID = true;   //  true   ,  false
+	static constexpr unsigned int UPDATE_DRAW_RANGE = 3; // this is a grid range ,means it checks n block out of player in all direction
+
+
+
+
+
 };
 
 
@@ -62,6 +66,8 @@ enum CollisionId {
 	PlayerId = 0 ,
 	LightPathId = 2 ,
 	HeavyPathId = 3 ,
+	BouncyPathId = 4,
+	InfilatorId = 5
 };
 
 

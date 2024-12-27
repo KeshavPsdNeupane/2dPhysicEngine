@@ -11,9 +11,6 @@ public:
         const sf::Vector2f size, const sf::Vector2f velocity,
         const sf::Vector2f accleration , const sf::Vector2f coeffOfRest , const sf::Vector2f ceoffOfFriction);
 
-    inline std::shared_ptr<sf::RectangleShape> GetShape() { return shape; }
-    inline RigidBody& GetFrame() { return *this; }
-
     public:
     void Load() override;
     void Update(const float& dt) override;

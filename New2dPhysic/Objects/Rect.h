@@ -8,14 +8,20 @@
 class Rect : public GameShape  {
 	sf::Font font;
 	sf::Text text;
+	sf::Vector2f smallBallSize;
+	sf::Vector2f largeBallSize;
+	bool isBig;
 	float DT;
 public:
 	Rect() = default;
 	Rect(const int id , const int colid, const float mass , const sf::Vector2f pos, const sf::Vector2f size,
 		const sf::Vector2f velocity , const sf::Vector2f accleration , const sf::Vector2f coeffOfRest , const sf::Vector2f coeffOfFriction);
 public:
-	std::shared_ptr<sf::RectangleShape> GetShape() const { return shape; }
-	RigidBody& GetRigidBody()  { return *this;}
+	sf::Vector2f& GetSmallBallSize() { return this->smallBallSize; }
+	sf::Vector2f& GetLargeBallSize() { return this->largeBallSize; }
+	void SetSmallBallSize(sf::Vector2f smallSize) { this->smallBallSize = smallSize; }
+	void SetLargelBallSize(sf::Vector2f largeSize) { this->largeBallSize = largeSize; }
+
 public:
 	void Load() override;
 	void Update(const float& dt) override;

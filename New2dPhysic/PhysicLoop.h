@@ -2,10 +2,10 @@
 #include<SFML/Graphics.hpp>
 #include<memory>
 #include<iostream>
-#include"Objects/Rect.h"
 #include"Body/ContactMechanic.h"
 #include"GameGrid/GameGrid.h"
 #include"string"
+
 class PhysicLoop{
 private:
 	std::shared_ptr<sf::RenderWindow>window;
@@ -29,6 +29,7 @@ private:
 	void Load();
 	void Update();
 	void Draw();
+	void DisplayStats();
 
 
 };

@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="Body\ContactMechanic.cpp" />
     <ClCompile Include="GameGrid\GameGrid.cpp" />
+    <ClCompile Include="Objects\Inflator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\Rect.cpp" />
     <ClCompile Include="Path\Path.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Body\RigidBody.h" />
     <ClInclude Include="GameGrid\GameGrid.h" />
     <ClInclude Include="GameObjects.h" />
+    <ClInclude Include="Objects\Inflator.h" />
     <ClInclude Include="Objects\Rect.h" />
     <ClInclude Include="Path\Path.h" />
     <ClInclude Include="PhysicLoop.h" />

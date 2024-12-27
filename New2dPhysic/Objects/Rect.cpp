@@ -7,9 +7,11 @@
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
 	const sf::Vector2f velocity, const sf::Vector2f accleration, const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction)
 	:GameShape(id, colid, 60.0f, pos, size, velocity, accleration, coeffOfRest,coeffOfFriction),
-	DT(0.0f) {
-	this->shape->setSize(GetSize());
-	this->shape->setPosition(GetPosition());
+	DT(0.0f) , isBig(false) {
+	this->smallBallSize = size;
+	this->largeBallSize = { 3 * size.x / 2 , 3 * size.y / 2 };
+	this->shape->setSize(size);
+	this->shape->setPosition(pos);
 	FindMaxVelocities();
 	this->font = gameObject.resource.GetFont();
 	this->text.setFont(this->font);
@@ -29,7 +31,6 @@ void Rect::Update(const float& dt) {
 	MovementUpdate();
 	AddAcceleration(sf::Vector2f(GMNumber::ZERO, GMNumber::GRAVITY));
 	this->shape->setPosition(NewPosition(DT));
-
 }
 
 
@@ -78,6 +79,18 @@ void Rect::MovementUpdate() {
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
 		velocity.y = 30;
 	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
+		this->size = this->largeBallSize;
+		this->shape->setSize(this->size);
+		this->isBig = true;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
+		this->size = this->smallBallSize;
+		this->shape->setSize(this->size);
+		this->isBig = false;
+	}
+
 }
 
 void Rect::DisplayPositionAndVelocity() {

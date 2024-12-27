@@ -19,6 +19,10 @@ PhysicLoop::PhysicLoop()
 		sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_OBJECT_X, GMNumber::COEFF_OF_RESTITUTION_OBJECT_Y)
 		, sf::Vector2f(GMNumber::COEFF_OF_FRICTION_OBJECT, GMNumber::COEFF_OF_FRICTION_OBJECT)
 	);
+
+
+
+
 	// for paths
 	sf::Vector2f blockSize{ 60.0f , 45.0f };
 	float mass = 4000000.0f;
@@ -33,6 +37,10 @@ PhysicLoop::PhysicLoop()
 		gameObject.path.push_back(std::make_shared<Path>(4 + i, CollisionId::HeavyPathId, mass, sf::Vector2f(blockSize.x * (i + 1), 550.0f),
 			blockSize, nil, nil, E, u));
 	}
+	// for infilator
+	gameObject.infilator = std::make_shared<Inflator>(100,CollisionId::InfilatorId,	mass,
+		sf::Vector2f(400.0f, 500.0f),sf::Vector2f(25.0f, 50.0f),nil,nil,E,u);
+
 	this->text.setFont(gameObject.resource.GetFont());
 	this->text.setPosition({ 250.0f,10.0f });
 	this->text.setCharacterSize(15);
@@ -64,82 +72,62 @@ void PhysicLoop::Load(){
 		gameObject.path[i]->Load();
 		gameObject.grid.AddObject(gameObject.path[i] , true);
 	}
+	gameObject.infilator->Load();
 	//gameObject.grid.ShowGirdObjectCound();
 }
 
 void PhysicLoop::Update() {
 	this->DT = clock.restart().asSeconds();
 
-	if (!GMNumber::USE_GRID) {
-		gameObject.rectangle->Update(DT);
-		for (int i = 0; i < gameObject.path.size(); ++i) {
-			collisionAndFriction.ApplyFriction(gameObject.rectangle, gameObject.path[i], this->DT);
-			collisionAndFriction.CollsionDetection(gameObject.rectangle, gameObject.path[i]);
-		}
-		gameObject.grid.MoveObject(gameObject.rectangle);
+	//gameObject.infilator->Update(this->DT);
 
-		this->text.setString(
-			"Number of Objects Updated and Rendered: " + std::to_string(gameObject.path.size() + 1)
-			+ " / " + std::to_string(gameObject.path.size() + 1) + "\n" +
-			"Number of Objects in Collision Checking: "
-			+std::to_string(gameObject.path.size()) 
-			+" / " + std::to_string(gameObject.path.size())
-		);
+	this->updateDrawResultFromGrid = gameObject.grid.FindUpdatableAndDrawableBlock(gameObject.rectangle);
+	for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
+		this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
 	}
-	else {
-		this->updateDrawResultFromGrid = gameObject.grid.FindUpdatableAndDrawableBlock(gameObject.rectangle);
-		for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
-			this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
-		}
 
-		collisionResultFromGrid = gameObject.grid.PotentialCollision(gameObject.rectangle);
-		for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
-			this->collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
-		}
-
-		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
-			this->collisionAndFriction.ApplyFriction(gameObject.rectangle, obj, this->DT);
-			collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
-		}
-
-		for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
-			gameObject.grid.MoveObject(this->updateDrawResultFromGrid.dynamicResult[i]);
-		}
-
-		this->text.setString(
-			"Objects Updated & Rendered: "
-			+ std::to_string((int)(updateDrawResultFromGrid.dynamicResult.size()
-				+ updateDrawResultFromGrid.staticResult.size()))
-			+ " / " + std::to_string(gameObject.path.size() + 1) + "\n" +
-
-			"Objects for Collision Checking: "
-			+ std::to_string((int)(collisionResultFromGrid.dynamicResult.size()
-				+ collisionResultFromGrid.staticResult.size()))
-			+ " / " + std::to_string(gameObject.path.size())
-		);
-
-
+	collisionResultFromGrid = gameObject.grid.PotentialCollision(gameObject.rectangle);
+	for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
+		this->collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
 	}
+
+	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
+		this->collisionAndFriction.ApplyFriction(gameObject.rectangle, obj, this->DT);
+		collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
+	}
+
+	for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
+		gameObject.grid.MoveObject(this->updateDrawResultFromGrid.dynamicResult[i]);
+	}
+
+
+	DisplayStats();
 	gameObject.rectangle->ReCentered();
 	gameObject.rectangle->DisplayPositionAndVelocity();
 }
 
-void PhysicLoop::Draw(){
-
-	if (!GMNumber::USE_GRID) {
-		gameObject.rectangle->Draw(this->window);
-		for (int i = 0; i < gameObject.path.size(); ++i) {
-			gameObject.path[i]->Draw(this->window);
-		}
+void PhysicLoop::Draw() {
+	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
+		obj->Draw(window);
 	}
-	else {
-		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
-			obj->Draw(window);
-		}
-		for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
-			obj->Draw(window);
-		}
+	for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
+		obj->Draw(window);
 	}
+	gameObject.infilator->Draw(this->window);
 	gameObject.grid.Draw(window);
 	window->draw(text);
+}
+
+void PhysicLoop::DisplayStats(){
+	this->text.setString(
+		"Objects Updated & Rendered: "
+		+ std::to_string((int)(updateDrawResultFromGrid.dynamicResult.size()
+			+ updateDrawResultFromGrid.staticResult.size()))
+		+ " / " + std::to_string(gameObject.path.size() + 1) + "\n" +
+
+		"Objects for Collision Checking: "
+		+ std::to_string((int)(collisionResultFromGrid.dynamicResult.size()
+			+ collisionResultFromGrid.staticResult.size()))
+		+ " / " + std::to_string(gameObject.path.size())
+	);
 }
