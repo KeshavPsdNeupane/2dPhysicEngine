@@ -8,14 +8,11 @@ Path::Path(const int id, const int colid, const float mass, const sf::Vector2f p
     this->shape->setPosition(this->position);
     this->shape->setSize(this->size);
 }
-// sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_PATH_X , GMNumber::COEFF_OF_RESTITUTION_PATH_Y)
-//  sf::Vector2f(GMNumber::COEFF_OF_FRICTION_PATH, GMNumber::COEFF_OF_FRICTION_PATH)
 
 void Path::Load() {
     this->shape->setFillColor(sf::Color::Blue);
     this->shape->setOutlineThickness(1.0f);
     this->shape->setOutlineColor(sf::Color::Black);
-    //std::cout << "col id of id " << this->id << " " << this->collisionId << std::endl;
 }
 
 void Path::Update(const float& dT) {

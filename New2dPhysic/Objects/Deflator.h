@@ -3,10 +3,10 @@
 #include"../Body/GameShapes.h"
 
 
-class Inflator:public GameShape{
+class Deflator :public GameShape {
 public:
-    Inflator() = default;
-    Inflator(const int id, const int colid, const float mass, const sf::Vector2f pos,
+    Deflator() = default;
+    Deflator(const int id, const int colid, const float mass, const sf::Vector2f pos,
         const sf::Vector2f size, const sf::Vector2f velocity,
         const sf::Vector2f accleration, const sf::Vector2f coeffOfRest, const sf::Vector2f ceoffOfFriction);
 

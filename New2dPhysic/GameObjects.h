@@ -8,6 +8,7 @@
 #include"Resources/Resources.h"
 #include"GameGrid/GameGrid.h"
 #include"Objects/Inflator.h"
+#include"Objects/Deflator.h"
 #include<vector>
 struct GameObject {
 public:
@@ -16,6 +17,7 @@ public:
     std::shared_ptr<Rect> rectangle;
     std::vector<std::shared_ptr<Path>> path;
     std::shared_ptr<Inflator> infilator;
+    std::shared_ptr<Deflator> deflator;
     PhysicLoop loop;
 };
 

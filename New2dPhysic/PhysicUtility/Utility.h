@@ -13,20 +13,30 @@ namespace GMNumber {
 	// FOR ALL
 	static constexpr float  ZERO = 0.0f;
 	static constexpr float  UNIT = 1.0f;
+	static constexpr float GRAVITY = 50.0f * 10.0f;// HERE 50 IS A MODIFIER AND 10 IS ACTUAL VALUE JUST LIKE IRL G OF 9.8 OR 10M/S
 
 	// FOR RIGITBODY
 	static constexpr float COEFF_MAX_VELOCITY_X = 9000.0f;
 	static constexpr float COEFF_MAX_VELOCITY_Y = 1936.5f;
 	static constexpr float ABSOLUTE_MAX_VELOCITY_X = 400.0f;
 	static constexpr float ABSOLUTE_MAX_VELOCITY_Y = 800.0f;
-	static constexpr float COLLISION_VELOCITY_THRESHOLD = 2.5f;
+
+	static constexpr float LOWEST_VELOCITY_THRESHOLD = 0.4f;
 	static constexpr float MASS_THRESHOLD = 1000.0f;
 
 	//FOR COEFF OF RESTITUTION
 	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = 0.2f;
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = .3f;
+	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = 0.3f;
 	static constexpr float COEFF_OF_RESTITUTION_PATH_X = 0.7f;
-	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = .2f;
+	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = 0.4f;
+
+
+	//COLLISION THRESHOLD CALCULATION
+	static constexpr float COLLISION_VELOCITY_THRESHOLD_X = GRAVITY * (1.0f/ MAX_FRAME_RATE)
+		* (COEFF_OF_RESTITUTION_OBJECT_X + COEFF_OF_RESTITUTION_PATH_X)/4.0f;
+	static constexpr float COLLISION_VELOCITY_THRESHOLD_Y = GRAVITY * (1.0f / MAX_FRAME_RATE)
+		* (COEFF_OF_RESTITUTION_OBJECT_Y + COEFF_OF_RESTITUTION_PATH_Y + 0.1f) / 2.0f;
+
 
 	// FOR COEFFICIENT OF FRICTION
 	static constexpr float COEFF_OF_FRICTION_PATH = 0.5f;
@@ -34,11 +44,15 @@ namespace GMNumber {
 
 
 	// RECT
-	static constexpr float GRAVITY = 50.0f * 10.0f;
+
 	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_X = 4000.0f;
 	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_Y = 800.0f;
 	static constexpr float MOVEMENT_FORCE = 35775.0f;
-	// HERE 50 IS A MODIFIER AND 10 IS ACTUAL VALUE JUST LIKE IRL G OF 9.8 OR 10M/S
+	static constexpr float SMALL_BALL_SIZE = 25;
+	static constexpr float BIG_SMALL_BALL_RATIO = 3.0f/2.0f;
+	static constexpr float BIG_BALL_SIZE = SMALL_BALL_SIZE * BIG_SMALL_BALL_RATIO;
+
+	
 
 	//  FOR GRID OF GAME
 	static constexpr float WORLD_SIZE_X = WINDOW_WIDTH;
@@ -67,7 +81,8 @@ enum CollisionId {
 	LightPathId = 2 ,
 	HeavyPathId = 3 ,
 	BouncyPathId = 4,
-	InfilatorId = 5
+	InfilatorId = 5,
+	DeflatorId = 6
 };
 
 

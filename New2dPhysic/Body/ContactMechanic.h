@@ -24,6 +24,10 @@ protected:
 	float M2;
 	float gravity;
 	float frictionDeceleratedVelocity;
+	bool isTop; 
+	bool isBottom;
+	bool isLeft;
+	bool isRight;
 public:
 	ContactMech();
 public:
@@ -34,6 +38,7 @@ public:
 	void ApplyFriction(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape, const float& dt);
 
+
 protected:
 	void CollisionDetermination(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
@@ -41,9 +46,16 @@ protected:
 		std::shared_ptr<GameShape> otherShape);
 	void LightObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
+	void InflatorCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
+	void DeflatorCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
+
+
 	void ResetForNewCollision();
-	inline void DirectionFinder();
-	inline void PenetrationResoluter(RigidBody& F1, RigidBody& F2);
+	inline bool HorizontalOrVerticalOverlapDirectionFinder();
+	void DirectionalCollisionChecker() ;
+	void PenetrationResoluter(RigidBody& F1, RigidBody& F2);
 	inline void EffectiveEFinder(RigidBody& F1, RigidBody& F2);
 	inline void CollisionThreshold();
 };

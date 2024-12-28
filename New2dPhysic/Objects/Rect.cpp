@@ -7,9 +7,7 @@
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
 	const sf::Vector2f velocity, const sf::Vector2f accleration, const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction)
 	:GameShape(id, colid, 60.0f, pos, size, velocity, accleration, coeffOfRest,coeffOfFriction),
-	DT(0.0f) , isBig(false) {
-	this->smallBallSize = size;
-	this->largeBallSize = { 3 * size.x / 2 , 3 * size.y / 2 };
+	DT(0.0f)  {
 	this->shape->setSize(size);
 	this->shape->setPosition(pos);
 	FindMaxVelocities();
@@ -18,18 +16,19 @@ Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f p
 }
 
 
+
 void Rect::Load() {
 	this->shape->setFillColor(sf::Color::Red);
 	this->shape->setOutlineColor(sf::Color::Black);
-	this->shape->setOutlineThickness(2.0f);
+	this->shape->setOutlineThickness(1.0f);
 	this->text.setCharacterSize(15);
 	this->text.setPosition({ 50.0f,00.0f });
 }
 
 void Rect::Update(const float& dt) {
 	this->DT = dt;
-	MovementUpdate();
 	AddAcceleration(sf::Vector2f(GMNumber::ZERO, GMNumber::GRAVITY));
+	MovementUpdate();
 	this->shape->setPosition(NewPosition(DT));
 }
 
@@ -81,14 +80,15 @@ void Rect::MovementUpdate() {
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
-		this->size = this->largeBallSize;
+		float bigsize = GMNumber::BIG_BALL_SIZE;
+		this->size = { bigsize ,bigsize };
 		this->shape->setSize(this->size);
-		this->isBig = true;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
-		this->size = this->smallBallSize;
+		float smallsize = GMNumber::SMALL_BALL_SIZE;
+		this->size = { smallsize,smallsize };
 		this->shape->setSize(this->size);
-		this->isBig = false;
+
 	}
 
 }
@@ -118,12 +118,13 @@ inline void Rect::FindMaxVelocities() {
 
 inline sf::Vector2f& Rect::NewPosition(const float& dt) {
 	this->velocity += this->acceleration * dt;
+	//std::cout << "acceleration " << acceleration.x << " " << acceleration.y <<std::endl;
 	if (this->velocity.y > maxvelocity.y) { this->velocity.y = maxvelocity.y; }
 	if (this->velocity.y < -maxvelocity.y) { this->velocity.y = -maxvelocity.y; }
 	if (this->velocity.x > maxvelocity.x) { this->velocity.x = maxvelocity.x; }
 	if (this->velocity.x < -maxvelocity.x) { this->velocity.x = -maxvelocity.x; }
 	this->oldPosition = this->position;
 	this->position += this->velocity * dt;
-	this->acceleration.y = 0;
+	this->acceleration.y = 0.0f;
 	return this->position;
 }

@@ -3,7 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include "../PhysicUtility/Utility.h"
 #include<cmath>
-#include"../PhysicUtility/Utility.h"
 class RigidBody {
 protected:
     float mass;
@@ -40,17 +39,14 @@ public:
 
 
 public:
-   // inline void SetIndex(const int& index) { this->ID = index; }
-    inline void SetMass(const float& mass) { this->mass = mass; }
-    inline void SetPosition(const sf::Vector2f& position) { this->position = position; }
-    inline void SetSize(const sf::Vector2f& size) { this->size = size; }
-    inline void SetVelocity(const sf::Vector2f& velocity) { this->velocity = velocity; }
-    inline void SetAcceleration(const sf::Vector2f& accleration) { this->acceleration = accleration; }
-    inline void SetCoefficientOfRestitution(const sf::Vector2f& E) { this->coefficientOfRestitution = E; }
-    inline void SetCoefficientOfFriction(const sf::Vector2f& u) { this->ceofficientOfFriction = u; }
+    inline void SetMass(const float mass) { this->mass = mass; }
+    virtual inline void SetPosition(const sf::Vector2f position) { this->position = position; }
+    virtual inline void SetSize(const sf::Vector2f size) { this->size = size; }
+    inline void SetVelocity(const sf::Vector2f velocity) { this->velocity = velocity; }
+    inline void SetAcceleration(const sf::Vector2f accleration) { this->acceleration = accleration; }
+    inline void SetCoefficientOfRestitution(const sf::Vector2f E) { this->coefficientOfRestitution = E; }
+    inline void SetCoefficientOfFriction(const sf::Vector2f u) { this->ceofficientOfFriction = u; }
 
-
-   //const inline int& GetIndex() const { return this->ID; }
    const inline float& GetMass() const { return this->mass; }
    const inline sf::Vector2f& GetPosition() const { return this->position; }
    const inline sf::Vector2f& GetSize() const { return this->size; }
@@ -77,25 +73,19 @@ public:
             //    acceleration.y += force.y / mass;       // Allow instant change in direction
             //}
             this->acceleration += force / this->mass;
-            if (acceleration.x > GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
-                acceleration.x = GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
-            }
-            else if (acceleration.x < -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
-                acceleration.x = -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
-            }
-            if (acceleration.y > GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
-                acceleration.y = GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
-            }
-            else if (acceleration.y < -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
-                acceleration.y = -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
-            }
+            ClampAccleration();
         }
     }
 
 
 
 
-    inline void AddAcceleration(const sf::Vector2f& acceleration) { this->acceleration += acceleration; }
+    inline void AddAcceleration(const sf::Vector2f& acc) {
+        this->acceleration += acc; 
+        ClampAccleration();
+    }
+
+
     inline void AddVelocity(const sf::Vector2f& deltaVelocity) { velocity += deltaVelocity; }
 
     virtual inline sf::Vector2f& NewPosition(const float& dt) {
@@ -123,4 +113,20 @@ protected:
         if (this->mass == 0) { this->mass = 1.0f; }
         this->maxvelocity = this->velocity; 
     }
+
+    private: 
+        void ClampAccleration() {
+            if (this->acceleration.x > GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
+                this->acceleration.x = GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
+            }
+            else if (acceleration.x < -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
+                this->acceleration.x = -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
+            }
+            if (this->acceleration.y > GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y) {
+                this->acceleration.y = GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y;
+            }
+            else if (this->acceleration.y < -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y) {
+                this->acceleration.y = -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y;
+            }
+        }
 };

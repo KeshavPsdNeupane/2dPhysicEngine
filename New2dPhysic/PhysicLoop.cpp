@@ -29,6 +29,7 @@ PhysicLoop::PhysicLoop()
 	sf::Vector2f E = sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_PATH_X, GMNumber::COEFF_OF_RESTITUTION_PATH_Y);
 	sf::Vector2f u = sf::Vector2f(GMNumber::COEFF_OF_FRICTION_PATH, GMNumber::COEFF_OF_FRICTION_PATH);
 
+
 	gameObject.path.push_back(std::make_shared<Path>(2, CollisionId::HeavyPathId, mass, sf::Vector2f(blockSize.x, 504.0f), blockSize, nil, nil,
 		E, u));
 	gameObject.path.push_back(std::make_shared<Path>(3, CollisionId::HeavyPathId, mass, sf::Vector2f(660.0f, 504.0f), blockSize, nil, nil,
@@ -37,9 +38,15 @@ PhysicLoop::PhysicLoop()
 		gameObject.path.push_back(std::make_shared<Path>(4 + i, CollisionId::HeavyPathId, mass, sf::Vector2f(blockSize.x * (i + 1), 550.0f),
 			blockSize, nil, nil, E, u));
 	}
+
 	// for infilator
 	gameObject.infilator = std::make_shared<Inflator>(100,CollisionId::InfilatorId,	mass,
-		sf::Vector2f(400.0f, 500.0f),sf::Vector2f(25.0f, 50.0f),nil,nil,E,u);
+		sf::Vector2f(500.0f, 500.0f),sf::Vector2f(25.0f, 50.0f),nil,nil,E,u);
+
+	// for Deflator
+	gameObject.deflator = std::make_shared<Deflator>(101, CollisionId::DeflatorId, mass,
+		sf::Vector2f(300.0f, 500.0f), sf::Vector2f(25.0f, 50.0f), nil, nil, E, u);
+
 
 	this->text.setFont(gameObject.resource.GetFont());
 	this->text.setPosition({ 250.0f,10.0f });
@@ -73,14 +80,13 @@ void PhysicLoop::Load(){
 		gameObject.grid.AddObject(gameObject.path[i] , true);
 	}
 	gameObject.infilator->Load();
-	//gameObject.grid.ShowGirdObjectCound();
+	gameObject.grid.AddObject(gameObject.infilator, true);
+	gameObject.deflator->Load();
 }
 
 void PhysicLoop::Update() {
 	this->DT = clock.restart().asSeconds();
-
-	//gameObject.infilator->Update(this->DT);
-
+	gameObject.deflator->Update(this->DT);
 	this->updateDrawResultFromGrid = gameObject.grid.FindUpdatableAndDrawableBlock(gameObject.rectangle);
 	for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
 		this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
@@ -90,6 +96,10 @@ void PhysicLoop::Update() {
 	for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
 		this->collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
 	}
+
+	this->collisionAndFriction.ApplyFriction(gameObject.rectangle, gameObject.deflator, this->DT);
+	this->collisionAndFriction.CollsionDetection(gameObject.rectangle, gameObject.deflator);
+
 
 	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
 		this->collisionAndFriction.ApplyFriction(gameObject.rectangle, obj, this->DT);
@@ -110,10 +120,11 @@ void PhysicLoop::Draw() {
 	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
 		obj->Draw(window);
 	}
+	gameObject.deflator->Draw(this->window);
 	for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
 		obj->Draw(window);
 	}
-	gameObject.infilator->Draw(this->window);
+
 	gameObject.grid.Draw(window);
 	window->draw(text);
 }

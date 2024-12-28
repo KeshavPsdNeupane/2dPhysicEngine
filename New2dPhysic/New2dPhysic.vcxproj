@@ -151,19 +151,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Body\ContactMechanic.cpp" />
+    <ClCompile Include="Objects\Deflator.cpp" />
     <ClCompile Include="GameGrid\GameGrid.cpp" />
     <ClCompile Include="Objects\Inflator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\Rect.cpp" />
     <ClCompile Include="Path\Path.cpp" />
     <ClCompile Include="PhysicLoop.cpp" />
-    <ClCompile Include="PhysicUtility\Utility.cpp" />
     <ClCompile Include="Resources\Resources.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Body\ContactMechanic.h" />
     <ClInclude Include="Body\GameShapes.h" />
     <ClInclude Include="Body\RigidBody.h" />
+    <ClInclude Include="Objects\Deflator.h" />
     <ClInclude Include="GameGrid\GameGrid.h" />
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="Objects\Inflator.h" />
