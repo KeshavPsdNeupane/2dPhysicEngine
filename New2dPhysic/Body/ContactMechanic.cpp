@@ -5,6 +5,7 @@
 #include"GameShapes.h"
 #include"../Objects/Rect.h"
 
+int ContactMech::count = 0;
 ContactMech::ContactMech():
     horizontalOverlap(0.0f), verticalOverlap(0.0f),
     eEffective(0.0f) , M1(0.0f) , M2(0.0f),
@@ -12,7 +13,6 @@ ContactMech::ContactMech():
     isTop(false),isBottom(false),
     isLeft(false), isRight(false){
 
-    std::cout << " col2 = " << GMNumber::COLLISION_VELOCITY_THRESHOLD_X << " " << GMNumber::COLLISION_VELOCITY_THRESHOLD_Y << std::endl;
 }
 
 
@@ -20,7 +20,27 @@ void ContactMech::CollsionDetection(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape) {
     auto player = sf::FloatRect(playerShape->GetPosition(), playerShape->GetSize());
     auto other= sf::FloatRect(otherShape->GetPosition(), otherShape->GetSize());
-    if (player.intersects(other)) {
+
+
+    //if (player.intersects(other)) {
+    //    CollisionDetermination(playerShape, otherShape);
+    //}
+    //
+
+    if (CollisionCircleDet(player, other)) {++count;
+       // std::cout << "col " ;
+        CollisionDetermination(playerShape, otherShape);
+    }
+
+
+}
+
+void ContactMech::CircleCollision(std::shared_ptr<GameShape> playerShape, std::shared_ptr<GameShape> otherShape){
+    auto player = sf::FloatRect(playerShape->GetPosition(), playerShape->GetSize());
+    auto other = sf::FloatRect(otherShape->GetPosition(), otherShape->GetSize());
+
+    if (CollisionCircleDet(player,other)){
+
         CollisionDetermination(playerShape, otherShape);
     }
 }
@@ -31,7 +51,29 @@ void ContactMech::CollsionDetection(std::shared_ptr<GameShape> playerShape,
 void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::shared_ptr<GameShape> otherShape, const float& dt){
     this->B1 = sf::FloatRect(playerShape->GetPosition(), playerShape->GetSize());
     this->B2 = sf::FloatRect(otherShape->GetPosition(), otherShape->GetSize());
-    if (B1.intersects(B2)) {
+
+
+
+
+    //if (B1.intersects(B2)) {
+    //    this->coeffOfFriction = otherShape->GetCoefficientOfFriction();
+    //    this->u1 = playerShape->GetVelocity();
+    //    this->Vunit = VectorOperation::Normalize(u1);
+    //    gravity = GMNumber::GRAVITY;
+    //    if (HorizontalOrVerticalOverlapDirectionFinder()) { //vertical friction
+    //        this->frictionDeceleratedVelocity = -this->coeffOfFriction.y * gravity * this->Vunit.y * dt;
+    //        if (std::abs(this->u1.y) < GMNumber::LOWEST_VELOCITY_THRESHOLD) { this->u1.y = 0.0f; }
+    //        this->u1 += {0.0f, this->frictionDeceleratedVelocity };
+    //    }
+    //    else { // horizontal friction
+    //        this->frictionDeceleratedVelocity = -this->coeffOfFriction.x * gravity * this->Vunit.x * dt;
+    //        if (std::abs(this->u1.x) < GMNumber::LOWEST_VELOCITY_THRESHOLD) { this->u1.x = 0.0f; }
+    //        this->u1 += { this->frictionDeceleratedVelocity, 0.0f};
+    //    }
+    //    playerShape->SetVelocity(this->u1);
+    //}
+
+    if (CollisionCircleDet(B1 , B2)) {
         this->coeffOfFriction = otherShape->GetCoefficientOfFriction();
         this->u1 = playerShape->GetVelocity();
         this->Vunit = VectorOperation::Normalize(u1);
@@ -48,6 +90,7 @@ void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::sha
         }
         playerShape->SetVelocity(this->u1);
     }
+
 }
 
 
@@ -124,6 +167,7 @@ void ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerSh
         v2.x = u2.x;
     }
     CollisionThreshold();
+    //std::cout << "  velocity  = " << v1.x << " " << v1.y << std::endl << std::endl;
     playerShape->SetVelocity(v1);
     otherShape->SetVelocity(v2);
     ResetForNewCollision();
@@ -190,6 +234,23 @@ void ContactMech::DeflatorCollisionHandle(std::shared_ptr<GameShape> playerShape
 
 
 
+
+
+bool ContactMech::CollisionCircleDet(sf::FloatRect& B1, sf::FloatRect& B2) {
+    float radius = (B1.width-0.001f) / 2.0f;  // DONT KNOW WHY AFTER ADDING 0.001f THERE THE COLLISION DETECTION WORK
+    // SO I AM GOING TO LEAVE IT AS IT IS FOR NOW , I WILL FIND THE REASON FOR THIS IF I GOT ANY TIME
+    // I KNOW I AM NEVER GOING TO FIND THE REASON "IF IT WORKS SO DONT TOUCH IT"
+
+    float distX = std::abs(B1.left + radius - (B2.left + B2.width / 2.0f));
+    float distY = std::abs(B1.top + radius - (B2.top + B2.height / 2.0f));
+    if (distX > (B2.width / 2.0f + radius)) return false;
+    if (distY > (B2.height / 2.0f + radius)) return false;
+    if (distX <= (B2.width / 2.0f)) return true;
+    if (distY <= (B2.height / 2.0f)) return true;
+    float dx = distX - B2.width / 2.0f;
+    float dy = distY - B2.height / 2.0f;
+    return (dx * dx + dy * dy) <= (radius * radius);
+}
 
 
 void ContactMech::ResetForNewCollision() {  // LEAVING 0 AS IT IS ,SINCE IT WILL BE CALLED AND

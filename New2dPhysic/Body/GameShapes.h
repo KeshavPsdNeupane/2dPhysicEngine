@@ -18,7 +18,10 @@ public:
 		id(id),
 		collisionId(colId),
 		RigidBody(mass, position, size, velocity,
-			acceleration, coefficientOfRestitution, ceofficientOfFriction) {}
+			acceleration, coefficientOfRestitution, ceofficientOfFriction) {
+		this->shape->setSize(size);
+		this->shape->setPosition(position);
+	}
 public:
 	inline int GetShapeID() { return this->id; }
 	inline void SetShapeID(int id) { this->id = id; }

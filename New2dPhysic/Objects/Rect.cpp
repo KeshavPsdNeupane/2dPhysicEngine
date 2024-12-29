@@ -8,8 +8,8 @@ Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f p
 	const sf::Vector2f velocity, const sf::Vector2f accleration, const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction)
 	:GameShape(id, colid, 60.0f, pos, size, velocity, accleration, coeffOfRest,coeffOfFriction),
 	DT(0.0f)  {
-	this->shape->setSize(size);
-	this->shape->setPosition(pos);
+	this->circle.setRadius(size.x/2.0f);
+	this->circle.setPosition(pos);
 	FindMaxVelocities();
 	this->font = gameObject.resource.GetFont();
 	this->text.setFont(this->font);
@@ -19,10 +19,10 @@ Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f p
 
 void Rect::Load() {
 	this->shape->setFillColor(sf::Color::Red);
+	this->circle.setFillColor(sf::Color::Red);
 	this->shape->setOutlineColor(sf::Color::Black);
 	this->shape->setOutlineThickness(1.0f);
 	this->text.setCharacterSize(15);
-	this->text.setPosition({ 50.0f,00.0f });
 }
 
 void Rect::Update(const float& dt) {
@@ -36,8 +36,9 @@ void Rect::Update(const float& dt) {
 
 
 void Rect::Draw(std::shared_ptr<sf::RenderWindow> window) {
-	window->draw(*shape);
+	//window->draw(*shape);
 	window->draw(text);
+	window->draw(this->circle);
 }
 
 void Rect::ReCentered() {

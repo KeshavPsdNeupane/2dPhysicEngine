@@ -82,23 +82,24 @@ void PhysicLoop::Load(){
 	gameObject.infilator->Load();
 	gameObject.grid.AddObject(gameObject.infilator, true);
 	gameObject.deflator->Load();
+	gameObject.grid.AddObject(gameObject.deflator, true);
 }
 
 void PhysicLoop::Update() {
 	this->DT = clock.restart().asSeconds();
 	gameObject.deflator->Update(this->DT);
 	this->updateDrawResultFromGrid = gameObject.grid.FindUpdatableAndDrawableBlock(gameObject.rectangle);
+
 	for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
 		this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
 	}
 
+
+
 	collisionResultFromGrid = gameObject.grid.PotentialCollision(gameObject.rectangle);
-	for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
+	for (auto& obj : this->collisionResultFromGrid.dynamicResult) {
 		this->collisionAndFriction.CollsionDetection(gameObject.rectangle, obj);
 	}
-
-	this->collisionAndFriction.ApplyFriction(gameObject.rectangle, gameObject.deflator, this->DT);
-	this->collisionAndFriction.CollsionDetection(gameObject.rectangle, gameObject.deflator);
 
 
 	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
@@ -109,10 +110,15 @@ void PhysicLoop::Update() {
 	for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
 		gameObject.grid.MoveObject(this->updateDrawResultFromGrid.dynamicResult[i]);
 	}
-
-
 	DisplayStats();
 	gameObject.rectangle->ReCentered();
+	//auto pos = gameObject.rectangle->GetPosition();
+	//auto vel = gameObject.rectangle->GetVelocity();
+	//std::cout << " pos = " << pos.x << " " << pos.y << std::endl;
+	//std::cout << " vel = " << vel.x << " " << vel.y << std::endl <<std::endl;
+	//ContactMech::ShowCount();
+	gameObject.rectangle->GetCircle().setPosition(gameObject.rectangle->GetPosition());
+	gameObject.rectangle->GetCircle().setRadius(gameObject.rectangle->GetSize().x/2.0f);
 	gameObject.rectangle->DisplayPositionAndVelocity();
 }
 
@@ -120,7 +126,6 @@ void PhysicLoop::Draw() {
 	for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
 		obj->Draw(window);
 	}
-	gameObject.deflator->Draw(this->window);
 	for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
 		obj->Draw(window);
 	}

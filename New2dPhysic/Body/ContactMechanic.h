@@ -3,6 +3,7 @@
 #include<iostream>
 #include"RigidBody.h"
 class GameShape;
+
 class ContactMech {
 protected:
 	sf::FloatRect B1;
@@ -28,10 +29,16 @@ protected:
 	bool isBottom;
 	bool isLeft;
 	bool isRight;
+
+public:
+	static int count;
+	static void ShowCount() { std::cout << " count = " << count << std::endl;; count = 0; }
 public:
 	ContactMech();
 public:
 	void CollsionDetection(std::shared_ptr<GameShape> playerShape ,
+		std::shared_ptr<GameShape> otherShape);
+	void CircleCollision(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
 
 	// FRICTION
@@ -42,6 +49,7 @@ public:
 protected:
 	void CollisionDetermination(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
+
 	void HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
 	void LightObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
@@ -50,6 +58,10 @@ protected:
 		std::shared_ptr<GameShape> otherShape);
 	void DeflatorCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
+
+
+
+	bool CollisionCircleDet(sf::FloatRect& B1, sf::FloatRect& B2);
 
 
 	void ResetForNewCollision();

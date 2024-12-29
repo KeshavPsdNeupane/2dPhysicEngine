@@ -8,6 +8,7 @@
 class Rect : public GameShape  {
 	sf::Font font;
 	sf::Text text;
+	sf::CircleShape circle;
 	float DT;
 public:
 	Rect() = default;
@@ -16,6 +17,7 @@ public:
 public:
 	inline void SetPosition(const sf::Vector2f position)override { this->position = position; this->shape->setPosition(position); }
 	inline void SetSize(const sf::Vector2f size)override { this->size = size; this->shape->setSize(size);}
+	inline sf::CircleShape& GetCircle() { return this->circle; }
 public:
 	void Load() override;
 	void Update(const float& dt) override;
