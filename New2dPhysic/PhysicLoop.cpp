@@ -112,13 +112,6 @@ void PhysicLoop::Update() {
 	}
 	DisplayStats();
 	gameObject.rectangle->ReCentered();
-	//auto pos = gameObject.rectangle->GetPosition();
-	//auto vel = gameObject.rectangle->GetVelocity();
-	//std::cout << " pos = " << pos.x << " " << pos.y << std::endl;
-	//std::cout << " vel = " << vel.x << " " << vel.y << std::endl <<std::endl;
-	//ContactMech::ShowCount();
-	gameObject.rectangle->GetCircle().setPosition(gameObject.rectangle->GetPosition());
-	gameObject.rectangle->GetCircle().setRadius(gameObject.rectangle->GetSize().x/2.0f);
 	gameObject.rectangle->DisplayPositionAndVelocity();
 }
 

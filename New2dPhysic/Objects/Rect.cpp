@@ -15,6 +15,18 @@ Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f p
 	this->text.setFont(this->font);
 }
 
+inline void Rect::SetPosition(const sf::Vector2f position){
+	this->position = position;
+	this->shape->setPosition(position);
+	this->circle.setPosition(position);
+}
+
+inline void Rect::SetSize(const sf::Vector2f size){
+	this->size = size;
+	this->shape->setSize(size);
+	this->circle.setRadius(size.x / 2.0f);
+}
+
 
 
 void Rect::Load() {
@@ -33,10 +45,7 @@ void Rect::Update(const float& dt) {
 }
 
 
-
-
 void Rect::Draw(std::shared_ptr<sf::RenderWindow> window) {
-	//window->draw(*shape);
 	window->draw(text);
 	window->draw(this->circle);
 }
@@ -59,6 +68,7 @@ void Rect::ReCentered() {
 		oldPosition.x = 0;
 	}
 	this->shape->setPosition(position);
+	this->circle.setPosition(position);
 }
 
 

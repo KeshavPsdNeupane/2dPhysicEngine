@@ -4,14 +4,20 @@
 #include"RigidBody.h"
 class GameShape;
 
+enum Direction {
+	Right = 0,      
+	Bottom = 1,      
+	Left = 2,       
+	Top = 3,       
+};
+
+
+
 class ContactMech {
 protected:
-	sf::FloatRect B1;
-	sf::FloatRect B2;
 	sf::Vector2f resolution;
 	sf::Vector2f u1;
 	sf::Vector2f u2;
-	sf::Vector2f Vrelative;
 	sf::Vector2f Vunit;
 	sf::Vector2f v1;
 	sf::Vector2f v2;
@@ -20,37 +26,27 @@ protected:
 	sf::Vector2f coeffOfFriction;
 	float horizontalOverlap;
 	float verticalOverlap;
-	float eEffective;
 	float M1;
 	float M2;
 	float gravity;
 	float frictionDeceleratedVelocity;
-	bool isTop; 
-	bool isBottom;
-	bool isLeft;
-	bool isRight;
 
-public:
-	static int count;
-	static void ShowCount() { std::cout << " count = " << count << std::endl;; count = 0; }
 public:
 	ContactMech();
 public:
 	void CollsionDetection(std::shared_ptr<GameShape> playerShape ,
 		std::shared_ptr<GameShape> otherShape);
-	void CircleCollision(std::shared_ptr<GameShape> playerShape,
-		std::shared_ptr<GameShape> otherShape);
-
+	
 	// FRICTION
 	void ApplyFriction(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape, const float& dt);
 
 
 protected:
+	bool CollisionBetweenCircleAndRectangle(sf::FloatRect& B1, sf::FloatRect& B2);
 	void CollisionDetermination(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
-
-	void HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
+	Direction HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
 	void LightObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
@@ -58,17 +54,15 @@ protected:
 		std::shared_ptr<GameShape> otherShape);
 	void DeflatorCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
-
-
-
-	bool CollisionCircleDet(sf::FloatRect& B1, sf::FloatRect& B2);
-
-
+private:
+	Direction CollisionDirectionFinder(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
 	void ResetForNewCollision();
-	inline bool HorizontalOrVerticalOverlapDirectionFinder();
-	void DirectionalCollisionChecker() ;
-	void PenetrationResoluter(RigidBody& F1, RigidBody& F2);
+	void PenetrationResoluter(GameShape& player , GameShape& other , Direction direction);
 	inline void EffectiveEFinder(RigidBody& F1, RigidBody& F2);
 	inline void CollisionThreshold();
+	void CalculateVelocity(float& v1, float& v2, float u1,
+		float u2, float M1, float M2, float eEffective);
+
 };
 

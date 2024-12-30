@@ -51,6 +51,7 @@ namespace GMNumber {
 	static constexpr float SMALL_BALL_SIZE = 25;
 	static constexpr float BIG_SMALL_BALL_RATIO = 3.0f/2.0f;
 	static constexpr float BIG_BALL_SIZE = SMALL_BALL_SIZE * BIG_SMALL_BALL_RATIO;
+	static constexpr float READJUST_SIZE = SMALL_BALL_SIZE * (BIG_SMALL_BALL_RATIO -1.0f);
 
 	
 

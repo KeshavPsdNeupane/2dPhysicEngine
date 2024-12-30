@@ -15,8 +15,8 @@ public:
 	Rect(const int id , const int colid, const float mass , const sf::Vector2f pos, const sf::Vector2f size,
 		const sf::Vector2f velocity , const sf::Vector2f accleration , const sf::Vector2f coeffOfRest , const sf::Vector2f coeffOfFriction);
 public:
-	inline void SetPosition(const sf::Vector2f position)override { this->position = position; this->shape->setPosition(position); }
-	inline void SetSize(const sf::Vector2f size)override { this->size = size; this->shape->setSize(size);}
+	inline void SetPosition(const sf::Vector2f position)override;
+	inline void SetSize(const sf::Vector2f size)override;
 	inline sf::CircleShape& GetCircle() { return this->circle; }
 public:
 	void Load() override;
