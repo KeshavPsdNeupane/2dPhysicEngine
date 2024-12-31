@@ -2,7 +2,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "../Body/GameShapes.h"
-#include "../Body/ContactMechanic.h"
 
 class Path : public GameShape {
 public:

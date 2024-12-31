@@ -44,14 +44,13 @@ void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::sha
             if (std::abs(this->u1.x) < GMNumber::LOWEST_VELOCITY_THRESHOLD) { this->u1.x = 0.0f; }
             this->u1 += {this->frictionDeceleratedVelocity, 0.0f};
         }
-
         playerShape->SetVelocity(this->u1);
     }
 }
 
 
 bool ContactMech::CollisionBetweenCircleAndRectangle(sf::FloatRect& B1, sf::FloatRect& B2) {
-    float radius = (B1.width - 0.001f) * 0.5f;  // DONT KNOW WHY AFTER ADDING 0.001f THERE THE COLLISION DETECTION WORK
+    float radius = (B1.width - 0.001f) * 0.5f;  // DONT KNOW WHY AFTER SUBTRACTING 0.001f THERE THE COLLISION DETECTION WORK
     // SO I AM GOING TO LEAVE IT AS IT IS FOR NOW , I WILL FIND THE REASON FOR THIS IF I GOT ANY TIME
     // I KNOW I AM NEVER GOING TO FIND THE REASON "IF IT WORKS SO DONT TOUCH IT"
     float distX = std::abs(B1.left + radius - (B2.left + B2.width / 2.0f));
@@ -77,7 +76,7 @@ void ContactMech::CollisionDetermination(std::shared_ptr<GameShape> playerShape,
     case CollisionId::LightPathId:
         LightObjectCollisionHandle(playerShape, otherShape);
         break;
-    case CollisionId::InfilatorId:
+    case CollisionId::InflatorId:
         InflatorCollisionHandle(playerShape, otherShape);
         break;
     case CollisionId::DeflatorId:
@@ -96,15 +95,13 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
     std::shared_ptr<GameShape> otherShape) {
 
     Direction collisionDirection = CollisionDirectionFinder(playerShape, otherShape);
-
     this->M1 = playerShape->GetMass();
     this->M2 = otherShape->GetMass();
     this->u1 = playerShape->GetVelocity();
     this->u2 = otherShape->GetVelocity();
 
-    PenetrationResoluter(*playerShape, *otherShape, collisionDirection);
+	NewPenerationResolver(*playerShape, *otherShape, collisionDirection);
     EffectiveEFinder(*playerShape, *otherShape);
-
     switch (collisionDirection) {
     case Right:
     case Left:
@@ -159,7 +156,7 @@ void ContactMech::LightObjectCollisionHandle(std::shared_ptr<GameShape> playerSh
 void ContactMech::InflatorCollisionHandle(std::shared_ptr<GameShape> playerShape, std::shared_ptr<GameShape> otherShape){
 	Direction direction = HeavyObjectCollisionHandle(playerShape, otherShape);
 
-	float referenceSize = GMNumber::BIG_BALL_SIZE;
+    const float& referenceSize = GMNumber::BIG_BALL_SIZE;
 	if (playerShape->GetSize().x == referenceSize ) { return; }
 
     float reAdjust = GMNumber::READJUST_SIZE;
@@ -186,7 +183,7 @@ void ContactMech::InflatorCollisionHandle(std::shared_ptr<GameShape> playerShape
 
 void ContactMech::DeflatorCollisionHandle(std::shared_ptr<GameShape> playerShape, std::shared_ptr<GameShape> otherShape){
     HeavyObjectCollisionHandle(playerShape, otherShape);
-	float referenceSize = GMNumber::SMALL_BALL_SIZE;
+	const float& referenceSize = GMNumber::SMALL_BALL_SIZE;
 	if (playerShape->GetSize().x != referenceSize) {
 		playerShape->SetSize({ referenceSize,referenceSize });
 	}
@@ -219,8 +216,7 @@ Direction ContactMech::CollisionDirectionFinder(std::shared_ptr<GameShape> playe
 }
 
 
-void ContactMech::ResetForNewCollision() {  // LEAVING 0 AS IT IS ,SINCE IT WILL BE CALLED AND
-    // ASKING VALUE FROM GMNUMBER MIGHT BE LONGER FOR PROCRSSING
+void ContactMech::ResetForNewCollision() {
     v1 = { 0.0f,0.0f }; v2 = { 0.0f,0.0f };
     resolution = { 0.0f, 0.0f };
 }
@@ -254,14 +250,17 @@ void ContactMech::PenetrationResoluter(GameShape& player,GameShape& other,
 
 
 void ContactMech::EffectiveEFinder(RigidBody& F1, RigidBody& F2){
+    float f1size = F1.GetSize().x; 
    this->e = { (F2.GetCoefficientOfRestitution().x + F1.GetCoefficientOfRestitution().x)/2 ,
         (F2.GetCoefficientOfRestitution().y + F1.GetCoefficientOfRestitution().y)/2 };
+   if (f1size == GMNumber::BIG_BALL_SIZE) {
+	   this->e = GMNumber::ELASTICITY_RATIO * this->e;
+   }
 }
 
 inline void ContactMech::CollisionThreshold(){
-    const float thresholdx = GMNumber::COLLISION_VELOCITY_THRESHOLD_X;
-    const float thresholdy = GMNumber::COLLISION_VELOCITY_THRESHOLD_Y;
-
+    const float& thresholdx = GMNumber::COLLISION_VELOCITY_THRESHOLD_X;
+    const float& thresholdy = GMNumber::COLLISION_VELOCITY_THRESHOLD_Y;
     if (std::abs(v1.x) <= thresholdx) { v1.x = 0.0f; }
     if (std::abs(v1.y) <= thresholdy) { v1.y = 0.0f; }
     if (std::abs(v2.x) <= thresholdx) { v2.x = 0.0f; }
@@ -287,5 +286,36 @@ void ContactMech::CalculateVelocity(float& v1, float& v2, float u1, float u2, fl
     else {
         v1 = ((M1 - eEffective * M2) * u1 + (1 + eEffective) * M2 * u2) / (M1 + M2);
         v2 = ((M2 - eEffective * M1) * u2 + (1 + eEffective) * M1 * u1) / (M1 + M2);
+    }
+}
+
+void ContactMech::NewPenerationResolver(GameShape& player, GameShape& other, Direction direction){
+    const auto& playerPos = player.GetPosition();
+    sf::Vector2f relative(horizontalOverlap, verticalOverlap);
+    this->Vunit = sf::Vector2f(1.0f, 1.0f) - VectorOperation::Normalize(relative);
+    this->resolution = sf::Vector2f(Vunit.x * relative.x, Vunit.y * relative.y);
+   
+    switch (direction) {
+    case Left:
+		this->resolution = { -this->resolution.x, 0.0f };
+        break;
+    case Right:
+        this->resolution.y = 0.0f;
+        break;
+    case Top:
+		this->resolution = { 0.0f, - this->resolution.y };
+        break;
+    case Bottom:
+        this->resolution.x = 0.0f;
+        break;
+    default:
+        break;
+    }
+	//std::cout << "resolutuon = " << this->resolution.x << " " << this->resolution.y << std::endl;
+    if (this->M1 * 1000 < this->M2) { player.SetPosition(playerPos + resolution); }
+    else if (this->M1 > 1000 * this->M2) { other.SetPosition(playerPos - resolution); }
+    else {
+        player.SetPosition(playerPos + resolution * (this->M2 / (this->M1 + this->M2)));
+        other.SetPosition(playerPos - resolution * (this->M1 / (this->M1 + this->M2)));
     }
 }

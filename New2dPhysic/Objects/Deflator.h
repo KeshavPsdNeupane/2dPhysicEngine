@@ -18,4 +18,3 @@ public:
 private:
     inline void FindMaxVelocities() override;
 };
-

@@ -1,16 +1,15 @@
 #include "Path.h"
-#include "../PhysicUtility/Utility.h"
-#include "../GameObjects.h"
+
 
 Path::Path(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size, const sf::Vector2f velocity,
     const sf::Vector2f accleration, const sf::Vector2f coeffOfRest, const sf::Vector2f ceoffOfFriction)
     : GameShape(id , colid, mass, pos, size, velocity, accleration,coeffOfRest,ceoffOfFriction) {
     this->shape->setPosition(this->position);
     this->shape->setSize(this->size);
+	this->shape->setFillColor(sf::Color::Blue);
 }
 
 void Path::Load() {
-    this->shape->setFillColor(sf::Color::Blue);
     this->shape->setOutlineThickness(1.0f);
     this->shape->setOutlineColor(sf::Color::Black);
 }

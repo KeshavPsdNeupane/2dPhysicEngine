@@ -9,6 +9,7 @@
 #include"GameGrid/GameGrid.h"
 #include"Objects/Inflator.h"
 #include"Objects/Deflator.h"
+#include"Path/BouncyPath.h"
 #include<vector>
 struct GameObject {
 public:
@@ -16,9 +17,9 @@ public:
     Resources resource;
     std::shared_ptr<Rect> rectangle;
     std::vector<std::shared_ptr<Path>> path;
-    std::shared_ptr<Inflator> infilator;
-    std::shared_ptr<Deflator> deflator;
+	std::shared_ptr<Inflator> inflator;
+	std::shared_ptr<Deflator> deflator;
+	std::shared_ptr<BouncyPath> bouncyPath;
     PhysicLoop loop;
 };
-
 extern GameObject gameObject;

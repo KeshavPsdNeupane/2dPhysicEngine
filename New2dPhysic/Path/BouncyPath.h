@@ -1,12 +1,13 @@
 #pragma once
-#include<SFML/Graphics.hpp>
-#include"../Body/GameShapes.h"
+#include <iostream>
+#include <SFML/Graphics.hpp>
+#include "../Body/GameShapes.h"
 
 
-class Inflator :public GameShape {
+class BouncyPath : public GameShape {
 public:
-    Inflator() = default;
-    Inflator(const int id, const int colid, const float mass, const sf::Vector2f pos,
+    BouncyPath() = default;
+    BouncyPath(const int id, const int colid, const float mass, const sf::Vector2f pos,
         const sf::Vector2f size, const sf::Vector2f velocity,
         const sf::Vector2f accleration, const sf::Vector2f coeffOfRest, const sf::Vector2f ceoffOfFriction);
 

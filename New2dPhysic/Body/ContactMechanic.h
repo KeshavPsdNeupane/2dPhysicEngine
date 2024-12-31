@@ -64,5 +64,8 @@ private:
 	void CalculateVelocity(float& v1, float& v2, float u1,
 		float u2, float M1, float M2, float eEffective);
 
+
+	void NewPenerationResolver(GameShape& player, GameShape& other, Direction direction);
+
 };
 
