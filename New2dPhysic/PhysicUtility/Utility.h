@@ -1,8 +1,6 @@
 #pragma once
-#include<SFML/Graphics.hpp>
 #include<cmath>
 #include<iostream>
-
 
 namespace GMNumber {
 	//  FOR WINDOWS 
@@ -75,7 +73,7 @@ namespace GMNumber {
 	static constexpr float COLLISION_VELOCITY_THRESHOLD_X = GRAVITY * (1.0f/ MAX_FRAME_RATE)
 		* (COEFF_OF_RESTITUTION_OBJECT_X + COEFF_OF_RESTITUTION_PATH_X)/4.0f;
 	static constexpr float COLLISION_VELOCITY_THRESHOLD_Y = GRAVITY * (1.0f / MAX_FRAME_RATE)
-		* (COEFF_OF_RESTITUTION_OBJECT_Y + COEFF_OF_RESTITUTION_PATH_Y + 0.1f) / 2.0f;
+		* (COEFF_OF_RESTITUTION_OBJECT_Y + COEFF_OF_RESTITUTION_PATH_Y ) / 2.0f;
 
 
 	// FOR COEFFICIENT OF FRICTION
@@ -138,7 +136,8 @@ enum CollisionId {
 	HeavyPathId = 3 ,
 	BouncyPathId = 4,
 	InflatorId = 5,
-	DeflatorId = 6
+	DeflatorId = 6,
+	CollectableId = 7
 };
 
 
@@ -150,8 +149,8 @@ public:
 	static inline float DistanceBetweenTwoVector(const sf::Vector2f& v1, const sf::Vector2f& v2) {
 		return std::sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
 	}
-	static inline sf::Vector2f Normalize(sf::Vector2f& vector) {
-		auto M = Magnitude(vector);
+	static inline sf::Vector2f Normalize(sf::Vector2f vector) {
+		auto M = std::sqrt(vector.x * vector.x + vector.y * vector.y);
 		if (M == 0) { M = 1; }   // std::cerr << " division by zero " << std::endl;}
 		return { vector.x / M , vector.y / M };
 	}

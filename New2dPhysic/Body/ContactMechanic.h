@@ -54,6 +54,12 @@ protected:
 		std::shared_ptr<GameShape> otherShape);
 	void DeflatorCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
+
+	void CollectableCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
+
+
+
 private:
 	Direction CollisionDirectionFinder(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
@@ -63,9 +69,6 @@ private:
 	inline void CollisionThreshold();
 	void CalculateVelocity(float& v1, float& v2, float u1,
 		float u2, float M1, float M2, float eEffective);
-
-
-	void NewPenerationResolver(GameShape& player, GameShape& other, Direction direction);
 
 };
 

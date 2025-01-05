@@ -10,6 +10,7 @@
 #include"Objects/Inflator.h"
 #include"Objects/Deflator.h"
 #include"Path/BouncyPath.h"
+#include"Objects/Collectable.h"
 #include<vector>
 struct GameObject {
 public:
@@ -20,6 +21,7 @@ public:
 	std::shared_ptr<Inflator> inflator;
 	std::shared_ptr<Deflator> deflator;
 	std::shared_ptr<BouncyPath> bouncyPath;
+    std::vector<std::shared_ptr<Collectable>> collectable;
     PhysicLoop loop;
 };
 extern GameObject gameObject;

@@ -5,10 +5,10 @@
 
 
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
-	const sf::Vector2f velocity, const sf::Vector2f accleration, const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction)
-	:GameShape(id, colid, 60.0f, pos, size, velocity, accleration, coeffOfRest,coeffOfFriction),
-	DT(0.0f){
-	this->circle.setRadius(size.x/2.0f);
+	const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction):
+	GameShape(id, colid, mass, pos, size, {0.0f,0.0f}, { 0.0f,0.0f }
+		,coeffOfRest, coeffOfFriction),points(0){
+	this->circle.setRadius(size.x / 2.0f);
 	this->circle.setPosition(pos);
 	FindMaxVelocities();
 	this->font = gameObject.resource.GetFont();
@@ -22,9 +22,11 @@ inline void Rect::SetPosition(const sf::Vector2f position){
 }
 
 inline void Rect::SetSize(const sf::Vector2f size){
+	if (size.x == GMNumber::SMALL_BALL_SIZE) {this->isLarge = false;}
+	else {this->isLarge = true;}
 	this->size = size;
 	this->shape->setSize(size);
-	this->circle.setRadius(size.x / 2.0f);
+	this->circle.setRadius(size.x * 0.5f);
 }
 
 

@@ -4,6 +4,7 @@
 #include<cmath>
 #include"GameShapes.h"
 #include"../Objects/Rect.h"
+#include"../Objects/Collectable.h"
 
 ContactMech::ContactMech():
     horizontalOverlap(0.0f), verticalOverlap(0.0f),
@@ -50,7 +51,7 @@ void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::sha
 
 
 bool ContactMech::CollisionBetweenCircleAndRectangle(sf::FloatRect& B1, sf::FloatRect& B2) {
-    float radius = (B1.width - 0.001f) * 0.5f;  // DONT KNOW WHY AFTER SUBTRACTING 0.001f THERE THE COLLISION DETECTION WORK
+    float radius = (B1.width -.01f) * 0.5f;  // DONT KNOW WHY AFTER SUBTRACTING 0.01f THERE THE COLLISION DETECTION WORK
     // SO I AM GOING TO LEAVE IT AS IT IS FOR NOW , I WILL FIND THE REASON FOR THIS IF I GOT ANY TIME
     // I KNOW I AM NEVER GOING TO FIND THE REASON "IF IT WORKS SO DONT TOUCH IT"
     float distX = std::abs(B1.left + radius - (B2.left + B2.width / 2.0f));
@@ -81,6 +82,9 @@ void ContactMech::CollisionDetermination(std::shared_ptr<GameShape> playerShape,
         break;
     case CollisionId::DeflatorId:
         DeflatorCollisionHandle(playerShape, otherShape);
+		break;
+	case CollisionId::CollectableId:
+		CollectableCollisionHandle(playerShape, otherShape);
     default:
         break;
     }
@@ -99,8 +103,7 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
     this->M2 = otherShape->GetMass();
     this->u1 = playerShape->GetVelocity();
     this->u2 = otherShape->GetVelocity();
-
-	NewPenerationResolver(*playerShape, *otherShape, collisionDirection);
+    PenetrationResoluter(*playerShape, *otherShape, collisionDirection);
     EffectiveEFinder(*playerShape, *otherShape);
     switch (collisionDirection) {
     case Right:
@@ -120,7 +123,7 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
     default:
         break;
     }
-    CollisionThreshold();
+   CollisionThreshold();
     playerShape->SetVelocity(v1);
     otherShape->SetVelocity(v2);
     ResetForNewCollision();
@@ -189,6 +192,16 @@ void ContactMech::DeflatorCollisionHandle(std::shared_ptr<GameShape> playerShape
 	}
 }
 
+void ContactMech::CollectableCollisionHandle(std::shared_ptr<GameShape> playerShape,
+    std::shared_ptr<GameShape> otherShape) {
+    std::shared_ptr<Rect> player = std::dynamic_pointer_cast<Rect>(playerShape);
+    if (!player) {return;}
+    std::shared_ptr<Collectable> collectable = std::dynamic_pointer_cast<Collectable>(otherShape);
+    if (!collectable) {return;}
+    player->SetPoints(player->GetPoints() + collectable->GetPoint());
+    collectable->SetCanBeDeleted(true);
+}
+
 
 
 
@@ -228,17 +241,22 @@ void ContactMech::PenetrationResoluter(GameShape& player,GameShape& other,
 	auto& otherPos = other.GetPosition();
 	switch (direction) {
 	case Right:
+        resolution.x = horizontalOverlap;
+        break;
 	case Left:
-        resolution.x = (playerPos.x < otherPos.x) ? -horizontalOverlap : horizontalOverlap;
+        resolution.x = -horizontalOverlap;
 		break;
 	case Bottom:
+		resolution.y = verticalOverlap;
+		break;
 	case Top:
-        resolution.y = (playerPos.y < otherPos.y) ? -verticalOverlap : verticalOverlap;
+        resolution.y = -verticalOverlap;
 		break;
 	default:
 		break;
 	}
 	// RESOLVING THE PENETRATION BASED ON THEIR MASSES
+	//std::cout << "old resolution = " << resolution.x << " " << resolution.y << std::endl;
 	if (this->M1 * 1000 < this->M2) { player.SetPosition(playerPos + resolution); }
 	else if (this->M1 > 1000 * this->M2) { other.SetPosition(playerPos - resolution); }
 	else {
@@ -289,33 +307,3 @@ void ContactMech::CalculateVelocity(float& v1, float& v2, float u1, float u2, fl
     }
 }
 
-void ContactMech::NewPenerationResolver(GameShape& player, GameShape& other, Direction direction){
-    const auto& playerPos = player.GetPosition();
-    sf::Vector2f relative(horizontalOverlap, verticalOverlap);
-    this->Vunit = sf::Vector2f(1.0f, 1.0f) - VectorOperation::Normalize(relative);
-    this->resolution = sf::Vector2f(Vunit.x * relative.x, Vunit.y * relative.y);
-   
-    switch (direction) {
-    case Left:
-		this->resolution = { -this->resolution.x, 0.0f };
-        break;
-    case Right:
-        this->resolution.y = 0.0f;
-        break;
-    case Top:
-		this->resolution = { 0.0f, - this->resolution.y };
-        break;
-    case Bottom:
-        this->resolution.x = 0.0f;
-        break;
-    default:
-        break;
-    }
-	//std::cout << "resolutuon = " << this->resolution.x << " " << this->resolution.y << std::endl;
-    if (this->M1 * 1000 < this->M2) { player.SetPosition(playerPos + resolution); }
-    else if (this->M1 > 1000 * this->M2) { other.SetPosition(playerPos - resolution); }
-    else {
-        player.SetPosition(playerPos + resolution * (this->M2 / (this->M1 + this->M2)));
-        other.SetPosition(playerPos - resolution * (this->M1 / (this->M1 + this->M2)));
-    }
-}

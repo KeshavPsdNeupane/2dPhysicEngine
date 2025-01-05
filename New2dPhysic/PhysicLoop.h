@@ -17,6 +17,7 @@ private:
 	sf::Text text;
 	sf::Font font;
 	float DT;
+	int entityIdCounter;
 
 public:
 	PhysicLoop();
@@ -30,6 +31,9 @@ private:
 	void Update();
 	void Draw();
 	void DisplayStats();
+
+private:
+	void DeleteUnwanted();
 
 
 };
