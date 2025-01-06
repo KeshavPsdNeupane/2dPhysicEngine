@@ -37,11 +37,12 @@ void Rect::Load() {
 	this->shape->setOutlineColor(sf::Color::Black);
 	this->shape->setOutlineThickness(1.0f);
 	this->text.setCharacterSize(15);
+	//std::cout << "max vel = " << this->maxvelocity.x << " " << this->maxvelocity.y << std::endl;	
 }
 
 void Rect::Update(const float& dt) {
-	this->DT = dt;
-	AddAcceleration(sf::Vector2f(0.0f, GMNumber::GRAVITY));
+	this->DT = dt;	
+	ApplyGravity();
 	MovementUpdate();
 	this->shape->setPosition(NewPosition(DT));
 }
@@ -135,9 +136,10 @@ inline void Rect::FindMaxVelocities() {
  *
  * @note This function should be called whenever the mass or size of the Rect object changes.
  */
+	auto size = GMNumber::SMALL_BALL_SIZE;
 	if (this->mass == 0) { this->mass = 1.0f; }
 	this->maxvelocity = { GMNumber::COEFF_MAX_VELOCITY_X / this->mass ,
-   std::sqrt((this->mass * GMNumber::COEFF_MAX_VELOCITY_Y)/(this->size.x * this->size.y))};
+   std::sqrt((this->mass * GMNumber::COEFF_MAX_VELOCITY_Y)/(size* size))};
 
 	if (std::abs(maxvelocity.x) > GMNumber::ABSOLUTE_MAX_VELOCITY_X) {
 		maxvelocity.x = GMNumber::ABSOLUTE_MAX_VELOCITY_X;
@@ -156,6 +158,6 @@ inline sf::Vector2f& Rect::NewPosition(const float& dt) {
 	if (this->velocity.x < -maxvelocity.x) { this->velocity.x = -maxvelocity.x; }
 	this->oldPosition = this->position;
 	this->position += this->velocity * dt;
-	this->acceleration.y = 0.0f;
+	//this->acceleration.y = 0.0f;
 	return this->position;
 }

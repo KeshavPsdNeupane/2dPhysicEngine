@@ -13,10 +13,10 @@ PhysicLoop::PhysicLoop()
 	this->window->setFramerateLimit(GMNumber::MAX_FRAME_RATE);
 
 	// for player  this is a temp   sf::Vector2f(410.0f, 200.0f)
-	auto size = GMNumber::BIG_BALL_SIZE;
+	auto size = GMNumber::SMALL_BALL_SIZE;
 	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	gameObject.rectangle = std::make_shared<Rect>(++this->entityIdCounter, CollisionId::PlayerId, 60.0f,
-		sf::Vector2f(590.0f, 300.0f), sf::Vector2f(size , size),
+		sf::Vector2f(160.0f, 300.0f), sf::Vector2f(size , size),
 		sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_OBJECT_X, GMNumber::COEFF_OF_RESTITUTION_OBJECT_Y),
 		sf::Vector2f(GMNumber::COEFF_OF_FRICTION_OBJECT, GMNumber::COEFF_OF_FRICTION_OBJECT)
 	);
@@ -41,23 +41,26 @@ PhysicLoop::PhysicLoop()
 
 	//--------------------------
 	gameObject.inflator = std::make_shared<Inflator>(++this->entityIdCounter, CollisionId::InflatorId, mass,
-		sf::Vector2f(500.0f, 504.0f), sf::Vector2f(25.0f, 50.0f),E, u);
+		sf::Vector2f(120.0f, 504.0f), sf::Vector2f(25.0f, 50.0f),E, u);
 
 	gameObject.deflator = std::make_shared<Deflator>(++this->entityIdCounter, CollisionId::DeflatorId, mass,
-		sf::Vector2f(280.0f, 504.0f), sf::Vector2f(25.0f, 50.0f), E, u);
+		sf::Vector2f(250.0f, 504.0f), sf::Vector2f(25.0f, 50.0f), E, u);
 
 	gameObject.bouncyPath = std::make_shared<BouncyPath>(++this->entityIdCounter, CollisionId::HeavyPathId, mass,
 		sf::Vector2f(350.0f, 540.0f), sf::Vector2f(70.0f, 10.0f),sf::Vector2f(0.4f,2.1f), u);
 
 	for (int i = 0; i < 5; ++i) {
 		gameObject.collectable.push_back(std::make_shared<Collectable>(++this->entityIdCounter,
-			CollisionId::CollectableId, 1.0f, 10.0f , sf::Vector2f(300.0f + 50.0f * i, 400.0f),
+			CollisionId::CollectableId, 1.0f, 10 , sf::Vector2f(400.0f + 50.0f * i, 400.0f),
 			sf::Vector2f(20.0f, 20.0f)));
 	}
 	
 	this->text.setFont(gameObject.resource.GetFont());
 	this->text.setPosition({ 250.0f,10.0f });
 	this->text.setCharacterSize(15);
+	this->text2.setFont(gameObject.resource.GetFont());
+	this->text2.setPosition({ 550.0f,10.0f });
+	this->text2.setCharacterSize(30);
 }
 
 void PhysicLoop::RunPlysicLoop(){
@@ -84,8 +87,6 @@ void PhysicLoop::Load(){
 	gameObject.deflator->Load();	
 	gameObject.inflator->Load();	
 	gameObject.bouncyPath->Load();
-	
-
 	gameObject.grid.AddObject(gameObject.rectangle , false);
 	for (int i = 0; i < gameObject.path.size(); ++i) {
 		gameObject.path[i]->Load();
@@ -141,6 +142,7 @@ void PhysicLoop::Draw() {
 		obj->Draw(window);
 	}
 	window->draw(text);
+	window->draw(text2);
 }
 
 void PhysicLoop::DisplayStats(){
@@ -153,9 +155,9 @@ void PhysicLoop::DisplayStats(){
 		"Objects for Collision Checking: "
 		+ std::to_string((int)(collisionResultFromGrid.dynamicResult.size()
 			+ collisionResultFromGrid.staticResult.size()))
-		+ " / " + std::to_string(maxsize) +
-		"          Points = " + std::to_string(gameObject.rectangle->GetPoints())
+		+ " / " + std::to_string(maxsize)
 	);
+	this->text2.setString("Points = " + std::to_string(gameObject.rectangle->GetPoints()));
 }
 
 void PhysicLoop::DeleteUnwanted() {

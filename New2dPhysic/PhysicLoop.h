@@ -15,6 +15,7 @@ private:
 	GridResult updateDrawResultFromGrid;
 	GridResult collisionResultFromGrid;
 	sf::Text text;
+	sf::Text text2;
 	sf::Font font;
 	float DT;
 	int entityIdCounter;

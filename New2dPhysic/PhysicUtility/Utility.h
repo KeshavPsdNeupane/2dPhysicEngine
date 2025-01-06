@@ -25,7 +25,7 @@ namespace GMNumber {
 	static constexpr float COEFF_MAX_VELOCITY_X = 9000.0f;
 
 	// The coefficient for the maximum velocity in the y direction.
-	// The relation is: vt = K * sqrt(2 * g * m / (p * a * cd))
+	// The relation is: vt =  sqrt(K * 2 * g * m / (p * a * cd))
 	// K is the constant COEFF_MAX_VELOCITY_Y = 1672.98f
 	// where vt is terminal velocity, g is gravity, m is mass, p is air density, a is area, and cd is the coefficient of drag.
 	// The value used are m = 60, area = 24*24, cd = 0.47, p = 1.225, gravity = 500 for this mapping.
@@ -46,10 +46,10 @@ namespace GMNumber {
 
 
 	// the above two are the threshold for the object to be considered as stationary
-// if the object has a velocity less than the LOWEST_VELOCITY_THRESHOLD
-// and mass greater than MASS_THRESHOLD
-// the object will be considered as stationary
-// this is done to prevent the object from moving with very low velocity
+	// if the object has a velocity less than the LOWEST_VELOCITY_THRESHOLD
+	// and mass greater than MASS_THRESHOLD
+	// the object will be considered as stationary
+	// this is done to prevent the object from moving with very low velocity
 	static constexpr float LOWEST_VELOCITY_THRESHOLD = 0.4f;
 	static constexpr float MASS_THRESHOLD = 1000.0f;
 
@@ -151,7 +151,7 @@ public:
 	}
 	static inline sf::Vector2f Normalize(sf::Vector2f vector) {
 		auto M = std::sqrt(vector.x * vector.x + vector.y * vector.y);
-		if (M == 0) { M = 1; }   // std::cerr << " division by zero " << std::endl;}
+		if (M == 0) { M = 1; }   // to avoid division by zero
 		return { vector.x / M , vector.y / M };
 	}
 	VectorOperation() = default;
