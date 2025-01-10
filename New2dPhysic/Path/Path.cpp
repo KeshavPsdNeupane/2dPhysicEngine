@@ -11,7 +11,9 @@ Path::Path(const int id, const int colid, const float mass, const sf::Vector2f p
     this->shape->setFillColor(sf::Color::Blue);
 }
 
-void Path::Load() {
+Path::~Path(){}
+
+void Path::Load(std::shared_ptr<Engine::ResourceManager> resources) {
     this->shape->setOutlineThickness(1.0f);
     this->shape->setOutlineColor(sf::Color::Black);
 }

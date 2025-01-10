@@ -37,7 +37,7 @@ public:
         coefficientOfRestitution(coefficientOfRestitution),
         ceofficientOfFriction(ceofficientOfFriction),
         gravity(GMNumber::GRAVITY){}
-
+    virtual ~RigidBody(){}
 
 
 public:

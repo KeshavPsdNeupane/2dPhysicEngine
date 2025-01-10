@@ -9,7 +9,9 @@ Inflator::Inflator(const int id, const int colid, const float mass, const sf::Ve
     this->shape->setFillColor(sf::Color::Yellow);
 }
 
-void Inflator::Load() {
+Inflator::~Inflator(){}
+
+void Inflator::Load(std::shared_ptr<Engine::ResourceManager> resources) {
     this->shape->setFillColor(sf::Color::Green);
     this->shape->setOutlineThickness(1.0f);
     this->shape->setOutlineColor(sf::Color::Black);

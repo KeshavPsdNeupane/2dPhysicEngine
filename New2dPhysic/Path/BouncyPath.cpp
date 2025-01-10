@@ -9,7 +9,13 @@ BouncyPath::BouncyPath(const int id, const int colid, const float mass, const sf
     this->shape->setSize(this->size);
     this->shape->setFillColor(sf::Color::Magenta);
 }
-void BouncyPath::Load() {
+
+
+BouncyPath::~BouncyPath(){}
+
+
+
+void BouncyPath::Load(std::shared_ptr<Engine::ResourceManager> resources) {
     this->shape->setOutlineThickness(1.0f);
     this->shape->setOutlineColor(sf::Color::Black);
 }

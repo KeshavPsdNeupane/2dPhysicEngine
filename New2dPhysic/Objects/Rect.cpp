@@ -1,19 +1,18 @@
 #include "Rect.h"
 #include"../Body/ContactMechanic.h"
-#include"../GameObjects.h"
 #include"../PhysicUtility/Utility.h"
 
 
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
-	const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction):
+	const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction , const sf::Font& font):
 	GameShape(id, colid, mass, pos, size, {0.0f,0.0f}, { 0.0f,0.0f }
 		,coeffOfRest, coeffOfFriction),points(0){
 	this->circle.setRadius(size.x / 2.0f);
 	this->circle.setPosition(pos);
 	FindMaxVelocities();
-	this->font = gameObject.resource.GetFont();
-	this->text.setFont(this->font);
 }
+
+Rect::~Rect(){}
 
 inline void Rect::SetPosition(const sf::Vector2f position){
 	this->position = position;
@@ -31,13 +30,13 @@ inline void Rect::SetSize(const sf::Vector2f size){
 
 
 
-void Rect::Load() {
+void Rect::Load(std::shared_ptr<Engine::ResourceManager> resources) {
+	this->text.setFont(resources->GetFont(ResourceId::MAIN_FONT));
 	this->shape->setFillColor(sf::Color::Red);
 	this->circle.setFillColor(sf::Color::Red);
 	this->shape->setOutlineColor(sf::Color::Black);
 	this->shape->setOutlineThickness(1.0f);
 	this->text.setCharacterSize(15);
-	//std::cout << "max vel = " << this->maxvelocity.x << " " << this->maxvelocity.y << std::endl;	
 }
 
 void Rect::Update(const float& dt) {

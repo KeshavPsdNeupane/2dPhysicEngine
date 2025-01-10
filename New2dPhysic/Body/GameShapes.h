@@ -1,7 +1,7 @@
 #pragma once
 #include"RigidBody.h"
 #include<SFML/Graphics.hpp>
-#include"ContactMechanic.h"
+#include"../Resources/ResourceManager.h"
 
 class GameShape : public RigidBody {
 protected:
@@ -22,13 +22,14 @@ public:
 		this->shape->setSize(size);
 		this->shape->setPosition(position);
 	}
+	virtual ~GameShape() {}
 public:
 	inline int GetShapeID() { return this->id; }
 	inline void SetShapeID(int id) { this->id = id; }
 	inline int GetCollisionId() { return this->collisionId; }
 	inline void SetCollisionId(int collisionId) { this->collisionId = collisionId; }
 public:
-	virtual void Load() = 0;
+	virtual void Load(std::shared_ptr<Engine::ResourceManager> resources) = 0;
 	virtual void Update(const float& dt) = 0;
 	virtual void Draw(std::shared_ptr<sf::RenderWindow>window) = 0;
 };

@@ -6,13 +6,14 @@ Collectable::Collectable(const int id, const int colid, const float mass,
     point(points), canBeDeleted(false),
     GameShape(id, colid, mass, pos, size,
         { 0.0f,0.0f }, { 0.0f,0.0f }, { 0.0f,0.0f }, { 0.0f,0.0f }) {
-
     this->shape->setPosition(pos);
     this->shape->setSize(size);
 
 }
 
-void Collectable::Load() {
+Collectable::~Collectable(){}
+
+void Collectable::Load(std::shared_ptr<Engine::ResourceManager> resources) {
     this->shape->setFillColor(sf::Color::Cyan);
 }
 

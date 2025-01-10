@@ -1,7 +1,6 @@
-#include <SFML/Graphics.hpp>
-#include"GameObjects.h"
-GameObject gameObject;
+#include"GameLoop.h"
 int main() {
-    gameObject.loop.RunPlysicLoop();
+	Gameloop loop;
+	loop.Run();
     return 0;
 }

@@ -8,7 +8,9 @@ Deflator::Deflator(const int id, const int colid, const float mass, const sf::Ve
     this->shape->setFillColor(sf::Color::Green);
 }
 
-void Deflator::Load() {
+Deflator::~Deflator(){}
+
+void Deflator::Load(std::shared_ptr<Engine::ResourceManager> resources) {
     this->shape->setFillColor(sf::Color::Yellow);
     this->shape->setOutlineThickness(1.0f);
     this->shape->setOutlineColor(sf::Color::Black);

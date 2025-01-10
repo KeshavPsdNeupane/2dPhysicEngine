@@ -20,7 +20,8 @@ public:
 	Rect() = default;
 	Rect(const int id , const int colid, const float mass , const sf::Vector2f pos,
 		const sf::Vector2f size,const sf::Vector2f coeffOfRest , 
-		const sf::Vector2f coeffOfFriction);
+		const sf::Vector2f coeffOfFriction ,const sf::Font& font);
+	~Rect();
 public:
 	inline void SetPosition(const sf::Vector2f position)override;
 	inline void SetSize(const sf::Vector2f size)override;
@@ -28,7 +29,7 @@ public:
 	inline void SetPoints(const int points) { this->points = points; }
 	inline int GetPoints() const { return this->points; }
 public:
-	void Load() override;
+	void Load(std::shared_ptr<Engine::ResourceManager> resources) override;
 	void Update(const float& dt) override;
 	void Draw(std::shared_ptr<sf::RenderWindow>window) override;
 	void DisplayPositionAndVelocity();

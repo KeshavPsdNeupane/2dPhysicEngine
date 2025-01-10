@@ -45,7 +45,7 @@ namespace GMNumber {
 	static constexpr float ABSOLUTE_MAX_VELOCITY_Y = 800.0f;
 
 
-	// the above two are the threshold for the object to be considered as stationary
+	// these two are the threshold for the object to be considered as stationary
 	// if the object has a velocity less than the LOWEST_VELOCITY_THRESHOLD
 	// and mass greater than MASS_THRESHOLD
 	// the object will be considered as stationary
