@@ -65,9 +65,7 @@ namespace GMNumber {
 
 
 	//COLLISION THRESHOLD CALCULATION
-
-
-		// the above two are the threshold for the object to be considered after colliding
+	// the two are the threshold for the object to be considered after colliding
 	// if the object has a velocity less than the COLLISION_VELOCITY_THRESHOLD_X
 	// and COLLISION_VELOCITY_THRESHOLD_Y it will mapp the respective velocity to 0.0f
 	static constexpr float COLLISION_VELOCITY_THRESHOLD_X = GRAVITY * (1.0f/ MAX_FRAME_RATE)
@@ -82,7 +80,7 @@ namespace GMNumber {
 	// the above two are the coefficient of friction for the object and path
 
 	// RECT
-
+	static constexpr bool IS_PADDING = true;
 	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_X = 4000.0f;
 	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_Y = 800.0f;
 	static constexpr float MOVEMENT_FORCE = 35775.0f;
@@ -143,6 +141,8 @@ enum CollisionId {
 
 class VectorOperation {
 public:
+	VectorOperation() = default;
+public:
 	static inline float DotProduct(const sf::Vector2f& vector) { return (vector.x * vector.x) +(vector.y * vector.y); }
 	static inline float DotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2) { return (v1.x * v2.x) + (v1.y * v2.y); }
 	static inline float Magnitude(const sf::Vector2f& vector) {return std::sqrt(DotProduct(vector));}
@@ -154,5 +154,15 @@ public:
 		if (M == 0) { M = 1; }   // to avoid division by zero
 		return { vector.x / M , vector.y / M };
 	}
-	VectorOperation() = default;
+
+	static void ClampForVector(sf::Vector2f& current, const sf::Vector2f& min, const sf::Vector2f& max) {
+		if (current.x < min.x) { current.x = min.x; }
+		if (current.y < min.y) { current.y = min.y; }
+		if (current.x > max.x) { current.x = max.x; }
+		if (current.y > max.y) { current.y = max.y; }
+		return;
+	}
 };
+
+
+

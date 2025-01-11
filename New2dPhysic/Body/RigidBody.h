@@ -75,13 +75,18 @@ public:
             //    acceleration.y += force.y / mass;       // Allow instant change in direction
             //}
             this->acceleration += force / this->mass;
-            ClampAccleration();
+            sf::Vector2f abs_acclleration(GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X,
+                GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y);
+			VectorOperation::ClampForVector(this->acceleration, -abs_acclleration, abs_acclleration);
+            //ClampAccleration();
         }
     }
 
     inline void AddAcceleration(const sf::Vector2f& acc) {
         this->acceleration += acc;
-        ClampAccleration();
+        sf::Vector2f abs_acclleration(GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X,
+            GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y);
+        VectorOperation::ClampForVector(this->acceleration, -abs_acclleration, abs_acclleration);
     }
 
 
@@ -98,10 +103,7 @@ public:
          * @return Reference to the updated position.
          */
         this->velocity += this->acceleration * dt;
-        if (this->velocity.y > maxvelocity.y) this->velocity.y = maxvelocity.y;
-        if (this->velocity.y < -maxvelocity.y) this->velocity.y = -maxvelocity.y;
-        if (this->velocity.x > maxvelocity.x) this->velocity.x = maxvelocity.x;
-        if (this->velocity.x < -maxvelocity.x) this->velocity.x = -maxvelocity.x;
+		VectorOperation::ClampForVector(this->velocity, -maxvelocity, maxvelocity);
         this->oldPosition = this->position;
         this->position += this->velocity * dt;
         this->acceleration.y = 0;

@@ -87,11 +87,11 @@ void MainMenu::ProcessInput(){
 void MainMenu::Update(const float& dt){
     this->DELTA_TIME = dt;
 	if (this->isPlayButtonSelected) {
-		this->playButton.setFillColor(sf::Color::Yellow);
+		this->playButton.setFillColor(sf::Color::Red);
 		this->exitButton.setFillColor(sf::Color::White);
 	}
 	else {
-		this->exitButton.setFillColor(sf::Color::Yellow);
+		this->exitButton.setFillColor(sf::Color::Red);
 		this->playButton.setFillColor(sf::Color::White);
 	}
 	if (isPlayButtonPressed) {

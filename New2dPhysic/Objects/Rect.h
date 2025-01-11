@@ -9,7 +9,6 @@ class Rect : public GameShape  {
 	struct GameClock{
 		sf::Clock jumpClock;
 	}Gclock;
-
 	sf::Font font;
 	sf::Text text;
 	sf::CircleShape circle;

@@ -7,7 +7,7 @@ BouncyPath::BouncyPath(const int id, const int colid, const float mass, const sf
         { 0.0f,0.0f }, { 0.0f,0.0f }, coeffOfRest, ceoffOfFriction) {
     this->shape->setPosition(this->position);
     this->shape->setSize(this->size);
-    this->shape->setFillColor(sf::Color::Magenta);
+
 }
 
 
@@ -16,8 +16,11 @@ BouncyPath::~BouncyPath(){}
 
 
 void BouncyPath::Load(std::shared_ptr<Engine::ResourceManager> resources) {
-    this->shape->setOutlineThickness(1.0f);
-    this->shape->setOutlineColor(sf::Color::Black);
+    this->shape->setFillColor(sf::Color::Magenta);
+    if (GMNumber::IS_PADDING) {
+        this->shape->setOutlineThickness(.5f);
+        this->shape->setOutlineColor(sf::Color::Black);
+    }
 }
 
 void BouncyPath::Update(const float& dT) {

@@ -12,8 +12,10 @@ Deflator::~Deflator(){}
 
 void Deflator::Load(std::shared_ptr<Engine::ResourceManager> resources) {
     this->shape->setFillColor(sf::Color::Yellow);
-    this->shape->setOutlineThickness(1.0f);
-    this->shape->setOutlineColor(sf::Color::Black);
+    if (GMNumber::IS_PADDING) {
+        this->shape->setOutlineThickness(0.5f);
+        this->shape->setOutlineColor(sf::Color::Black);
+    }
 }
 
 void Deflator::Update(const float& dT) {

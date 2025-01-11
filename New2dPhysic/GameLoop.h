@@ -1,6 +1,6 @@
 #pragma once
 #include<SFML/Graphics.hpp>
-#include"Resources/States/StateManager.h"
+#include"States/StateManager.h"
 #include"StateObjects.h"
 
 class Gameloop{

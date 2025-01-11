@@ -1,5 +1,5 @@
 #include "Gameplay.h"
-#include"Resources/States/MenuState/PauseState.h"
+#include"States/MenuState/PauseState.h"
 
 Gameplay::Gameplay(std::shared_ptr<StateData> state):
 	isPaused(false),
@@ -28,9 +28,9 @@ Gameplay::Gameplay(std::shared_ptr<StateData> state):
 
 
 	this->path.push_back(std::make_shared<Path>(++this->entityIdCounter, CollisionId::HeavyPathId, mass,
-		sf::Vector2f(blockSize.x, 504.0f), blockSize,E, u));
+		sf::Vector2f(blockSize.x, 505.0f), blockSize,E, u));
 	this->path.push_back(std::make_shared<Path>(++this->entityIdCounter, CollisionId::HeavyPathId, mass,
-		sf::Vector2f(660.0f, 504.0f), blockSize,E, u));
+		sf::Vector2f(660.0f, 505.0f), blockSize,E, u));
 
 	for (int i = 0; i < 11; ++i) {
 		this->path.push_back(std::make_shared<Path>(++this->entityIdCounter, CollisionId::HeavyPathId, mass,
@@ -69,14 +69,6 @@ void Gameplay::Load(){
 	this->rectangle->Load(this->stateData->resourceManager);
 	this->grid.AddObject(this->rectangle, false);
 
-	this->inflator->Load(this->stateData->resourceManager);
-	this->grid.AddObject(this->inflator, true);
-
-	this->deflator->Load(this->stateData->resourceManager);
-	this->grid.AddObject(this->deflator, true);
-
-	this->bouncyPath->Load(this->stateData->resourceManager);
-	this->grid.AddObject(this->bouncyPath, true);
 
 	for (int i = 0; i < this->path.size(); ++i) {
 		this->path[i]->Load(this->stateData->resourceManager);
@@ -86,6 +78,15 @@ void Gameplay::Load(){
 		this->collectable[i]->Load(this->stateData->resourceManager);
 		this->grid.AddObject(this->collectable[i], true);
 	}
+
+	this->inflator->Load(this->stateData->resourceManager);
+	this->grid.AddObject(this->inflator, true);
+
+	this->deflator->Load(this->stateData->resourceManager);
+	this->grid.AddObject(this->deflator, true);
+
+	this->bouncyPath->Load(this->stateData->resourceManager);
+	this->grid.AddObject(this->bouncyPath, true);
 }
 
 

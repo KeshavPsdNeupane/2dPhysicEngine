@@ -8,14 +8,17 @@ Path::Path(const int id, const int colid, const float mass, const sf::Vector2f p
         { 0.0f,0.0f }, { 0.0f,0.0f },  coeffOfRest, ceoffOfFriction) {
     this->shape->setPosition(this->position);
     this->shape->setSize(this->size);
-    this->shape->setFillColor(sf::Color::Blue);
+
 }
 
 Path::~Path(){}
 
 void Path::Load(std::shared_ptr<Engine::ResourceManager> resources) {
-    this->shape->setOutlineThickness(1.0f);
-    this->shape->setOutlineColor(sf::Color::Black);
+    this->shape->setFillColor(sf::Color::Blue);
+    if (GMNumber::IS_PADDING) {
+        this->shape->setOutlineThickness(.5f);
+        this->shape->setOutlineColor(sf::Color::Black);
+    }
 }
 
 void Path::Update(const float& dT) {
@@ -23,7 +26,6 @@ void Path::Update(const float& dT) {
         this->shape->setPosition(this->NewPosition(dT));
     }
 }
-
 
 void Path::Draw(std::shared_ptr<sf::RenderWindow>window) {
     window->draw(*this->shape);

@@ -13,8 +13,10 @@ Inflator::~Inflator(){}
 
 void Inflator::Load(std::shared_ptr<Engine::ResourceManager> resources) {
     this->shape->setFillColor(sf::Color::Green);
-    this->shape->setOutlineThickness(1.0f);
-    this->shape->setOutlineColor(sf::Color::Black);
+    if (GMNumber::IS_PADDING) {
+        this->shape->setOutlineThickness(0.5f);
+        this->shape->setOutlineColor(sf::Color::Black);
+    }
 }
 
 void Inflator::Update(const float& dT) {

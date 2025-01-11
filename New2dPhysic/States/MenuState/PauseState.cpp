@@ -87,11 +87,11 @@ void PauseState::ProcessInput() {
 void PauseState::Update(const float& dt) {
 	this->DELTA_TIME = dt;
 	if (this->isResumeButtonSelected) {
-		this->resumeButton.setFillColor(sf::Color::Yellow);
+		this->resumeButton.setFillColor(sf::Color::Red);
 		this->exitButton.setFillColor(sf::Color::White);
 	}
 	else {
-		this->exitButton.setFillColor(sf::Color::Yellow);
+		this->exitButton.setFillColor(sf::Color::Red);
 		this->resumeButton.setFillColor(sf::Color::White);
 	}
 	if (isResumeButtonPressed) {

@@ -15,6 +15,10 @@ Collectable::~Collectable(){}
 
 void Collectable::Load(std::shared_ptr<Engine::ResourceManager> resources) {
     this->shape->setFillColor(sf::Color::Cyan);
+    if (GMNumber::IS_PADDING) {
+        this->shape->setOutlineThickness(0.5f);
+        this->shape->setOutlineColor(sf::Color::Black);
+    }
 }
 
 void Collectable::Update(const float& dT) {

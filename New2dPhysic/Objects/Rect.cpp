@@ -88,9 +88,6 @@ void Rect::MovementUpdate() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 		velocity.y = -250;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		velocity.y = 30;
-	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
 		float bigsize = GMNumber::BIG_BALL_SIZE;
@@ -146,15 +143,11 @@ inline void Rect::FindMaxVelocities() {
 	if (std::abs(maxvelocity.y) > GMNumber::ABSOLUTE_MAX_VELOCITY_Y) {
 		maxvelocity.y = GMNumber::ABSOLUTE_MAX_VELOCITY_Y;
 	}
-	//std::cout << " max vel = " << maxvelocity.x << " " << maxvelocity.y << std::endl;
 }
 
 inline sf::Vector2f& Rect::NewPosition(const float& dt) {
 	this->velocity += this->acceleration * dt;
-	if (this->velocity.y > maxvelocity.y) { this->velocity.y = maxvelocity.y; }
-	if (this->velocity.y < -maxvelocity.y) { this->velocity.y = -maxvelocity.y; }
-	if (this->velocity.x > maxvelocity.x) { this->velocity.x = maxvelocity.x; }
-	if (this->velocity.x < -maxvelocity.x) { this->velocity.x = -maxvelocity.x; }
+	VectorOperation::ClampForVector(this->velocity, -maxvelocity, maxvelocity);
 	this->oldPosition = this->position;
 	this->position += this->velocity * dt;
 	//this->acceleration.y = 0.0f;
