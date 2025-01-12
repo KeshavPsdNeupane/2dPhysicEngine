@@ -2,11 +2,12 @@
 #include"../Body/ContactMechanic.h"
 #include"../PhysicUtility/Utility.h"
 
+PlayerBools playerRefenceBools;
 
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
 	const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction , const sf::Font& font):
 	GameShape(id, colid, mass, pos, size, {0.0f,0.0f}, { 0.0f,0.0f }
-		,coeffOfRest, coeffOfFriction),points(0){
+		,coeffOfRest, coeffOfFriction),points(0) , isLarge(false){
 	this->circle.setRadius(size.x / 2.0f);
 	this->circle.setPosition(pos);
 	FindMaxVelocities();
@@ -76,17 +77,13 @@ void Rect::ReCentered() {
 
 void Rect::MovementUpdate() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		ApplyForce({ -GMNumber::MOVEMENT_FORCE , 0 });
+		ApplyForce({ - ApplyMotionForce.MOVEMENT_FORCE   , 0.0f });
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		ApplyForce({ GMNumber::MOVEMENT_FORCE  , 0 });
+		ApplyForce({ ApplyMotionForce.MOVEMENT_FORCE   , 0.0f });
 	}
 	else {
 		acceleration.x = 0;
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-		velocity.y = -250;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
@@ -98,7 +95,11 @@ void Rect::MovementUpdate() {
 		SetSize({ smallsize,smallsize });
 	}
 
+	JumpUpdate();
+
+
 }
+
 
 void Rect::DisplayPositionAndVelocity() {
 	this->text.setString("Position = " + std::to_string((int)this->position.x) + " "
@@ -132,16 +133,16 @@ inline void Rect::FindMaxVelocities() {
  *
  * @note This function should be called whenever the mass or size of the Rect object changes.
  */
-	auto size = GMNumber::SMALL_BALL_SIZE;
+	float size = GMNumber::SMALL_BALL_SIZE;
 	if (this->mass == 0) { this->mass = 1.0f; }
 	this->maxvelocity = { GMNumber::COEFF_MAX_VELOCITY_X / this->mass ,
    std::sqrt((this->mass * GMNumber::COEFF_MAX_VELOCITY_Y)/(size* size))};
 
-	if (std::abs(maxvelocity.x) > GMNumber::ABSOLUTE_MAX_VELOCITY_X) {
-		maxvelocity.x = GMNumber::ABSOLUTE_MAX_VELOCITY_X;
+	if (std::abs(maxvelocity.x) > GMNumber::ASOLUTE_MAX_VELOCITY.x) {
+		maxvelocity.x = GMNumber::ASOLUTE_MAX_VELOCITY.x;
 	}
-	if (std::abs(maxvelocity.y) > GMNumber::ABSOLUTE_MAX_VELOCITY_Y) {
-		maxvelocity.y = GMNumber::ABSOLUTE_MAX_VELOCITY_Y;
+	if (std::abs(maxvelocity.y) > GMNumber::ASOLUTE_MAX_VELOCITY.y) {
+		maxvelocity.y = GMNumber::ASOLUTE_MAX_VELOCITY.y;
 	}
 }
 
@@ -150,6 +151,16 @@ inline sf::Vector2f& Rect::NewPosition(const float& dt) {
 	VectorOperation::ClampForVector(this->velocity, -maxvelocity, maxvelocity);
 	this->oldPosition = this->position;
 	this->position += this->velocity * dt;
-	//this->acceleration.y = 0.0f;
+	this->acceleration.y = 0.0f;
 	return this->position;
+}
+
+void Rect::JumpUpdate() {
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		&& playerRefenceBools.canJumping ) {
+		playerRefenceBools.canJumping = false;
+		// below is use of ternary operator
+		this->velocity.y = isLarge? -ApplyMotionForce.JUMP_FORCE * GMNumber::ELASTICITY_RATIO
+			: -ApplyMotionForce.JUMP_FORCE;
+	}
 }

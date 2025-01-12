@@ -4,7 +4,8 @@
 PauseState::PauseState(std::shared_ptr<StateData> stateData) :
 	stateData(stateData), DELTA_TIME(0.0f),
 	isResumeButtonSelected(true), isResumeButtonPressed(false),
-	isExitButtonSelected(false), isExitButtonPressed(false), event() {}
+	isExitButtonSelected(false), isExitButtonPressed(false),
+	event(), isEscPressed(false) {}
 
 PauseState::~PauseState() {}
 
@@ -76,6 +77,10 @@ void PauseState::ProcessInput() {
 				}
 				break;
 
+			case sf::Keyboard::Escape:
+				this->isEscPressed = true;
+				break;
+
 			default:
 				break;
 			}
@@ -86,6 +91,11 @@ void PauseState::ProcessInput() {
 
 void PauseState::Update(const float& dt) {
 	this->DELTA_TIME = dt;
+	if (isEscPressed) {
+		this->stateData->stateManager->RemoveState();
+		return;
+	}
+
 	if (this->isResumeButtonSelected) {
 		this->resumeButton.setFillColor(sf::Color::Red);
 		this->exitButton.setFillColor(sf::Color::White);

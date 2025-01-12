@@ -14,7 +14,7 @@ Gameplay::Gameplay(std::shared_ptr<StateData> state):
 	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	this->rectangle = std::make_shared<Rect>(++this->entityIdCounter, CollisionId::PlayerId, 60.0f,
 		sf::Vector2f(160.0f, 300.0f), sf::Vector2f(size , size),
-		sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_OBJECT_X, GMNumber::COEFF_OF_RESTITUTION_OBJECT_Y),
+		GMNumber::COEFF_OF_RESTITUTION_OBJECT,
 		sf::Vector2f(GMNumber::COEFF_OF_FRICTION_OBJECT, GMNumber::COEFF_OF_FRICTION_OBJECT),
 		this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT)
 	);
@@ -23,7 +23,8 @@ Gameplay::Gameplay(std::shared_ptr<StateData> state):
 	// for paths
 	sf::Vector2f blockSize{ 60.0f , 45.0f };
 	float mass = 400000.0f;
-	sf::Vector2f E = sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_PATH_X, GMNumber::COEFF_OF_RESTITUTION_PATH_Y);
+	//sf::Vector2f E = sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_PATH_X, GMNumber::COEFF_OF_RESTITUTION_PATH_Y);
+	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
 	sf::Vector2f u = sf::Vector2f(GMNumber::COEFF_OF_FRICTION_PATH, GMNumber::COEFF_OF_FRICTION_PATH);
 
 
@@ -141,7 +142,8 @@ void Gameplay::Draw() {
 		auto& window = this->stateData->window;
 		window->clear();
 
-		this->grid.Draw(window);
+		if(GMNumber::IS_PADDING){ this->grid.Draw(window); }
+
 		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
 			obj->Draw(window);
 		}

@@ -2,6 +2,7 @@
 #include"../State.h"
 #include<SFML/Graphics.hpp>
 #include"../../StateObjects.h"
+
 class PauseState : public Engine::State {
 private:
 	std::shared_ptr<StateData> stateData;
@@ -17,6 +18,7 @@ private:
 
 	bool isResumeButtonPressed;
 	bool isExitButtonPressed;
+	bool isEscPressed;	
 public:
 	PauseState(std::shared_ptr<StateData> stateData);
 	~PauseState();

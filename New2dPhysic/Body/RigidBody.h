@@ -61,36 +61,20 @@ public:
 public:
     inline void ApplyForce(const sf::Vector2f& force) {
         if (mass != 0) {
-            //LEAVE IT MIGHT BE NEEDED 
-            //if ((force.x > 0 && velocity.x < maxvelocity.x) || (force.x < 0 && velocity.x > -maxvelocity.x)) {
-            //    acceleration.x += force.x / mass;
-            //}
-            //else if ((force.x < 0 && velocity.x >= 0) || (force.x > 0 && velocity.x <= 0)) {
-            //    acceleration.x += force.x / mass;      // Allow instant change in direction
-            //}
-            //if ((force.y > 0 && velocity.y < maxvelocity.y) || (force.y < 0 && velocity.y > -maxvelocity.y)) {
-            //    acceleration.y += force.y / mass;      // Calculate the force in y direction
-            //}
-            //else if ((force.y < 0 && velocity.y >= 0) || (force.y > 0 && velocity.y <= 0)) {
-            //    acceleration.y += force.y / mass;       // Allow instant change in direction
-            //}
             this->acceleration += force / this->mass;
-            sf::Vector2f abs_acclleration(GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X,
-                GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y);
+            sf::Vector2f abs_acclleration(GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER);
 			VectorOperation::ClampForVector(this->acceleration, -abs_acclleration, abs_acclleration);
-            //ClampAccleration();
         }
     }
 
     inline void AddAcceleration(const sf::Vector2f& acc) {
         this->acceleration += acc;
-        sf::Vector2f abs_acclleration(GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X,
-            GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y);
+        sf::Vector2f abs_acclleration(GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER);
         VectorOperation::ClampForVector(this->acceleration, -abs_acclleration, abs_acclleration);
     }
 
 
-    inline void AddVelocity(const sf::Vector2f& deltaVelocity) { velocity += deltaVelocity; }
+    //inline void AddVelocity(const sf::Vector2f& deltaVelocity) { velocity += deltaVelocity; }
 
     virtual inline sf::Vector2f& NewPosition(const float& dt) {
         /**
@@ -114,28 +98,5 @@ protected:
     virtual inline void FindMaxVelocities() {
         if (this->mass == 0) { this->mass = 1.0f; }
         this->maxvelocity = this->velocity;
-    }
-
-	inline void ApplyGravity() {
-		this->acceleration.y = this->gravity;
-	}
-
-
-
-
-private:
-    void ClampAccleration() {
-        if (this->acceleration.x > GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
-            this->acceleration.x = GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
-        }
-        else if (acceleration.x < -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X) {
-            this->acceleration.x = -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_X;
-        }
-        if (this->acceleration.y > GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y) {
-            this->acceleration.y = GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y;
-        }
-        else if (this->acceleration.y < -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y) {
-            this->acceleration.y = -GMNumber::ABSOLUTE_ACCLERATION_FOR_PLAYER_Y;
-        }
     }
 };

@@ -41,8 +41,9 @@ namespace GMNumber {
 	// the object will still move with this velocity
 	// this is done to prevent the object from moving with infinite velocity
 	// the object will move with this velocity in the direction of the force applied
-	static constexpr float ABSOLUTE_MAX_VELOCITY_X = 400.0f;
-	static constexpr float ABSOLUTE_MAX_VELOCITY_Y = 800.0f;
+	static const sf::Vector2f ASOLUTE_MAX_VELOCITY = { 400.0f, 800.0f };
+
+
 
 
 	// these two are the threshold for the object to be considered as stationary
@@ -56,22 +57,20 @@ namespace GMNumber {
 
 
 	//FOR COEFF OF RESTITUTION
-		// values are the coefficient of restitution for the object and path
+	// values are the coefficient of restitution for the object and path
 	// the coefficient of restitution is the ratio of the final velocity to the initial velocity
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_X = 0.2f;
-	static constexpr float COEFF_OF_RESTITUTION_OBJECT_Y = 0.3f;
-	static constexpr float COEFF_OF_RESTITUTION_PATH_X = 0.7f;
-	static constexpr float COEFF_OF_RESTITUTION_PATH_Y = 0.4f;
 
+	static const sf::Vector2f COEFF_OF_RESTITUTION_OBJECT(0.2f, 0.3f) ;
+	static const sf::Vector2f COEFF_OF_RESTITUTION_PATH(0.7f, 0.4f) ;
 
 	//COLLISION THRESHOLD CALCULATION
 	// the two are the threshold for the object to be considered after colliding
 	// if the object has a velocity less than the COLLISION_VELOCITY_THRESHOLD_X
 	// and COLLISION_VELOCITY_THRESHOLD_Y it will mapp the respective velocity to 0.0f
-	static constexpr float COLLISION_VELOCITY_THRESHOLD_X = GRAVITY * (1.0f/ MAX_FRAME_RATE)
-		* (COEFF_OF_RESTITUTION_OBJECT_X + COEFF_OF_RESTITUTION_PATH_X)/4.0f;
-	static constexpr float COLLISION_VELOCITY_THRESHOLD_Y = GRAVITY * (1.0f / MAX_FRAME_RATE)
-		* (COEFF_OF_RESTITUTION_OBJECT_Y + COEFF_OF_RESTITUTION_PATH_Y ) / 2.0f;
+	static const sf::Vector2f COlliSION_VELOCITY_THRESHOLD(GRAVITY* (1.0f / MAX_FRAME_RATE)
+		* (COEFF_OF_RESTITUTION_OBJECT.x + COEFF_OF_RESTITUTION_PATH.x) / 4.0f,
+		GRAVITY* (1.0f / MAX_FRAME_RATE)
+		* (COEFF_OF_RESTITUTION_OBJECT.y + COEFF_OF_RESTITUTION_PATH.y) / 1.83f);
 
 
 	// FOR COEFFICIENT OF FRICTION
@@ -80,10 +79,8 @@ namespace GMNumber {
 	// the above two are the coefficient of friction for the object and path
 
 	// RECT
-	static constexpr bool IS_PADDING = true;
-	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_X = 4000.0f;
-	static constexpr float ABSOLUTE_ACCLERATION_FOR_PLAYER_Y = 800.0f;
-	static constexpr float MOVEMENT_FORCE = 35775.0f;
+	static constexpr bool IS_PADDING = false;
+	static const sf::Vector2f ABSOLUTE_ACCLERATION_FOR_PLAYER = { 4000.0f, 800.0f };
 	static constexpr float SMALL_BALL_SIZE = 24;
 	static constexpr float BIG_SMALL_BALL_RATIO = 3.0f/2.0f;
 	static constexpr float BIG_BALL_SIZE = SMALL_BALL_SIZE * BIG_SMALL_BALL_RATIO;

@@ -2,6 +2,7 @@
 #include"../State.h"
 #include<SFML/Graphics.hpp>
 #include"../../StateObjects.h"
+
 class MainMenu: public Engine::State{
 private:
 	std::shared_ptr<StateData> stateData;

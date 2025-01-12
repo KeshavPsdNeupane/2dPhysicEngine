@@ -5,6 +5,7 @@
 #include"GameShapes.h"
 #include"../Objects/Rect.h"
 #include"../Objects/Collectable.h"
+#include"../Objects/Rect.h"
 
 ContactMech::ContactMech():
     horizontalOverlap(0.0f), verticalOverlap(0.0f),
@@ -98,6 +99,8 @@ void ContactMech::CollisionDetermination(std::shared_ptr<GameShape> playerShape,
 Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape) {
 
+    if (!playerRefenceBools.canJumping) {playerRefenceBools.canJumping = true;}
+
     Direction collisionDirection = CollisionDirectionFinder(playerShape, otherShape);
     this->M1 = playerShape->GetMass();
     this->M2 = otherShape->GetMass();
@@ -108,16 +111,28 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
     switch (collisionDirection) {
     case Right:
     case Left:
-        CalculateVelocity(v1.x, v2.x, u1.x, u2.x, M1, M2, e.x);
-        v1.y = u1.y;
-        v2.y = u2.y;
+        if (std::abs(playerShape->GetVelocity().x) > GMNumber::COlliSION_VELOCITY_THRESHOLD.x) {
+			CalculateVelocity(v1.x, v2.x, u1.x, u2.x, M1, M2, e.x);
+			v1.y = u1.y;
+			v2.y = u2.y;
+		}
+		else {
+            v1 = u1;
+			v2 = u2;
+        }
         break;
 
     case Bottom:
     case Top:
-        CalculateVelocity(v1.y, v2.y, u1.y, u2.y, M1, M2, e.y);
-        v1.x = u1.x;
-        v2.x = u2.x;
+		if (std::abs(playerShape->GetVelocity().y) > GMNumber::COlliSION_VELOCITY_THRESHOLD.x) {
+			CalculateVelocity(v1.y, v2.y, u1.y, u2.y, M1, M2, e.y);
+			v1.x = u1.x;
+			v2.x = u2.x;
+		}
+		else {
+            v1 = u1;
+            v2 = u2;
+		}
         break;
 
     default:
@@ -268,22 +283,16 @@ void ContactMech::PenetrationResoluter(GameShape& player,GameShape& other,
 
 
 void ContactMech::EffectiveEFinder(RigidBody& F1, RigidBody& F2){
-    float f1size = F1.GetSize().x; 
    this->e = { (F2.GetCoefficientOfRestitution().x + F1.GetCoefficientOfRestitution().x)/2 ,
         (F2.GetCoefficientOfRestitution().y + F1.GetCoefficientOfRestitution().y)/2 };
-   if (f1size == GMNumber::BIG_BALL_SIZE) {
-	   this->e = GMNumber::ELASTICITY_RATIO * this->e;
-   }
 }
 
 inline void ContactMech::CollisionThreshold(){
-    const float& thresholdx = GMNumber::COLLISION_VELOCITY_THRESHOLD_X;
-    const float& thresholdy = GMNumber::COLLISION_VELOCITY_THRESHOLD_Y;
-    if (std::abs(v1.x) <= thresholdx) { v1.x = 0.0f; }
-    if (std::abs(v1.y) <= thresholdy) { v1.y = 0.0f; }
-    if (std::abs(v2.x) <= thresholdx) { v2.x = 0.0f; }
-    if (std::abs(v2.y) <= thresholdy) { v2.y = 0.0f; }
-
+    const auto& Threshold = GMNumber::COlliSION_VELOCITY_THRESHOLD;
+    if (std::abs(v1.x) <= Threshold.x) { v1.x = 0.0f; }
+    if (std::abs(v1.y) <= Threshold.y) { v1.y = 0.0f; }
+    if (std::abs(v2.x) <= Threshold.x) { v2.x = 0.0f; }
+    if (std::abs(v2.y) <= Threshold.y) { v2.y = 0.0f; }
 }
 
 
