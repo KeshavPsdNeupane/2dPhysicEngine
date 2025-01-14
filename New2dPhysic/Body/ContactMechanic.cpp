@@ -102,11 +102,12 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
     if (!playerRefenceBools.canJumping) {playerRefenceBools.canJumping = true;}
 
     Direction collisionDirection = CollisionDirectionFinder(playerShape, otherShape);
+
     this->M1 = playerShape->GetMass();
     this->M2 = otherShape->GetMass();
     this->u1 = playerShape->GetVelocity();
     this->u2 = otherShape->GetVelocity();
-    PenetrationResoluter(*playerShape, *otherShape, collisionDirection);
+    NewPenetrationResoluter(*playerShape, *otherShape , collisionDirection);
     EffectiveEFinder(*playerShape, *otherShape);
     switch (collisionDirection) {
     case Right:
@@ -117,7 +118,7 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
 			v2.y = u2.y;
 		}
 		else {
-            v1 = u1;
+            v1 = {0.0f , u1.y};
 			v2 = u2;
         }
         break;
@@ -130,7 +131,7 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
 			v2.x = u2.x;
 		}
 		else {
-            v1 = u1;
+            v1 = { u1.x , 0.0f};
             v2 = u2;
 		}
         break;
@@ -271,14 +272,49 @@ void ContactMech::PenetrationResoluter(GameShape& player,GameShape& other,
 		break;
 	}
 	// RESOLVING THE PENETRATION BASED ON THEIR MASSES
-	//std::cout << "old resolution = " << resolution.x << " " << resolution.y << std::endl;
-	if (this->M1 * 1000 < this->M2) { player.SetPosition(playerPos + resolution); }
-	else if (this->M1 > 1000 * this->M2) { other.SetPosition(playerPos - resolution); }
-	else {
-		player.SetPosition(playerPos + resolution * (this->M2 / (this->M1 + this->M2)));
-		other.SetPosition(playerPos - resolution * (this->M1 / (this->M1 + this->M2)));
-	}
+    player.SetPosition(playerPos + resolution);
+}
 
+void ContactMech::NewPenetrationResoluter(GameShape& player,
+    GameShape& other, Direction direction){
+
+	const auto& playersize = player.GetSize() * 0.5f;
+    const auto& circleCentre = player.GetPosition() + playersize;
+	const auto& top = other.GetPosition();
+    const auto& bottom = top + other.GetSize();
+	sf::Vector2f closestPoint(0.0f, 0.0f);
+    this->resolution = { 0.0f,0.0f };
+
+    closestPoint.x = std::max(top.x, std::min(bottom.x, circleCentre.x));
+	closestPoint.y = std::max(top.y, std::min(bottom.y, circleCentre.y));
+	sf::Vector2f normal = closestPoint - circleCentre;
+
+	float magnitude = VectorOperation::Magnitude(normal);
+	if (magnitude == 0.0f) {
+        std::cout << "zero " << "\n";
+        magnitude = 1.0f; 
+    }
+
+	float overlap = playersize.x  - magnitude;
+    normal = normal / magnitude;
+
+
+    switch (direction){
+    case Right:
+    case Left:
+		this->resolution.x = -normal.x * overlap;
+        break;
+    case Top:
+    case Bottom:
+		this->resolution.y = -normal.y * overlap  - 0.16755f * Sign(normal.y);
+        // LEAVE 0.16755f*SIGN(NORMAL.Y) AS IT IS SINCE IT HELP TO REMOVE
+		// FLOAT ERROR OTHERWISE FUNCTION WILL NOT WORK AS INTENDED
+        // THINK IT AS WE R TRUNCATING DECIMALS
+        break;
+    default:
+        break;
+    }
+	player.SetPosition(circleCentre + resolution - playersize);
 }
 
 
@@ -314,5 +350,11 @@ void ContactMech::CalculateVelocity(float& v1, float& v2, float u1, float u2, fl
         v1 = ((M1 - eEffective * M2) * u1 + (1 + eEffective) * M2 * u2) / (M1 + M2);
         v2 = ((M2 - eEffective * M1) * u2 + (1 + eEffective) * M1 * u1) / (M1 + M2);
     }
+}
+
+float ContactMech::Sign(float& num){
+    if (num < 0.0f) { return -1.0f; }
+    else if (num == 0.0f) { return 0.0f; }
+    else { return 1.0f; }
 }
 

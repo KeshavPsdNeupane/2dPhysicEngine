@@ -65,10 +65,14 @@ private:
 		std::shared_ptr<GameShape> otherShape);
 	void ResetForNewCollision();
 	void PenetrationResoluter(GameShape& player , GameShape& other , Direction direction);
+	void NewPenetrationResoluter(GameShape& player , GameShape& other, Direction direction);
 	inline void EffectiveEFinder(RigidBody& F1, RigidBody& F2);
 	inline void CollisionThreshold();
 	void CalculateVelocity(float& v1, float& v2, float u1,
 		float u2, float M1, float M2, float eEffective);
 
+
+
+	float Sign(float& num);
 };
 

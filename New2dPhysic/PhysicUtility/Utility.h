@@ -68,9 +68,9 @@ namespace GMNumber {
 	// if the object has a velocity less than the COLLISION_VELOCITY_THRESHOLD_X
 	// and COLLISION_VELOCITY_THRESHOLD_Y it will mapp the respective velocity to 0.0f
 	static const sf::Vector2f COlliSION_VELOCITY_THRESHOLD(GRAVITY* (1.0f / MAX_FRAME_RATE)
-		* (COEFF_OF_RESTITUTION_OBJECT.x + COEFF_OF_RESTITUTION_PATH.x) / 4.0f,
+		* (COEFF_OF_RESTITUTION_OBJECT.x + COEFF_OF_RESTITUTION_PATH.x) * 0.5f,
 		GRAVITY* (1.0f / MAX_FRAME_RATE)
-		* (COEFF_OF_RESTITUTION_OBJECT.y + COEFF_OF_RESTITUTION_PATH.y) / 1.83f);
+		* (COEFF_OF_RESTITUTION_OBJECT.y + COEFF_OF_RESTITUTION_PATH.y));
 
 
 	// FOR COEFFICIENT OF FRICTION
@@ -79,7 +79,7 @@ namespace GMNumber {
 	// the above two are the coefficient of friction for the object and path
 
 	// RECT
-	static constexpr bool IS_PADDING = false;
+	static constexpr bool IS_PADDING = true;
 	static const sf::Vector2f ABSOLUTE_ACCLERATION_FOR_PLAYER = { 4000.0f, 800.0f };
 	static constexpr float SMALL_BALL_SIZE = 24;
 	static constexpr float BIG_SMALL_BALL_RATIO = 3.0f/2.0f;
@@ -140,9 +140,15 @@ class VectorOperation {
 public:
 	VectorOperation() = default;
 public:
-	static inline float DotProduct(const sf::Vector2f& vector) { return (vector.x * vector.x) +(vector.y * vector.y); }
-	static inline float DotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2) { return (v1.x * v2.x) + (v1.y * v2.y); }
-	static inline float Magnitude(const sf::Vector2f& vector) {return std::sqrt(DotProduct(vector));}
+	static inline float DotProduct(const sf::Vector2f& vector)
+	{ return (vector.x * vector.x) +(vector.y * vector.y); }
+
+	static inline float DotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2)
+	{ return (v1.x * v2.x) + (v1.y * v2.y); }
+
+	static inline float Magnitude(const sf::Vector2f& vector) 
+	{return std::sqrt(vector.x * vector.x + vector.y * vector.y);}
+
 	static inline float DistanceBetweenTwoVector(const sf::Vector2f& v1, const sf::Vector2f& v2) {
 		return std::sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
 	}

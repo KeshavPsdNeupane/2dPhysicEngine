@@ -1,5 +1,6 @@
 #include "Gameplay.h"
 #include"States/MenuState/PauseState.h"
+#include"States/MenuState/GameOver.h"
 
 Gameplay::Gameplay(std::shared_ptr<StateData> state):
 	isPaused(false),
@@ -13,7 +14,7 @@ Gameplay::Gameplay(std::shared_ptr<StateData> state):
 	auto size = GMNumber::SMALL_BALL_SIZE;
 	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	this->rectangle = std::make_shared<Rect>(++this->entityIdCounter, CollisionId::PlayerId, 60.0f,
-		sf::Vector2f(160.0f, 300.0f), sf::Vector2f(size , size),
+		sf::Vector2f(169.0f, 300.0f), sf::Vector2f(size , size),
 		GMNumber::COEFF_OF_RESTITUTION_OBJECT,
 		sf::Vector2f(GMNumber::COEFF_OF_FRICTION_OBJECT, GMNumber::COEFF_OF_FRICTION_OBJECT),
 		this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT)
@@ -95,16 +96,30 @@ void Gameplay::ProcessInput(){
 	while (this->stateData->window->pollEvent(event)) {
 		if (event.type == sf::Event::Closed)
 			this->stateData->window->close();
+		//std::cout << "lives = " << this->rectangle->GetLives() << std::endl;
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Escape) {
 				this->stateData->stateManager->AddState(
 					std::make_unique<PauseState>(this->stateData), false);
 			}
+			else if (event.key.code == sf::Keyboard::Period) {
+				this->rectangle->SetLives(this->rectangle->GetLives() + 1);
+			}
+			else if (event.key.code == sf::Keyboard::Comma) {
+				this->rectangle->SetLives(this->rectangle->GetLives() - 1);
+			}
+		
 		}
 	}
 }
 
 void Gameplay::Update(const float& dt){
+	if (this->rectangle->GetLives() < 1) {
+		this->stateData->stateManager->AddState(
+			std::make_unique<GameOver>(this->stateData));
+		return;
+	}
+
 	if (!this->isPaused) {
 		this->DT = dt;
 		this->updateDrawResultFromGrid =
@@ -113,7 +128,6 @@ void Gameplay::Update(const float& dt){
 		for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
 			this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
 		}
-
 
 		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
 			this->stateData->contactMechanic->ApplyFriction(this->rectangle, obj, this->DT);
@@ -166,16 +180,16 @@ void Gameplay::Start(){this->isPaused = false;}
 void Gameplay::DisplayStats(){
 	int maxsize = (int)this->path.size() + (int)this->collectable.size() + 3 +1;
 	// 3 for the object bouncy pad, inflator, deflator , 1 for player
-	this->text.setString(
-		"Objects Updated & Rendered: "
-		+ std::to_string((int)(updateDrawResultFromGrid.dynamicResult.size()
-			+ updateDrawResultFromGrid.staticResult.size()))
-		+ " / " + std::to_string(maxsize) + "\n" +
-		"Objects for Collision Checking: "
-		+ std::to_string((int)(collisionResultFromGrid.dynamicResult.size()
-			+ collisionResultFromGrid.staticResult.size()))
-		+ " / " + std::to_string(maxsize - 1)  // -1 since player will not collide with itself
-	);
+	//this->text.setString(
+	//	"Objects Updated & Rendered: "
+	//	+ std::to_string((int)(updateDrawResultFromGrid.dynamicResult.size()
+	//		+ updateDrawResultFromGrid.staticResult.size()))
+	//	+ " / " + std::to_string(maxsize) + "\n" +
+	//	"Objects for Collision Checking: "
+	//	+ std::to_string((int)(collisionResultFromGrid.dynamicResult.size()
+	//		+ collisionResultFromGrid.staticResult.size()))
+	//	+ " / " + std::to_string(maxsize - 1)  // -1 since player will not collide with itself
+	//);
 	this->text2.setString("Points = " + std::to_string(this->rectangle->GetPoints()));
 }
 

@@ -34,19 +34,21 @@ class Rect : public GameShape  {
 	float DT;
 	int points;
 	bool isLarge;
+	unsigned short lives;
 public:
 	Rect() = default;
 	Rect(const int id , const int colid, const float mass , const sf::Vector2f pos,
 		const sf::Vector2f size,const sf::Vector2f coeffOfRest , 
 		const sf::Vector2f coeffOfFriction ,const sf::Font& font);
 	~Rect();
+
 public:
 	inline void SetPosition(const sf::Vector2f position)override;
 	inline void SetSize(const sf::Vector2f size)override;
-	inline sf::CircleShape& GetCircle() { return this->circle; }
-	inline void SetPoints(const int points) { this->points = points; }
 	inline int GetPoints() const { return this->points; }
-
+	const inline void SetPoints(const int points) { this->points = points; }
+	inline void SetLives(const unsigned short lives) { this->lives = lives; }
+	const inline unsigned short GetLives() const { return this->lives; }
 
 public:
 	void Load(std::shared_ptr<Engine::ResourceManager> resources) override;

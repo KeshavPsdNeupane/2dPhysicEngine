@@ -7,7 +7,8 @@ PlayerBools playerRefenceBools;
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
 	const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction , const sf::Font& font):
 	GameShape(id, colid, mass, pos, size, {0.0f,0.0f}, { 0.0f,0.0f }
-		,coeffOfRest, coeffOfFriction),points(0) , isLarge(false){
+		,coeffOfRest, coeffOfFriction),points(0) , isLarge(false),
+	lives(3){
 	this->circle.setRadius(size.x / 2.0f);
 	this->circle.setPosition(pos);
 	FindMaxVelocities();
@@ -85,19 +86,7 @@ void Rect::MovementUpdate() {
 	else {
 		acceleration.x = 0;
 	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
-		float bigsize = GMNumber::BIG_BALL_SIZE;
-		SetSize({ bigsize ,bigsize });
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
-		float smallsize = GMNumber::SMALL_BALL_SIZE;
-		SetSize({ smallsize,smallsize });
-	}
-
 	JumpUpdate();
-
-
 }
 
 
@@ -107,7 +96,8 @@ void Rect::DisplayPositionAndVelocity() {
 		+ "Velocity = " + std::to_string((int)this->velocity.x) + " "
 		+ std::to_string((int)this->velocity.y) + "\n"
 		+ "Accleration = " + std::to_string((int)this->acceleration.x) + " "
-		+ std::to_string((int)this->acceleration.y));
+		+ std::to_string((int)this->acceleration.y) 
+	    + " \n\nLives = " + std::to_string(this->lives));
 }
 
 
@@ -129,9 +119,6 @@ inline void Rect::FindMaxVelocities() {
  * they are clamped to the absolute maximum values.
  *
  * If the mass of the Rect object is zero, it is set to 1.0f to avoid division by zero.
- *
- *
- * @note This function should be called whenever the mass or size of the Rect object changes.
  */
 	float size = GMNumber::SMALL_BALL_SIZE;
 	if (this->mass == 0) { this->mass = 1.0f; }
