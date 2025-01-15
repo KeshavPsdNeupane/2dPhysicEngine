@@ -2,16 +2,14 @@
 #include"../Body/ContactMechanic.h"
 #include"../PhysicUtility/Utility.h"
 
-PlayerBools playerRefenceBools;
-
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
 	const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction , const sf::Font& font):
 	GameShape(id, colid, mass, pos, size, {0.0f,0.0f}, { 0.0f,0.0f }
-		,coeffOfRest, coeffOfFriction),points(0) , isLarge(false),
-	lives(3){
+		,coeffOfRest, coeffOfFriction),points(0) , isLarge(false){
 	this->circle.setRadius(size.x / 2.0f);
 	this->circle.setPosition(pos);
 	FindMaxVelocities();
+	JumpTimeConstraintsFinder();
 }
 
 Rect::~Rect(){}
@@ -96,8 +94,7 @@ void Rect::DisplayPositionAndVelocity() {
 		+ "Velocity = " + std::to_string((int)this->velocity.x) + " "
 		+ std::to_string((int)this->velocity.y) + "\n"
 		+ "Accleration = " + std::to_string((int)this->acceleration.x) + " "
-		+ std::to_string((int)this->acceleration.y) 
-	    + " \n\nLives = " + std::to_string(this->lives));
+		+ std::to_string((int)this->acceleration.y));
 }
 
 
@@ -122,20 +119,20 @@ inline void Rect::FindMaxVelocities() {
  */
 	float size = GMNumber::SMALL_BALL_SIZE;
 	if (this->mass == 0) { this->mass = 1.0f; }
-	this->maxvelocity = { GMNumber::COEFF_MAX_VELOCITY_X / this->mass ,
+	this->maxVelocity = { GMNumber::COEFF_MAX_VELOCITY_X / this->mass ,
    std::sqrt((this->mass * GMNumber::COEFF_MAX_VELOCITY_Y)/(size* size))};
 
-	if (std::abs(maxvelocity.x) > GMNumber::ASOLUTE_MAX_VELOCITY.x) {
-		maxvelocity.x = GMNumber::ASOLUTE_MAX_VELOCITY.x;
+	if (std::abs(maxVelocity.x) > GMNumber::ASOLUTE_MAX_VELOCITY.x) {
+		maxVelocity.x = GMNumber::ASOLUTE_MAX_VELOCITY.x;
 	}
-	if (std::abs(maxvelocity.y) > GMNumber::ASOLUTE_MAX_VELOCITY.y) {
-		maxvelocity.y = GMNumber::ASOLUTE_MAX_VELOCITY.y;
+	if (std::abs(maxVelocity.y) > GMNumber::ASOLUTE_MAX_VELOCITY.y) {
+		maxVelocity.y = GMNumber::ASOLUTE_MAX_VELOCITY.y;
 	}
 }
 
 inline sf::Vector2f& Rect::NewPosition(const float& dt) {
 	this->velocity += this->acceleration * dt;
-	VectorOperation::ClampForVector(this->velocity, -maxvelocity, maxvelocity);
+	VectorOperation::ClampForVector(this->velocity, -maxVelocity, maxVelocity);
 	this->oldPosition = this->position;
 	this->position += this->velocity * dt;
 	this->acceleration.y = 0.0f;
@@ -143,11 +140,23 @@ inline sf::Vector2f& Rect::NewPosition(const float& dt) {
 }
 
 void Rect::JumpUpdate() {
-	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-		&& playerRefenceBools.canJumping ) {
-		playerRefenceBools.canJumping = false;
-		// below is use of ternary operator
-		this->velocity.y = isLarge? -ApplyMotionForce.JUMP_FORCE * GMNumber::ELASTICITY_RATIO
-			: -ApplyMotionForce.JUMP_FORCE;
+	const float jumpConstraints = isLarge
+		? TimeConstraints.JUMP_TIME_CONSTRAINTS * GMNumber::ELASTICITY_RATIO
+		: TimeConstraints.JUMP_TIME_CONSTRAINTS;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) &&
+		gameClock.jumpClock.getElapsedTime().asSeconds() >= jumpConstraints) {
+		float jumpForce = isLarge
+			? ApplyMotionForce.JUMP_FORCE * GMNumber::ELASTICITY_RATIO
+			: ApplyMotionForce.JUMP_FORCE;
+
+		this->velocity.y = -jumpForce;
+		this->gameClock.jumpClock.restart();
 	}
+}
+
+
+void Rect::JumpTimeConstraintsFinder(){
+	TimeConstraints.JUMP_TIME_CONSTRAINTS = 2.0f * (ApplyMotionForce.JUMP_FORCE / GMNumber::GRAVITY);
+	std::cout << "Jump Time Constraints = " << TimeConstraints.JUMP_TIME_CONSTRAINTS << "\n";
 }

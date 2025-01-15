@@ -2,8 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include<iostream>
 #include"RigidBody.h"
-class GameShape;
+#include"../World/WorldSuperClass.h"
 
+class GameShape;
 enum Direction {
 	Right = 0,      
 	Bottom = 1,      
@@ -15,6 +16,8 @@ enum Direction {
 
 class ContactMech {
 protected:
+	WorldSuperClass& world;
+
 	sf::Vector2f resolution;
 	sf::Vector2f u1;
 	sf::Vector2f u2;
@@ -32,7 +35,7 @@ protected:
 	float frictionDeceleratedVelocity;
 
 public:
-	ContactMech();
+	ContactMech(WorldSuperClass& w);
 public:
 	void CollsionDetection(std::shared_ptr<GameShape> playerShape ,
 		std::shared_ptr<GameShape> otherShape);
@@ -57,8 +60,11 @@ protected:
 
 	void CollectableCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
+	void StaticEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
 
-
+	void CheckPointCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
 
 private:
 	Direction CollisionDirectionFinder(std::shared_ptr<GameShape> playerShape,
@@ -72,7 +78,7 @@ private:
 		float u2, float M1, float M2, float eEffective);
 
 
-
+	//THIS FUNCTION RETURN SIGN OF THE NUMBER
 	float Sign(float& num);
 };
 

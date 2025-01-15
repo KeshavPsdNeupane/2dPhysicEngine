@@ -1,5 +1,4 @@
 #include "PauseState.h"
-#include"../../Gameplay.h"
 
 PauseState::PauseState(std::shared_ptr<StateData> stateData) :
 	stateData(stateData), DELTA_TIME(0.0f),

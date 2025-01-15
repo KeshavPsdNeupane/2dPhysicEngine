@@ -3,16 +3,16 @@
 #include<algorithm>
 #include<cmath>
 #include"GameShapes.h"
-#include"../Objects/Rect.h"
+#include"../Player/Rect.h"
 #include"../Objects/Collectable.h"
-#include"../Objects/Rect.h"
+#include"../Objects/CheckPoint.h"
 
-ContactMech::ContactMech():
+ContactMech::ContactMech(WorldSuperClass& w):
+	world(w),
     horizontalOverlap(0.0f), verticalOverlap(0.0f),
     M1(0.0f) , M2(0.0f),
     gravity(0.0f) , frictionDeceleratedVelocity(0.0f){
 }
-
 
 void ContactMech::CollsionDetection(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape) {
@@ -31,20 +31,21 @@ void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::sha
     if (CollisionBetweenCircleAndRectangle(player, other)) {
         this->coeffOfFriction = otherShape->GetCoefficientOfFriction();
         this->u1 = playerShape->GetVelocity();
-        this->Vunit = VectorOperation::Normalize(u1);
         gravity = GMNumber::GRAVITY;
         Direction direction = CollisionDirectionFinder(playerShape, otherShape);
         //  INCASE OF FRICTION THE DIRECTION IS REVERSED VERTICAL DIRECTION GIVES
        //  HORIZONTAL FRICTION AND HORIZONTAL DIRECTION GIVES VERTICAL FRICTION
-        if (direction == Right || direction == Left) {
-            this->frictionDeceleratedVelocity = -this->coeffOfFriction.y * gravity * this->Vunit.y * dt;
+		if (direction == Right || direction == Left) { // VERTICAL FRICTION
+            this->frictionDeceleratedVelocity = -this->coeffOfFriction.y * gravity * Sign(this->u1.y) * dt /4.0f;
             if (std::abs(this->u1.y) < GMNumber::LOWEST_VELOCITY_THRESHOLD) { this->u1.y = 0.0f; }
             this->u1 += {0.0f, this->frictionDeceleratedVelocity};
+			//std::cout << "FRICTION DECELERATED VERTICAL VERTICAL " << this->frictionDeceleratedVelocity << std::endl;
         }
-        else if (direction == Bottom || direction == Top) {
-            this->frictionDeceleratedVelocity = -this->coeffOfFriction.x * gravity * this->Vunit.x * dt;
+		else if (direction == Bottom || direction == Top) { // HORIZONTAL FRICTION
+            this->frictionDeceleratedVelocity = - this->coeffOfFriction.x * gravity * Sign(this->u1.x) * dt;
             if (std::abs(this->u1.x) < GMNumber::LOWEST_VELOCITY_THRESHOLD) { this->u1.x = 0.0f; }
             this->u1 += {this->frictionDeceleratedVelocity, 0.0f};
+            //std::cout << "FRICTION DECELERATED VELOCITY HORIZONTAL " << this->frictionDeceleratedVelocity << std::endl;
         }
         playerShape->SetVelocity(this->u1);
     }
@@ -52,7 +53,7 @@ void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::sha
 
 
 bool ContactMech::CollisionBetweenCircleAndRectangle(sf::FloatRect& B1, sf::FloatRect& B2) {
-    float radius = (B1.width -.01f) * 0.5f;  // DONT KNOW WHY AFTER SUBTRACTING 0.01f THERE THE COLLISION DETECTION WORK
+    float radius = (B1.width - .01f) * 0.5f;  // DONT KNOW WHY AFTER SUBTRACTING 0.01f THERE THE COLLISION DETECTION WORK
     // SO I AM GOING TO LEAVE IT AS IT IS FOR NOW , I WILL FIND THE REASON FOR THIS IF I GOT ANY TIME
     // I KNOW I AM NEVER GOING TO FIND THE REASON "IF IT WORKS SO DONT TOUCH IT"
     float distX = std::abs(B1.left + radius - (B2.left + B2.width / 2.0f));
@@ -86,6 +87,13 @@ void ContactMech::CollisionDetermination(std::shared_ptr<GameShape> playerShape,
 		break;
 	case CollisionId::CollectableId:
 		CollectableCollisionHandle(playerShape, otherShape);
+        break;
+	case CollisionId::StaticEnemyId:
+		StaticEnemyCollisionHandle(playerShape, otherShape);    
+		break;
+	case CollisionId::CheckPointId:
+		CheckPointCollisionHandle(playerShape, otherShape);
+        break;
     default:
         break;
     }
@@ -99,10 +107,7 @@ void ContactMech::CollisionDetermination(std::shared_ptr<GameShape> playerShape,
 Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape) {
 
-    if (!playerRefenceBools.canJumping) {playerRefenceBools.canJumping = true;}
-
     Direction collisionDirection = CollisionDirectionFinder(playerShape, otherShape);
-
     this->M1 = playerShape->GetMass();
     this->M2 = otherShape->GetMass();
     this->u1 = playerShape->GetVelocity();
@@ -112,34 +117,22 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
     switch (collisionDirection) {
     case Right:
     case Left:
-        if (std::abs(playerShape->GetVelocity().x) > GMNumber::COlliSION_VELOCITY_THRESHOLD.x) {
-			CalculateVelocity(v1.x, v2.x, u1.x, u2.x, M1, M2, e.x);
-			v1.y = u1.y;
-			v2.y = u2.y;
-		}
-		else {
-            v1 = {0.0f , u1.y};
-			v2 = u2;
-        }
+        CalculateVelocity(v1.x, v2.x, u1.x, u2.x, M1, M2, e.x);
+        v1.y = u1.y;
+        v2.y = u2.y;
         break;
 
     case Bottom:
     case Top:
-		if (std::abs(playerShape->GetVelocity().y) > GMNumber::COlliSION_VELOCITY_THRESHOLD.x) {
-			CalculateVelocity(v1.y, v2.y, u1.y, u2.y, M1, M2, e.y);
-			v1.x = u1.x;
-			v2.x = u2.x;
-		}
-		else {
-            v1 = { u1.x , 0.0f};
-            v2 = u2;
-		}
+        CalculateVelocity(v1.y, v2.y, u1.y, u2.y, M1, M2, e.y);
+        v1.x = u1.x;
+        v2.x = u2.x;
         break;
 
     default:
         break;
     }
-   CollisionThreshold();
+    CollisionThreshold();
     playerShape->SetVelocity(v1);
     otherShape->SetVelocity(v2);
     ResetForNewCollision();
@@ -210,12 +203,32 @@ void ContactMech::DeflatorCollisionHandle(std::shared_ptr<GameShape> playerShape
 
 void ContactMech::CollectableCollisionHandle(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape) {
-    std::shared_ptr<Rect> player = std::dynamic_pointer_cast<Rect>(playerShape);
-    if (!player) {return;}
     std::shared_ptr<Collectable> collectable = std::dynamic_pointer_cast<Collectable>(otherShape);
     if (!collectable) {return;}
-    player->SetPoints(player->GetPoints() + collectable->GetPoint());
+    world.SetPoints(world.GetPoints() + collectable->GetPoint());
     collectable->SetCanBeDeleted(true);
+    this->world.SetLife(this->world.GetLife() + 1);
+}
+
+void ContactMech::StaticEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
+    std::shared_ptr<GameShape> otherShape){
+	HeavyObjectCollisionHandle(playerShape, otherShape);
+	this->world.SetLife(this->world.GetLife() - 1);
+	playerShape->SetPosition(this->world.GetCheckPointPosition());
+	playerShape->SetVelocity({ 0.0f, 0.0f });
+}
+
+void ContactMech::CheckPointCollisionHandle(std::shared_ptr<GameShape> playerShape,
+    std::shared_ptr<GameShape> otherShape) {
+    auto checkPoint = std::dynamic_pointer_cast<CheckPoint>(otherShape);
+    if (!checkPoint) {return;}
+	if (checkPoint->GetIsFound()) { return; }
+
+    checkPoint->SetIsFound();
+
+   const auto& pos = checkPoint->GetPosition() + checkPoint->GetSize()/2.0f;
+    this->world.SetCheckPointPosition(pos);
+	std::cout << "CheckPoint Found and position set" << pos.x << " " << pos.y << "\n";
 }
 
 
@@ -306,8 +319,9 @@ void ContactMech::NewPenetrationResoluter(GameShape& player,
         break;
     case Top:
     case Bottom:
-		this->resolution.y = -normal.y * overlap  - 0.16755f * Sign(normal.y);
-        // LEAVE 0.16755f*SIGN(NORMAL.Y) AS IT IS SINCE IT HELP TO REMOVE
+		this->resolution.y = -normal.y * overlap - GMNumber::NEGATE_DISTANCE_FROM_COLLISION * Sign(normal.y);
+        // LEAVE 0.30f*SIGN(NORMAL.Y) AS IT IS SINCE IT HELP TO REMOVE
+		// SIGN JUST RETURN WHICH SIGH THE NORMAL.Y IS
 		// FLOAT ERROR OTHERWISE FUNCTION WILL NOT WORK AS INTENDED
         // THINK IT AS WE R TRUNCATING DECIMALS
         break;
@@ -325,10 +339,12 @@ void ContactMech::EffectiveEFinder(RigidBody& F1, RigidBody& F2){
 
 inline void ContactMech::CollisionThreshold(){
     const auto& Threshold = GMNumber::COlliSION_VELOCITY_THRESHOLD;
+   // std::cout << "th y " << Threshold.y << "\n";
     if (std::abs(v1.x) <= Threshold.x) { v1.x = 0.0f; }
     if (std::abs(v1.y) <= Threshold.y) { v1.y = 0.0f; }
     if (std::abs(v2.x) <= Threshold.x) { v2.x = 0.0f; }
     if (std::abs(v2.y) <= Threshold.y) { v2.y = 0.0f; }
+	//std::cout << "vy " << v1.y << "\n";
 }
 
 

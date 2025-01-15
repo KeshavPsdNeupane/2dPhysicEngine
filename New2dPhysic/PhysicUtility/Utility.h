@@ -1,6 +1,6 @@
 #pragma once
 #include<cmath>
-#include<iostream>
+
 
 namespace GMNumber {
 	//  FOR WINDOWS 
@@ -67,14 +67,16 @@ namespace GMNumber {
 	// the two are the threshold for the object to be considered after colliding
 	// if the object has a velocity less than the COLLISION_VELOCITY_THRESHOLD_X
 	// and COLLISION_VELOCITY_THRESHOLD_Y it will mapp the respective velocity to 0.0f
+	static constexpr float NEGATE_DISTANCE_FROM_COLLISION = 0.11f * GRAVITY / 500.0f;
 	static const sf::Vector2f COlliSION_VELOCITY_THRESHOLD(GRAVITY* (1.0f / MAX_FRAME_RATE)
 		* (COEFF_OF_RESTITUTION_OBJECT.x + COEFF_OF_RESTITUTION_PATH.x) * 0.5f,
 		GRAVITY* (1.0f / MAX_FRAME_RATE)
-		* (COEFF_OF_RESTITUTION_OBJECT.y + COEFF_OF_RESTITUTION_PATH.y));
+		* (COEFF_OF_RESTITUTION_OBJECT.y + COEFF_OF_RESTITUTION_PATH.y)*
+		std::pow(1.5f,NEGATE_DISTANCE_FROM_COLLISION));
 
 
 	// FOR COEFFICIENT OF FRICTION
-	static constexpr float COEFF_OF_FRICTION_PATH = 0.5f;
+	static constexpr float COEFF_OF_FRICTION_PATH = 0.7f;
 	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.0f;
 	// the above two are the coefficient of friction for the object and path
 
@@ -125,6 +127,22 @@ namespace GMNumber {
 };
 
 
+namespace MyColor {
+	static sf::Color purple = sf::Color(128, 0, 128);    // Purple
+	static sf::Color orange = sf::Color(255, 165, 0);    // Orange
+	static sf::Color teal = sf::Color(0, 128, 128);    // Teal
+	static sf::Color chocolate = sf::Color(210, 105, 30);   // Chocolate
+	static sf::Color indigo = sf::Color(75, 0, 130);     // Indigo
+	static sf::Color lightBlue = sf::Color(173, 216, 230);  // Light Blue
+	static sf::Color forestGreen = sf::Color(34, 139, 34);    // Forest Green
+	static sf::Color deepPink = sf::Color(255, 20, 147);   // Deep Pink
+	static sf::Color darkSlateGray = sf::Color(47, 79, 79);     // Dark Slate Gray
+	static sf::Color gold = sf::Color(255, 215, 0);    // Gold
+};
+
+
+
+
 enum CollisionId {
 	PlayerId = 0 ,
 	LightPathId = 2 ,
@@ -132,7 +150,9 @@ enum CollisionId {
 	BouncyPathId = 4,
 	InflatorId = 5,
 	DeflatorId = 6,
-	CollectableId = 7
+	CollectableId = 7,
+	StaticEnemyId  = 8,
+	CheckPointId = 9
 };
 
 
@@ -166,6 +186,4 @@ public:
 		return;
 	}
 };
-
-
 

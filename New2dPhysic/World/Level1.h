@@ -2,22 +2,25 @@
 #include<SFML/Graphics.hpp>
 #include<memory>
 #include<iostream>
-#include"Body/ContactMechanic.h"
-#include"GameGrid/GameGrid.h"
-#include"string"
-#include"StateObjects.h"
+#include<string>
 
-#include"Objects/Rect.h"
-#include"Objects/Inflator.h"
-#include"Objects/Deflator.h"
-#include"Path/BouncyPath.h"
-#include"Objects/Collectable.h"
-#include"Path/Path.h"
+#include"../Body/ContactMechanic.h"
+#include"../GameGrid/GameGrid.h"
+#include"../StateObjects.h"
+#include"../Player/Rect.h"
+#include"../Objects/Inflator.h"
+#include"../Objects/Deflator.h"
+#include"../Path/BouncyPath.h"
+#include"../Objects/Collectable.h"
+#include"../Path/Path.h"
+#include"../World/WorldSuperClass.h"
+#include"../Enemies/StaticEnemy.h"
+#include"../Objects/CheckPoint.h"
 
-class Gameplay : public Engine::State{
+
+class Level1 : public WorldSuperClass{
 private:
 	bool isPaused;
-	std::shared_ptr<StateData> stateData;
 	sf::Event event;
 	GameGrid grid;
 
@@ -28,7 +31,10 @@ private:
 	std::shared_ptr<BouncyPath> bouncyPath;
 	std::vector<std::shared_ptr<Collectable>> collectable;
 
+	std::shared_ptr<StaticEnemy> staticEnemy;
+	std::shared_ptr<CheckPoint> checkPoint;
 
+	ContactMech contactMechanic;
 	GridResult updateDrawResultFromGrid;
 	GridResult collisionResultFromGrid;
 	sf::Text text;
@@ -37,8 +43,8 @@ private:
 	int entityIdCounter;
 
 public:
-	Gameplay(std::shared_ptr<StateData> state);
-	~Gameplay();
+	Level1(std::shared_ptr<StateData> state);
+	~Level1();
 
 private:
 	void Load() override;

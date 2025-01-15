@@ -31,8 +31,3 @@ void Collectable::Update(const float& dT) {
 void Collectable::Draw(std::shared_ptr<sf::RenderWindow>window) {
     window->draw(*this->shape);
 }
-
-inline void Collectable::FindMaxVelocities() {
-    if (this->mass == 0) { this->mass = 1.0f; }
-    this->maxvelocity = this->velocity;
-}

@@ -15,6 +15,4 @@ public:
     void Update(const float& dt) override;
     void Draw(std::shared_ptr<sf::RenderWindow>window) override;
 
-private:
-    inline void FindMaxVelocities() override;
 };

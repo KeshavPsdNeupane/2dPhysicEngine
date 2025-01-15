@@ -1,5 +1,5 @@
 #include "MainMenuState.h"
-#include"../../Gameplay.h"
+#include"../../World/Level1.h"
 
 MainMenu::MainMenu(std::shared_ptr<StateData> stateData):
 	stateData(stateData), DELTA_TIME(0.0f),
@@ -95,7 +95,7 @@ void MainMenu::Update(const float& dt){
 		this->playButton.setFillColor(sf::Color::White);
 	}
 	if (isPlayButtonPressed) {
-		this->stateData->stateManager->AddState(std::make_unique<Gameplay>(this->stateData), true);
+		this->stateData->stateManager->AddState(std::make_unique<Level1>(this->stateData), true);
 	}
 	else if (isExitButtonPressed) {
 		this->stateData->window->close();

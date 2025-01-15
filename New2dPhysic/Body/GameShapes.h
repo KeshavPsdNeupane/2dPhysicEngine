@@ -24,9 +24,9 @@ public:
 	}
 	virtual ~GameShape() {}
 public:
-	inline int GetShapeID() { return this->id; }
-	inline void SetShapeID(int id) { this->id = id; }
-	inline int GetCollisionId() { return this->collisionId; }
+	const inline int GetShapeID() const { return this->id; }
+	inline void SetShapeID(const int id) { this->id = id; }
+	const inline int GetCollisionId() const { return this->collisionId; }
 	inline void SetCollisionId(int collisionId) { this->collisionId = collisionId; }
 public:
 	virtual void Load(std::shared_ptr<Engine::ResourceManager> resources) = 0;

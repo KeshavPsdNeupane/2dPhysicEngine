@@ -14,7 +14,7 @@ Path::Path(const int id, const int colid, const float mass, const sf::Vector2f p
 Path::~Path(){}
 
 void Path::Load(std::shared_ptr<Engine::ResourceManager> resources) {
-    this->shape->setFillColor(sf::Color::Blue);
+    this->shape->setFillColor(sf::Color(181, 101, 29, 255));
     if (GMNumber::IS_PADDING) {
         this->shape->setOutlineThickness(.5f);
         this->shape->setOutlineColor(sf::Color::Black);
@@ -29,9 +29,4 @@ void Path::Update(const float& dT) {
 
 void Path::Draw(std::shared_ptr<sf::RenderWindow>window) {
     window->draw(*this->shape);
-}
-
-inline void Path::FindMaxVelocities() {
-    if (this->mass == 0) { this->mass = 1.0f;}
-    this->maxvelocity = this->velocity;
 }

@@ -1,20 +1,20 @@
-#include "Gameplay.h"
-#include"States/MenuState/PauseState.h"
-#include"States/MenuState/GameOver.h"
+#include "Level1.h"
+#include"../States/MenuState/PauseState.h"
+#include"../States/MenuState/GameOver.h"
 
-Gameplay::Gameplay(std::shared_ptr<StateData> state):
-	isPaused(false),
-	stateData(state),
-	event(),
+Level1::Level1(std::shared_ptr<StateData> state):
+	WorldSuperClass(state), contactMechanic(*this),
+	isPaused(false),event(),
 	updateDrawResultFromGrid(),
 	collisionResultFromGrid(),
-	text(), 
-	DT(0.0f), entityIdCounter(0){	
+	text(), DT(0.0f), 
+	entityIdCounter(0){	
 	// for player  this is a temp   sf::Vector2f(410.0f, 200.0f)
+	sf::Vector2f positionForPlayer(169.0f, 300.0f);
 	auto size = GMNumber::SMALL_BALL_SIZE;
 	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	this->rectangle = std::make_shared<Rect>(++this->entityIdCounter, CollisionId::PlayerId, 60.0f,
-		sf::Vector2f(169.0f, 300.0f), sf::Vector2f(size , size),
+		positionForPlayer, sf::Vector2f(size , size),
 		GMNumber::COEFF_OF_RESTITUTION_OBJECT,
 		sf::Vector2f(GMNumber::COEFF_OF_FRICTION_OBJECT, GMNumber::COEFF_OF_FRICTION_OBJECT),
 		this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT)
@@ -55,19 +55,28 @@ Gameplay::Gameplay(std::shared_ptr<StateData> state):
 			sf::Vector2f(20.0f, 20.0f)));
 	}
 	
+	this->staticEnemy = std::make_shared<StaticEnemy>(++this->entityIdCounter, CollisionId::StaticEnemyId, mass,
+		sf::Vector2f(520.0f, 504.0f), sf::Vector2f(25.0f, 50.0f), E, u);
+
+	this->checkPoint = std::make_shared<CheckPoint>(++this->entityIdCounter, CollisionId::CheckPointId,
+		sf::Vector2f(50.0f, 455.0f), sf::Vector2f(50.0f, 50.0f));
+
+
+	this->checkPoint->GetPosition();
 	this->text.setFont(this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT));
 	this->text.setPosition({ 250.0f,10.0f });
 	this->text.setCharacterSize(15);
 	this->text2.setFont(this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT));
 	this->text2.setPosition({ 550.0f,10.0f });
 	this->text2.setCharacterSize(30);
+	this->checkPointPosition = positionForPlayer;
 }
 
-Gameplay::~Gameplay(){}
+Level1::~Level1(){}
 
 
 
-void Gameplay::Load(){
+void Level1::Load(){
 	this->rectangle->Load(this->stateData->resourceManager);
 	this->grid.AddObject(this->rectangle, false);
 
@@ -89,10 +98,16 @@ void Gameplay::Load(){
 
 	this->bouncyPath->Load(this->stateData->resourceManager);
 	this->grid.AddObject(this->bouncyPath, true);
+
+	this->staticEnemy->Load(this->stateData->resourceManager);
+	this->grid.AddObject(this->staticEnemy, true);
+
+	this->checkPoint->Load(this->stateData->resourceManager);
+	this->grid.AddObject(this->checkPoint, true);
 }
 
 
-void Gameplay::ProcessInput(){
+void Level1::ProcessInput(){
 	while (this->stateData->window->pollEvent(event)) {
 		if (event.type == sf::Event::Closed)
 			this->stateData->window->close();
@@ -103,18 +118,18 @@ void Gameplay::ProcessInput(){
 					std::make_unique<PauseState>(this->stateData), false);
 			}
 			else if (event.key.code == sf::Keyboard::Period) {
-				this->rectangle->SetLives(this->rectangle->GetLives() + 1);
+				++this->life;
 			}
 			else if (event.key.code == sf::Keyboard::Comma) {
-				this->rectangle->SetLives(this->rectangle->GetLives() - 1);
+				--this->life;
 			}
 		
 		}
 	}
 }
 
-void Gameplay::Update(const float& dt){
-	if (this->rectangle->GetLives() < 1) {
+void Level1::Update(const float& dt){
+	if (this->life < 1) {
 		this->stateData->stateManager->AddState(
 			std::make_unique<GameOver>(this->stateData));
 		return;
@@ -130,12 +145,12 @@ void Gameplay::Update(const float& dt){
 		}
 
 		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
-			this->stateData->contactMechanic->ApplyFriction(this->rectangle, obj, this->DT);
-			this->stateData->contactMechanic->CollsionDetection(this->rectangle, obj);
+			this->contactMechanic.ApplyFriction(this->rectangle, obj, this->DT);
+			this->contactMechanic.CollsionDetection(this->rectangle, obj);
 		}
 
 		for (auto& obj : this->collisionResultFromGrid.dynamicResult) {
-			this->stateData->contactMechanic->CollsionDetection(this->rectangle, obj);
+			this->contactMechanic.CollsionDetection(this->rectangle, obj);
 		}
 
 		this->rectangle->ReCentered();
@@ -151,7 +166,7 @@ void Gameplay::Update(const float& dt){
 }
 
 
-void Gameplay::Draw() {
+void Level1::Draw() {
 	if (!isPaused) {
 		auto& window = this->stateData->window;
 		window->clear();
@@ -173,11 +188,11 @@ void Gameplay::Draw() {
 
 }
 
-void Gameplay::Pause(){this->isPaused = true;}
+void Level1::Pause(){this->isPaused = true;}
 
-void Gameplay::Start(){this->isPaused = false;}
+void Level1::Start(){this->isPaused = false;}
 
-void Gameplay::DisplayStats(){
+void Level1::DisplayStats(){
 	int maxsize = (int)this->path.size() + (int)this->collectable.size() + 3 +1;
 	// 3 for the object bouncy pad, inflator, deflator , 1 for player
 	//this->text.setString(
@@ -190,10 +205,11 @@ void Gameplay::DisplayStats(){
 	//		+ collisionResultFromGrid.staticResult.size()))
 	//	+ " / " + std::to_string(maxsize - 1)  // -1 since player will not collide with itself
 	//);
-	this->text2.setString("Points = " + std::to_string(this->rectangle->GetPoints()));
+	this->text2.setString("Points = " + std::to_string(this->points) + 
+						"\nLife = " + std::to_string(this->life));
 }
 
-void Gameplay::DeleteUnwanted() {
+void Level1::DeleteUnwanted() {
 	auto& collectables = this->collectable;
 	for (auto it = collectables.begin(); it != collectables.end(); ) {
 		if ((*it)->GetCanBeDeleted()) {

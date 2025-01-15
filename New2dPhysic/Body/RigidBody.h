@@ -12,7 +12,7 @@ protected:
     sf::Vector2f acceleration;
     sf::Vector2f coefficientOfRestitution;
     sf::Vector2f ceofficientOfFriction;
-    sf::Vector2f maxvelocity;
+    sf::Vector2f maxVelocity;
     sf::Vector2f oldPosition;
     float gravity;
 public:
@@ -23,7 +23,7 @@ public:
         mass(1.0f), size(0.0f, 0.0f),
         coefficientOfRestitution(0.0f, 0.0f),
         ceofficientOfFriction(0.0f, 0.0f),
-        maxvelocity(0, 0), gravity(GMNumber::GRAVITY) {}
+        maxVelocity(0, 0), gravity(GMNumber::GRAVITY) {}
 
     RigidBody(const float& mass, const sf::Vector2f& position, const sf::Vector2f& size,
         const sf::Vector2f& velocity, const sf::Vector2f& acceleration,
@@ -50,7 +50,7 @@ public:
     inline void SetCoefficientOfFriction(const sf::Vector2f u) { this->ceofficientOfFriction = u; }
 
     const inline float& GetMass() const { return this->mass; }
-    const inline sf::Vector2f& GetPosition() const { return this->position; }
+    const inline sf::Vector2f& GetPosition()const { return this->position; }  
     const inline sf::Vector2f& GetSize() const { return this->size; }
     const inline sf::Vector2f& GetVelocity() const { return this->velocity; }
     const inline sf::Vector2f& GetAcceleration() const { return this->acceleration; }
@@ -87,7 +87,7 @@ public:
          * @return Reference to the updated position.
          */
         this->velocity += this->acceleration * dt;
-		VectorOperation::ClampForVector(this->velocity, -maxvelocity, maxvelocity);
+		VectorOperation::ClampForVector(this->velocity, -maxVelocity, maxVelocity);
         this->oldPosition = this->position;
         this->position += this->velocity * dt;
         this->acceleration.y = 0;
@@ -97,6 +97,6 @@ public:
 protected:
     virtual inline void FindMaxVelocities() {
         if (this->mass == 0) { this->mass = 1.0f; }
-        this->maxvelocity = this->velocity;
+        this->maxVelocity = this->velocity;
     }
 };

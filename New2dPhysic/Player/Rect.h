@@ -6,19 +6,18 @@
 #include<string>
 
 
-struct PlayerBools {
-	bool canJumping = false;
-};
-
-extern PlayerBools playerRefenceBools;
 
 class Rect : public GameShape  {
 
 	struct GameClock{
+		sf::Clock jumpClock;
 	}gameClock;
+
 	struct Bools {
 	}bools;
+
 	struct MaxTimeConstraints {
+		float JUMP_TIME_CONSTRAINTS = 0.0f;
 	}TimeConstraints;
 
 	struct ForceApplication {
@@ -31,10 +30,10 @@ class Rect : public GameShape  {
 	sf::Font font;
 	sf::Text text;
 	sf::CircleShape circle;
+
 	float DT;
 	int points;
 	bool isLarge;
-	unsigned short lives;
 public:
 	Rect() = default;
 	Rect(const int id , const int colid, const float mass , const sf::Vector2f pos,
@@ -47,8 +46,6 @@ public:
 	inline void SetSize(const sf::Vector2f size)override;
 	inline int GetPoints() const { return this->points; }
 	const inline void SetPoints(const int points) { this->points = points; }
-	inline void SetLives(const unsigned short lives) { this->lives = lives; }
-	const inline unsigned short GetLives() const { return this->lives; }
 
 public:
 	void Load(std::shared_ptr<Engine::ResourceManager> resources) override;
@@ -56,6 +53,10 @@ public:
 	void Draw(std::shared_ptr<sf::RenderWindow>window) override;
 	void DisplayPositionAndVelocity();
 	void ReCentered();
+
+
+	void ShowVel() {std::cout << " velocity = " << this->velocity.x << " " << this->velocity.y << "\n\n";}
+
 private:
 	void MovementUpdate();
 	void ApplyGravity() { this->acceleration.y = GMNumber::GRAVITY; }
@@ -63,4 +64,6 @@ private:
 	inline sf::Vector2f& NewPosition(const float& dt) override;
 
 	void JumpUpdate();
+
+	void JumpTimeConstraintsFinder();
 };
