@@ -30,19 +30,21 @@ void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::sha
 
     if (CollisionBetweenCircleAndRectangle(player, other)) {
         this->coeffOfFriction = otherShape->GetCoefficientOfFriction();
+		if (this->coeffOfFriction == 0.0f) { return; }
+
         this->u1 = playerShape->GetVelocity();
         gravity = GMNumber::GRAVITY;
         Direction direction = CollisionDirectionFinder(playerShape, otherShape);
         //  INCASE OF FRICTION THE DIRECTION IS REVERSED VERTICAL DIRECTION GIVES
        //  HORIZONTAL FRICTION AND HORIZONTAL DIRECTION GIVES VERTICAL FRICTION
 		if (direction == Right || direction == Left) { // VERTICAL FRICTION
-            this->frictionDeceleratedVelocity = -this->coeffOfFriction.y * gravity * Sign(this->u1.y) * dt /4.0f;
+            this->frictionDeceleratedVelocity = -this->coeffOfFriction * gravity * Sign(this->u1.y) * dt /4.0f;
             if (std::abs(this->u1.y) < GMNumber::LOWEST_VELOCITY_THRESHOLD) { this->u1.y = 0.0f; }
             this->u1 += {0.0f, this->frictionDeceleratedVelocity};
 			//std::cout << "FRICTION DECELERATED VERTICAL VERTICAL " << this->frictionDeceleratedVelocity << std::endl;
         }
 		else if (direction == Bottom || direction == Top) { // HORIZONTAL FRICTION
-            this->frictionDeceleratedVelocity = - this->coeffOfFriction.x * gravity * Sign(this->u1.x) * dt;
+            this->frictionDeceleratedVelocity = - this->coeffOfFriction * gravity * Sign(this->u1.x) * dt;
             if (std::abs(this->u1.x) < GMNumber::LOWEST_VELOCITY_THRESHOLD) { this->u1.x = 0.0f; }
             this->u1 += {this->frictionDeceleratedVelocity, 0.0f};
             //std::cout << "FRICTION DECELERATED VELOCITY HORIZONTAL " << this->frictionDeceleratedVelocity << std::endl;
@@ -108,6 +110,10 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
     std::shared_ptr<GameShape> otherShape) {
 
     Direction collisionDirection = CollisionDirectionFinder(playerShape, otherShape);
+    if (collisionDirection == Direction::Top && !playerReference.canjump) {
+		playerReference.canjump = true;
+    }
+
     this->M1 = playerShape->GetMass();
     this->M2 = otherShape->GetMass();
     this->u1 = playerShape->GetVelocity();
@@ -207,7 +213,7 @@ void ContactMech::CollectableCollisionHandle(std::shared_ptr<GameShape> playerSh
     if (!collectable) {return;}
     world.SetPoints(world.GetPoints() + collectable->GetPoint());
     collectable->SetCanBeDeleted(true);
-    this->world.SetLife(this->world.GetLife() + 1);
+    this->world.IncrementLife();
 }
 
 void ContactMech::StaticEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
@@ -230,7 +236,6 @@ void ContactMech::CheckPointCollisionHandle(std::shared_ptr<GameShape> playerSha
     this->world.SetCheckPointPosition(pos);
 	std::cout << "CheckPoint Found and position set" << pos.x << " " << pos.y << "\n";
 }
-
 
 
 
@@ -291,8 +296,8 @@ void ContactMech::PenetrationResoluter(GameShape& player,GameShape& other,
 void ContactMech::NewPenetrationResoluter(GameShape& player,
     GameShape& other, Direction direction){
 
-	const auto& playersize = player.GetSize() * 0.5f;
-    const auto& circleCentre = player.GetPosition() + playersize;
+	const auto& playerSize = player.GetSize() * 0.5f;
+    const auto& circleCentre = player.GetPosition() + playerSize;
 	const auto& top = other.GetPosition();
     const auto& bottom = top + other.GetSize();
 	sf::Vector2f closestPoint(0.0f, 0.0f);
@@ -308,7 +313,7 @@ void ContactMech::NewPenetrationResoluter(GameShape& player,
         magnitude = 1.0f; 
     }
 
-	float overlap = playersize.x  - magnitude;
+	float overlap = playerSize.x  - magnitude;
     normal = normal / magnitude;
 
 
@@ -328,7 +333,7 @@ void ContactMech::NewPenetrationResoluter(GameShape& player,
     default:
         break;
     }
-	player.SetPosition(circleCentre + resolution - playersize);
+	player.SetPosition(circleCentre + resolution - playerSize);
 }
 
 

@@ -1,9 +1,16 @@
 #pragma once
 #include<SFML/Graphics.hpp>
 #include<iostream>
-#include"../Body/GameShapes.h"
-#include"../Body/ContactMechanic.h"
 #include<string>
+#include"../Body/GameShapes.h"
+
+
+struct PlayerReference {
+	bool canjump = false;
+	bool isInWater = false;
+};
+
+extern PlayerReference playerReference;
 
 
 
@@ -14,6 +21,7 @@ class Rect : public GameShape  {
 	}gameClock;
 
 	struct Bools {
+		bool canJump = false;
 	}bools;
 
 	struct MaxTimeConstraints {
@@ -21,10 +29,9 @@ class Rect : public GameShape  {
 	}TimeConstraints;
 
 	struct ForceApplication {
-		// this shits r applied to a object with mass 60 kg 
-		//so make your mapping yourself with other thingys
-		float MOVEMENT_FORCE = 35775.0f;
-		float JUMP_FORCE = 250.0f;  // this thingy is adding velocity not accleration
+		//THIS THINGY ADD VELOCITY NOT ACTUAL FORCE
+		float MOVEMENT_FORCE = 150.0f;
+		float JUMP_FORCE = 250.0f;  
 	}ApplyMotionForce;
 
 	sf::Font font;
@@ -38,7 +45,7 @@ public:
 	Rect() = default;
 	Rect(const int id , const int colid, const float mass , const sf::Vector2f pos,
 		const sf::Vector2f size,const sf::Vector2f coeffOfRest , 
-		const sf::Vector2f coeffOfFriction ,const sf::Font& font);
+		const float coeffOfFriction);
 	~Rect();
 
 public:
@@ -46,6 +53,7 @@ public:
 	inline void SetSize(const sf::Vector2f size)override;
 	inline int GetPoints() const { return this->points; }
 	const inline void SetPoints(const int points) { this->points = points; }
+	Bools& GetBools() { return this->bools; }
 
 public:
 	void Load(std::shared_ptr<Engine::ResourceManager> resources) override;
@@ -53,15 +61,14 @@ public:
 	void Draw(std::shared_ptr<sf::RenderWindow>window) override;
 	void DisplayPositionAndVelocity();
 	void ReCentered();
-
-
-	void ShowVel() {std::cout << " velocity = " << this->velocity.x << " " << this->velocity.y << "\n\n";}
+	void DrawStats(std::shared_ptr<sf::RenderWindow>window);
 
 private:
 	void MovementUpdate();
 	void ApplyGravity() { this->acceleration.y = GMNumber::GRAVITY; }
 	inline void FindMaxVelocities() override;
-	inline sf::Vector2f& NewPosition(const float& dt) override;
+
+	inline sf::Vector2f& NewPosition(const float& dt)override;
 
 	void JumpUpdate();
 

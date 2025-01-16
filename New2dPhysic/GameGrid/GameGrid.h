@@ -7,15 +7,17 @@
 #include"../PhysicUtility/Utility.h"
 #include"../Body/GameShapes.h"
 #include"../Body/ContactMechanic.h"
+#include"OutlineRect.h"
+
 
 struct GridResult {
     std::vector<std::shared_ptr<GameShape>> staticResult;
     std::vector<std::shared_ptr<GameShape>> dynamicResult;
 };
 
-class GameGrid {
-    std::vector<std::shared_ptr<sf::RectangleShape>> gridVisual;    
-
+class GameGrid {   
+    std::vector<std::shared_ptr<OutlineRectangle>> gridVisual;    
+    std::vector<std::shared_ptr<OutlineRectangle>> tileVisual;    
     std::vector<std::vector<std::shared_ptr<GameShape>>> staticGridCell;
     std::vector<std::vector<std::shared_ptr<GameShape>>> dynamicGridCell;
 public:
@@ -26,7 +28,7 @@ public:
     void RemoveObject(std::shared_ptr<GameShape> shape , bool isStatic);
     GridResult PotentialCollision(std::shared_ptr<GameShape> shape);
     GridResult FindUpdatableAndDrawableBlock(std::shared_ptr<GameShape> shape);
-    void Draw(std::shared_ptr<sf::RenderWindow>window);
+	void Draw(std::shared_ptr<sf::RenderWindow>window);
     void ShowGirdObjectCound();
 
 private:

@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "../PhysicUtility/Utility.h"
 #include<cmath>
+
 class RigidBody {
 protected:
     float mass;
@@ -11,9 +12,9 @@ protected:
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     sf::Vector2f coefficientOfRestitution;
-    sf::Vector2f ceofficientOfFriction;
     sf::Vector2f maxVelocity;
     sf::Vector2f oldPosition;
+    float ceofficientOfFriction;
     float gravity;
 public:
     RigidBody()
@@ -22,12 +23,12 @@ public:
         acceleration(0.0f, 0.0f),
         mass(1.0f), size(0.0f, 0.0f),
         coefficientOfRestitution(0.0f, 0.0f),
-        ceofficientOfFriction(0.0f, 0.0f),
+        ceofficientOfFriction(0.0f),
         maxVelocity(0, 0), gravity(GMNumber::GRAVITY) {}
 
-    RigidBody(const float& mass, const sf::Vector2f& position, const sf::Vector2f& size,
-        const sf::Vector2f& velocity, const sf::Vector2f& acceleration,
-        const sf::Vector2f& coefficientOfRestitution, const sf::Vector2f& ceofficientOfFriction)
+    RigidBody(const float mass, const sf::Vector2f position, const sf::Vector2f size,
+        const sf::Vector2f velocity, const sf::Vector2f acceleration,
+        const sf::Vector2f coefficientOfRestitution, const float ceofficientOfFriction)
         :mass(mass),
         position(position),
         oldPosition(position),
@@ -47,7 +48,7 @@ public:
     inline void SetVelocity(const sf::Vector2f velocity) { this->velocity = velocity; }
     inline void SetAcceleration(const sf::Vector2f accleration) { this->acceleration = accleration; }
     inline void SetCoefficientOfRestitution(const sf::Vector2f E) { this->coefficientOfRestitution = E; }
-    inline void SetCoefficientOfFriction(const sf::Vector2f u) { this->ceofficientOfFriction = u; }
+    inline void SetCoefficientOfFriction(const float friction) { this->ceofficientOfFriction = friction; }
 
     const inline float& GetMass() const { return this->mass; }
     const inline sf::Vector2f& GetPosition()const { return this->position; }  
@@ -55,7 +56,7 @@ public:
     const inline sf::Vector2f& GetVelocity() const { return this->velocity; }
     const inline sf::Vector2f& GetAcceleration() const { return this->acceleration; }
     const inline sf::Vector2f& GetCoefficientOfRestitution() const { return this->coefficientOfRestitution; }
-    const inline sf::Vector2f& GetCoefficientOfFriction() const { return this->ceofficientOfFriction; }
+    const inline float& GetCoefficientOfFriction() const { return this->ceofficientOfFriction; }
     const inline sf::Vector2f& GetOldPosition()const { return this->oldPosition; }
 
 public:

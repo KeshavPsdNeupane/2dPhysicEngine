@@ -1,8 +1,8 @@
 #include "WorldSuperClass.h"
 
 WorldSuperClass::WorldSuperClass(std::shared_ptr<StateData> stateData, 
-	unsigned short l, unsigned int initpoint):
-	stateData(stateData) , life(l),points(initpoint) {}
+	unsigned short l, unsigned short maxlife, unsigned int initpoint):
+	stateData(stateData) , life(l),points(initpoint) , maxLife(maxlife){}
 
 WorldSuperClass::~WorldSuperClass(){}
 

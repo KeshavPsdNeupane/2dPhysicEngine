@@ -13,11 +13,11 @@ Level1::Level1(std::shared_ptr<StateData> state):
 	sf::Vector2f positionForPlayer(169.0f, 300.0f);
 	auto size = GMNumber::SMALL_BALL_SIZE;
 	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
+
 	this->rectangle = std::make_shared<Rect>(++this->entityIdCounter, CollisionId::PlayerId, 60.0f,
 		positionForPlayer, sf::Vector2f(size , size),
 		GMNumber::COEFF_OF_RESTITUTION_OBJECT,
-		sf::Vector2f(GMNumber::COEFF_OF_FRICTION_OBJECT, GMNumber::COEFF_OF_FRICTION_OBJECT),
-		this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT)
+		GMNumber::COEFF_OF_FRICTION_OBJECT
 	);
 
 
@@ -26,7 +26,7 @@ Level1::Level1(std::shared_ptr<StateData> state):
 	float mass = 400000.0f;
 	//sf::Vector2f E = sf::Vector2f(GMNumber::COEFF_OF_RESTITUTION_PATH_X, GMNumber::COEFF_OF_RESTITUTION_PATH_Y);
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
-	sf::Vector2f u = sf::Vector2f(GMNumber::COEFF_OF_FRICTION_PATH, GMNumber::COEFF_OF_FRICTION_PATH);
+	float u =  GMNumber::COEFF_OF_FRICTION_PATH;
 
 
 	this->path.push_back(std::make_shared<Path>(++this->entityIdCounter, CollisionId::HeavyPathId, mass,
@@ -52,11 +52,11 @@ Level1::Level1(std::shared_ptr<StateData> state):
 	for (int i = 0; i < 5; ++i) {
 		this->collectable.push_back(std::make_shared<Collectable>(++this->entityIdCounter,
 			CollisionId::CollectableId, 1.0f, 10 , sf::Vector2f(400.0f + 50.0f * i, 400.0f),
-			sf::Vector2f(20.0f, 20.0f)));
+			sf::Vector2f(48.0f, 48.0f)));
 	}
 	
 	this->staticEnemy = std::make_shared<StaticEnemy>(++this->entityIdCounter, CollisionId::StaticEnemyId, mass,
-		sf::Vector2f(520.0f, 504.0f), sf::Vector2f(25.0f, 50.0f), E, u);
+		sf::Vector2f(650.0f, 504.0f), sf::Vector2f(25.0f, 50.0f), E, u);
 
 	this->checkPoint = std::make_shared<CheckPoint>(++this->entityIdCounter, CollisionId::CheckPointId,
 		sf::Vector2f(50.0f, 455.0f), sf::Vector2f(50.0f, 50.0f));
@@ -104,6 +104,7 @@ void Level1::Load(){
 
 	this->checkPoint->Load(this->stateData->resourceManager);
 	this->grid.AddObject(this->checkPoint, true);
+
 }
 
 
@@ -111,17 +112,16 @@ void Level1::ProcessInput(){
 	while (this->stateData->window->pollEvent(event)) {
 		if (event.type == sf::Event::Closed)
 			this->stateData->window->close();
-		//std::cout << "lives = " << this->rectangle->GetLives() << std::endl;
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Escape) {
 				this->stateData->stateManager->AddState(
 					std::make_unique<PauseState>(this->stateData), false);
 			}
-			else if (event.key.code == sf::Keyboard::Period) {
-				++this->life;
+			if (event.key.code == sf::Keyboard::Period) {
+				IncrementLife();
 			}
 			else if (event.key.code == sf::Keyboard::Comma) {
-				--this->life;
+				DecrementLife();
 			}
 		
 		}
@@ -140,6 +140,7 @@ void Level1::Update(const float& dt){
 		this->updateDrawResultFromGrid =
 			this->grid.FindUpdatableAndDrawableBlock(this->rectangle);
 		collisionResultFromGrid = this->grid.PotentialCollision(this->rectangle);
+
 		for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
 			this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
 		}
@@ -170,8 +171,8 @@ void Level1::Draw() {
 	if (!isPaused) {
 		auto& window = this->stateData->window;
 		window->clear();
-
-		if(GMNumber::IS_PADDING){ this->grid.Draw(window); }
+		CreateViewBasedOnPlayer(window);
+		window->setView(this->worldView);
 
 		for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
 			obj->Draw(window);
@@ -179,13 +180,34 @@ void Level1::Draw() {
 		for (auto& obj : this->updateDrawResultFromGrid.dynamicResult) {
 			obj->Draw(window);
 		}
-		window->draw(text);
-		window->draw(text2);
 
-
+		if (GMNumber::IS_PADDING) {
+			this->grid.Draw(window);
+		}
+		DrawDefaulView(window);
 		window->display();
+	}
 }
 
+void Level1::CreateViewBasedOnPlayer(std::shared_ptr<sf::RenderWindow> window){
+	const float Width = (float)window->getSize().x;
+	const float Height = (float)window->getSize().y;
+	const float halfWidth = Width * 0.5f;
+	const float halfHeight = Height * 0.5f;
+	sf::Vector2f playerPosition = this->rectangle->GetPosition();
+	this->worldView.setSize(Width, Height);
+	float clampedX = VectorOperation::Clamp(playerPosition.x, halfWidth, GMNumber::WORLD_SIZE_X - halfWidth);
+	float clampedY = VectorOperation::Clamp(playerPosition.y, halfHeight, GMNumber::WORLD_SIZE_Y - halfHeight);
+	this->worldView.setCenter({ clampedX, clampedY });
+
+}
+
+void Level1::DrawDefaulView(std::shared_ptr<sf::RenderWindow>window){
+	window->setView(window->getDefaultView());
+
+	window->draw(text);
+	window->draw(text2);
+	this->rectangle->DrawStats(window);
 }
 
 void Level1::Pause(){this->isPaused = true;}

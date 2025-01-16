@@ -17,7 +17,6 @@ enum Direction {
 class ContactMech {
 protected:
 	WorldSuperClass& world;
-
 	sf::Vector2f resolution;
 	sf::Vector2f u1;
 	sf::Vector2f u2;
@@ -26,7 +25,7 @@ protected:
 	sf::Vector2f v2;
 	sf::Vector2f e;
 	sf::Vector2f accleration;
-	sf::Vector2f coeffOfFriction;
+	float coeffOfFriction;
 	float horizontalOverlap;
 	float verticalOverlap;
 	float M1;
@@ -65,7 +64,6 @@ protected:
 
 	void CheckPointCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
-
 private:
 	Direction CollisionDirectionFinder(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);

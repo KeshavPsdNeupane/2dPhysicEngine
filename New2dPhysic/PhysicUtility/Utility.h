@@ -4,8 +4,8 @@
 
 namespace GMNumber {
 	//  FOR WINDOWS 
-	static constexpr float WINDOW_WIDTH = 800.0f;
-	static constexpr float WINDOW_HEIGHT = 600.0f;
+	static constexpr float WINDOW_WIDTH = 768.0f;
+	static constexpr float WINDOW_HEIGHT = 576.0f;
 	static constexpr int MAX_FRAME_RATE = 60; ;
 	static constexpr float PI = 3.14159265359f;
 
@@ -22,7 +22,7 @@ namespace GMNumber {
 	// 9000.0f acts as a force but you can think of it as a coefficient.
 	// The coefficient maps to a terminal velocity of 200 with a mass of 60.
 	// For other masses, the terminal velocity can be calculated as: vt.x = 9000.0f / mass
-	static constexpr float COEFF_MAX_VELOCITY_X = 9000.0f;
+	static constexpr float COEFF_MAX_VELOCITY_X = 18000.0f;
 
 	// The coefficient for the maximum velocity in the y direction.
 	// The relation is: vt =  sqrt(K * 2 * g * m / (p * a * cd))
@@ -41,7 +41,7 @@ namespace GMNumber {
 	// the object will still move with this velocity
 	// this is done to prevent the object from moving with infinite velocity
 	// the object will move with this velocity in the direction of the force applied
-	static const sf::Vector2f ASOLUTE_MAX_VELOCITY = { 400.0f, 800.0f };
+	static const sf::Vector2f ASOLUTE_MAX_VELOCITY = { 500.0f, 800.0f };
 
 
 
@@ -95,12 +95,12 @@ namespace GMNumber {
 	
 
 	//  FOR GRID OF GAME
-	static constexpr float WORLD_SIZE_X = WINDOW_WIDTH;
-	static constexpr float WORLD_SIZE_Y = WINDOW_HEIGHT;
-	static constexpr float BASE_GRID_SIZE_X = 80.0F ;
-	static constexpr float BASE_GRID_SIZE_Y = 60.0F ;// THIS IS OPTIMIZED FOR THE 800X600 SCREEN
-	static constexpr float GRID_COUNT_X = WORLD_SIZE_X / BASE_GRID_SIZE_X;
-	static constexpr float GRID_COUNT_Y = WORLD_SIZE_Y / BASE_GRID_SIZE_Y;
+	// JUST MAKE SURE THIS IS MULTIPLE OF 240 FOR BOTH SIZES X and Y
+	static constexpr float WORLD_SIZE_X = WINDOW_WIDTH * 4.0f;
+	static constexpr float WORLD_SIZE_Y = WINDOW_HEIGHT * 2.0f;
+	static constexpr float BASE_GRID_SIZE = 64.0f;
+	static constexpr int GRID_COUNT_X = (int)(WORLD_SIZE_X / BASE_GRID_SIZE);
+	static constexpr int GRID_COUNT_Y = (int)(WORLD_SIZE_Y / BASE_GRID_SIZE);
 	// the above are the constants for the grid of the game
 	// WORLD_SIZE_X is the width of the game world
 	// WORLD_SIZE_Y is the height of the game world
@@ -123,7 +123,11 @@ namespace GMNumber {
 
 
 
-
+	// FOR TILE MAP
+	static constexpr float TILE_SIZE = 48.0f;
+	static constexpr int TILE_COUNT_X = (int)(WORLD_SIZE_X / TILE_SIZE);
+	static constexpr int TILE_COUNT_Y = (int)(WORLD_SIZE_Y / TILE_SIZE);
+	// the above are the constants for the tile map of the game
 };
 
 
@@ -152,7 +156,8 @@ enum CollisionId {
 	DeflatorId = 6,
 	CollectableId = 7,
 	StaticEnemyId  = 8,
-	CheckPointId = 9
+	CheckPointId = 9,
+	WaterPathId = 10,
 };
 
 
@@ -184,6 +189,13 @@ public:
 		if (current.x > max.x) { current.x = max.x; }
 		if (current.y > max.y) { current.y = max.y; }
 		return;
+	}
+
+	template<typename T>
+	static T Clamp( T current, const T min, const T max) {
+		if (current < min) { current = min; }
+		if (current > max) { current = max; }
+		return current;
 	}
 };
 

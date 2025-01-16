@@ -2,7 +2,7 @@
 #include"../PhysicUtility/Utility.h"
 
 StaticEnemy::StaticEnemy(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
-    const sf::Vector2f coeffOfRest, const sf::Vector2f ceoffOfFriction) :
+    const sf::Vector2f coeffOfRest, const float ceoffOfFriction) :
     GameShape(id, colid, mass, pos, size,
         { 0.0f,0.0f }, { 0.0f,0.0f }, coeffOfRest, ceoffOfFriction) {
     this->shape->setPosition(this->position);

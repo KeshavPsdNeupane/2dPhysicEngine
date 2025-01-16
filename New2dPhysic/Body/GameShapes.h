@@ -13,7 +13,7 @@ public:
 	GameShape() = default;
 	GameShape(const int id , const int colId, const float mass, const sf::Vector2f position, const sf::Vector2f size,
 		const sf::Vector2f velocity, const sf::Vector2f acceleration,
-		const sf::Vector2f coefficientOfRestitution, const sf::Vector2f ceofficientOfFriction):
+		const sf::Vector2f coefficientOfRestitution, const float ceofficientOfFriction):
 		shape(std::make_shared<sf::RectangleShape>()),
 		id(id),
 		collisionId(colId),

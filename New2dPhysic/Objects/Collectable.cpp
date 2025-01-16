@@ -5,10 +5,9 @@ Collectable::Collectable(const int id, const int colid, const float mass,
     const sf::Vector2f pos, const sf::Vector2f size) :
     point(points), canBeDeleted(false),
     GameShape(id, colid, mass, pos, size,
-        { 0.0f,0.0f }, { 0.0f,0.0f }, { 0.0f,0.0f }, { 0.0f,0.0f }) {
+        { 0.0f,0.0f }, { 0.0f,0.0f }, { 0.0f,0.0f }, 0.0f) {
     this->shape->setPosition(pos);
     this->shape->setSize(size);
-
 }
 
 Collectable::~Collectable(){}

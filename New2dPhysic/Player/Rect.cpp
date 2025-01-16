@@ -2,14 +2,18 @@
 #include"../Body/ContactMechanic.h"
 #include"../PhysicUtility/Utility.h"
 
+
+PlayerReference playerReference;
+
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
-	const sf::Vector2f coeffOfRest, const sf::Vector2f coeffOfFriction , const sf::Font& font):
+	const sf::Vector2f coeffOfRest, const float coeffOfFriction):
 	GameShape(id, colid, mass, pos, size, {0.0f,0.0f}, { 0.0f,0.0f }
 		,coeffOfRest, coeffOfFriction),points(0) , isLarge(false){
 	this->circle.setRadius(size.x / 2.0f);
 	this->circle.setPosition(pos);
 	FindMaxVelocities();
 	JumpTimeConstraintsFinder();
+	std::cout << "max vel" << this->maxVelocity.x << " " << this->maxVelocity.y << std::endl;
 }
 
 Rect::~Rect(){}
@@ -48,7 +52,6 @@ void Rect::Update(const float& dt) {
 
 
 void Rect::Draw(std::shared_ptr<sf::RenderWindow> window) {
-	window->draw(text);
 	window->draw(this->circle);
 }
 
@@ -73,16 +76,17 @@ void Rect::ReCentered() {
 	this->circle.setPosition(position);
 }
 
+void Rect::DrawStats(std::shared_ptr<sf::RenderWindow> window){
+	window->draw(text);
+}
+
 
 void Rect::MovementUpdate() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		ApplyForce({ - ApplyMotionForce.MOVEMENT_FORCE   , 0.0f });
+		this->velocity.x = -ApplyMotionForce.MOVEMENT_FORCE;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		ApplyForce({ ApplyMotionForce.MOVEMENT_FORCE   , 0.0f });
-	}
-	else {
-		acceleration.x = 0;
+		this->velocity.x = ApplyMotionForce.MOVEMENT_FORCE;
 	}
 	JumpUpdate();
 }
@@ -92,9 +96,7 @@ void Rect::DisplayPositionAndVelocity() {
 	this->text.setString("Position = " + std::to_string((int)this->position.x) + " "
 		+ std::to_string((int)this->position.y) + "\n"
 		+ "Velocity = " + std::to_string((int)this->velocity.x) + " "
-		+ std::to_string((int)this->velocity.y) + "\n"
-		+ "Accleration = " + std::to_string((int)this->acceleration.x) + " "
-		+ std::to_string((int)this->acceleration.y));
+		+ std::to_string((int)this->velocity.y));
 }
 
 
@@ -143,20 +145,19 @@ void Rect::JumpUpdate() {
 	const float jumpConstraints = isLarge
 		? TimeConstraints.JUMP_TIME_CONSTRAINTS * GMNumber::ELASTICITY_RATIO
 		: TimeConstraints.JUMP_TIME_CONSTRAINTS;
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) &&
+		playerReference.canjump && 
 		gameClock.jumpClock.getElapsedTime().asSeconds() >= jumpConstraints) {
 		float jumpForce = isLarge
 			? ApplyMotionForce.JUMP_FORCE * GMNumber::ELASTICITY_RATIO
 			: ApplyMotionForce.JUMP_FORCE;
-
+		playerReference.canjump = false;
 		this->velocity.y = -jumpForce;
 		this->gameClock.jumpClock.restart();
 	}
 }
 
 
-void Rect::JumpTimeConstraintsFinder(){
+void Rect::JumpTimeConstraintsFinder() {
 	TimeConstraints.JUMP_TIME_CONSTRAINTS = 2.0f * (ApplyMotionForce.JUMP_FORCE / GMNumber::GRAVITY);
-	std::cout << "Jump Time Constraints = " << TimeConstraints.JUMP_TIME_CONSTRAINTS << "\n";
 }

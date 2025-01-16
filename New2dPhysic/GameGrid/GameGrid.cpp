@@ -3,9 +3,12 @@
 #include <cmath>
 
 GameGrid::GameGrid() {
-    gridVisual.reserve(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));
-    staticGridCell.resize(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));
-    dynamicGridCell.resize(static_cast<int>(GMNumber::GRID_COUNT_X * GMNumber::GRID_COUNT_Y));
+	int Gx = GMNumber::GRID_COUNT_X;
+    int Gy = GMNumber::GRID_COUNT_Y;
+    gridVisual.reserve(Gx * Gy);
+    staticGridCell.resize(Gx * Gy);
+    dynamicGridCell.resize(Gx * Gy);
+	tileVisual.reserve(GMNumber::TILE_COUNT_X * GMNumber::TILE_COUNT_Y);
     VisualGridInit();
 }
 
@@ -46,10 +49,13 @@ void GameGrid::MoveObject(std::shared_ptr<GameShape> shape) {
     }
 }
 
-void GameGrid::Draw(std::shared_ptr<sf::RenderWindow> window) {
-    for (int i = 0; i < gridVisual.size(); ++i) {
-        window->draw(*gridVisual[i]); 
-    }
+void GameGrid::Draw(std::shared_ptr<sf::RenderWindow> window){
+ /*   for (int i = 0; i < gridVisual.size(); ++i) {
+        window->draw(*gridVisual[i]);
+    }*/
+	for (int i = 0; i < tileVisual.size(); ++i) {
+		window->draw(*tileVisual[i]);
+	}
 }
 
 void GameGrid::ShowGirdObjectCound() {
@@ -68,21 +74,36 @@ void GameGrid::ShowGirdObjectCound() {
 void GameGrid::VisualGridInit() {
     for (int y = 0; y < GMNumber::GRID_COUNT_Y; ++y) {
         for (int x = 0; x < GMNumber::GRID_COUNT_X; ++x) {
-            int index = x + y * (int)GMNumber::GRID_COUNT_X;;
-            std::shared_ptr<sf::RectangleShape> VisualRectangle = std::make_shared<sf::RectangleShape>();
-            VisualRectangle->setSize(sf::Vector2f(GMNumber::BASE_GRID_SIZE_X, GMNumber::BASE_GRID_SIZE_Y));
-            VisualRectangle->setPosition(x * GMNumber::BASE_GRID_SIZE_X, y * GMNumber::BASE_GRID_SIZE_Y);
-            VisualRectangle->setOutlineThickness(.5f);
-            VisualRectangle->setOutlineColor(sf::Color(165, 42, 42, 128));
-            VisualRectangle->setFillColor(sf::Color::Transparent);
-            gridVisual.push_back(VisualRectangle);
+            float size = GMNumber::BASE_GRID_SIZE;
+            float posX = x * size;
+            float posY = y * size;
+            sf::Vector2f position(posX, posY);
+            sf::Color rectangleColor(162, 42, 42 , 100);
+            std::shared_ptr<OutlineRectangle> out = std::make_shared<OutlineRectangle>(size, size, position, rectangleColor);
+            gridVisual.push_back(out);
         }
     }
+
+    for (int y = 0; y < GMNumber::TILE_COUNT_Y; ++y) {
+        for (int x = 0; x < GMNumber::TILE_COUNT_X; ++x) {
+            float size = GMNumber::TILE_SIZE;
+            float posX = x * size;
+            float posY = y * size;
+            sf::Vector2f position(posX, posY);
+            sf::Color color(255,255,255,100);
+            std::shared_ptr<OutlineRectangle> out = std::make_shared<OutlineRectangle>(size, size, position, color);
+            tileVisual.push_back(out);
+        }
+    }
+
+
+
+
 }
 
 inline int GameGrid::CalculateIndex(sf::Vector2f pos) {
-    int x = static_cast<int>(pos.x / GMNumber::BASE_GRID_SIZE_X);
-    int y = static_cast<int>(pos.y / GMNumber::BASE_GRID_SIZE_Y);
+    int x = static_cast<int>(pos.x / GMNumber::BASE_GRID_SIZE);
+    int y = static_cast<int>(pos.y / GMNumber::BASE_GRID_SIZE);
     return x + y * (int)GMNumber::GRID_COUNT_X;
 }
 
@@ -91,8 +112,8 @@ inline int GameGrid::CalculateIndex(sf::Vector2i gridId) {
 }
 
 inline sf::Vector2i GameGrid::GetGridNumber(sf::Vector2f pos) {
-    int x = static_cast<int>(pos.x / GMNumber::BASE_GRID_SIZE_X);
-    int y = static_cast<int>(pos.y / GMNumber::BASE_GRID_SIZE_Y);
+    int x = static_cast<int>(pos.x / GMNumber::BASE_GRID_SIZE);
+    int y = static_cast<int>(pos.y / GMNumber::BASE_GRID_SIZE);
     return { x, y };
 }
 

@@ -3,11 +3,10 @@
 CheckPoint::CheckPoint(const int id, const int colid, 
     const sf::Vector2f pos, const sf::Vector2f size) :
     GameShape(id, colid, 1.0f, pos, size,
-        { 0.0f,0.0f }, { 0.0f,0.0f }, { 0.0f,0.0f }, { 0.0f,0.0f }),
+        { 0.0f,0.0f }, { 0.0f,0.0f }, { 0.0f,0.0f }, 0.0f),
     isFound(false){
     this->shape->setPosition(this->position);
     this->shape->setSize(this->size);
-    this->shape->setFillColor(sf::Color::Yellow);
 }
 
 CheckPoint::~CheckPoint() {}

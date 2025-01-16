@@ -13,9 +13,10 @@
 #include"../Path/BouncyPath.h"
 #include"../Objects/Collectable.h"
 #include"../Path/Path.h"
-#include"../World/WorldSuperClass.h"
 #include"../Enemies/StaticEnemy.h"
 #include"../Objects/CheckPoint.h"
+#include"../World/WorldSuperClass.h"
+#include"../GameGrid/OutlineRect.h"
 
 
 class Level1 : public WorldSuperClass{
@@ -34,6 +35,7 @@ private:
 	std::shared_ptr<StaticEnemy> staticEnemy;
 	std::shared_ptr<CheckPoint> checkPoint;
 
+
 	ContactMech contactMechanic;
 	GridResult updateDrawResultFromGrid;
 	GridResult collisionResultFromGrid;
@@ -51,6 +53,8 @@ private:
 	void ProcessInput() override;
 	void Update(const float& dt) override;
 	void Draw() override;
+	void CreateViewBasedOnPlayer(std::shared_ptr<sf::RenderWindow>window);
+	void DrawDefaulView(std::shared_ptr<sf::RenderWindow>window);
 	void Pause() override;	
 	void Start() override;
 
