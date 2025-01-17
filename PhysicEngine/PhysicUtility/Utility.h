@@ -1,0 +1,219 @@
+#pragma once
+#include<cmath>
+
+
+namespace GMNumber {
+	//  FOR WINDOWS 
+	static constexpr float WINDOW_WIDTH = 768.0f;
+	static constexpr float WINDOW_HEIGHT = 576.0f;
+	static constexpr int MAX_FRAME_RATE = 60; ;
+	static constexpr float PI = 3.14159265359f;
+
+	//--------------------------------------------------------------------------------
+	static constexpr float GRAVITY = 60.0f * 10.0f;// HERE 50 IS A MODIFIER AND 10 IS ACTUAL VALUE JUST LIKE IRL G OF 9.8 OR 10M/S
+	static constexpr float AIR_COEFFICIENT_OF_DRAG = 0.47f;
+	static constexpr float AIR_DENSITY = 1.225f;
+ 
+
+	//for RIGIDBODY
+	// The coefficient for the maximum velocity in the x direction.
+	// This coefficient acts as a force but can be thought of as a scaling factor.
+	// The relation for the velocity is: velocity = force / mass
+	// 9000.0f acts as a force but you can think of it as a coefficient.
+	// The coefficient maps to a terminal velocity of 200 with a mass of 60.
+	// For other masses, the terminal velocity can be calculated as: vt.x = 9000.0f / mass
+	static constexpr float COEFF_MAX_VELOCITY_X = 18000.0f;
+
+	// The coefficient for the maximum velocity in the y direction.
+	// The relation is: vt =  sqrt(K * 2 * g * m / (p * a * cd))
+	// K is the constant COEFF_MAX_VELOCITY_Y = 1672.98f
+	// where vt is terminal velocity, g is gravity, m is mass, p is air density, a is area, and cd is the coefficient of drag.
+	// The value used are m = 60, area = 24*24, cd = 0.47, p = 1.225, gravity = 500 for this mapping.
+	// The relation with the coefficient is: vt = sqrt(2972.41 * (2 * m * g) / (p * cd))
+	// The coefficient has a direct proportional relation with sqrt(mass) and sqrt(gravity),
+	// and an inverse proportional relation with sqrt(area).
+	// The area and mass are obtained from the respective class functions.
+	static constexpr float COEFF_MAX_VELOCITY_Y = 1672.98f * (2.0f * GRAVITY) / (AIR_DENSITY * AIR_COEFFICIENT_OF_DRAG);
+
+
+	// the  two values are the maximum velocity that can be achieved by the object
+	// if the object is pushed by a force greater than the force required to achieve this velocity
+	// the object will still move with this velocity
+	// this is done to prevent the object from moving with infinite velocity
+	// the object will move with this velocity in the direction of the force applied
+	static const sf::Vector2f ASOLUTE_MAX_VELOCITY = { 500.0f, 800.0f };
+
+
+
+
+	// these two are the threshold for the object to be considered as stationary
+	// if the object has a velocity less than the LOWEST_VELOCITY_THRESHOLD
+	// and mass greater than MASS_THRESHOLD
+	// the object will be considered as stationary
+	// this is done to prevent the object from moving with very low velocity
+	static constexpr float LOWEST_VELOCITY_THRESHOLD = 0.4f;
+	static constexpr float MASS_THRESHOLD = 1000.0f;
+
+
+
+	//FOR COEFF OF RESTITUTION
+	// values are the coefficient of restitution for the object and path
+	// the coefficient of restitution is the ratio of the final velocity to the initial velocity
+
+	static const sf::Vector2f COEFF_OF_RESTITUTION_OBJECT(0.2f, 0.3f) ;
+	static const sf::Vector2f COEFF_OF_RESTITUTION_PATH(0.7f, 0.4f) ;
+
+	//COLLISION THRESHOLD CALCULATION
+	// the two are the threshold for the object to be considered after colliding
+	// if the object has a velocity less than the COLLISION_VELOCITY_THRESHOLD_X
+	// and COLLISION_VELOCITY_THRESHOLD_Y it will mapp the respective velocity to 0.0f
+	static constexpr float NEGATE_DISTANCE_FROM_COLLISION = 0.11f * GRAVITY / 500.0f;
+	static const sf::Vector2f COlliSION_VELOCITY_THRESHOLD(GRAVITY* (1.0f / MAX_FRAME_RATE)
+		* (COEFF_OF_RESTITUTION_OBJECT.x + COEFF_OF_RESTITUTION_PATH.x) * 0.5f,
+		GRAVITY* (1.0f / MAX_FRAME_RATE)
+		* (COEFF_OF_RESTITUTION_OBJECT.y + COEFF_OF_RESTITUTION_PATH.y)*
+		std::pow(1.5f,NEGATE_DISTANCE_FROM_COLLISION));
+
+
+	// FOR COEFFICIENT OF FRICTION
+	static constexpr float COEFF_OF_FRICTION_PATH = 0.7f;
+	static constexpr float COEFF_OF_FRICTION_OBJECT = 0.0f;
+	// the above two are the coefficient of friction for the object and path
+
+	// RECT
+	static constexpr bool IS_PADDING = true;
+	static const sf::Vector2f ABSOLUTE_ACCLERATION_FOR_PLAYER = { 4000.0f, 800.0f };
+	static constexpr float SMALL_BALL_SIZE = 24;
+	static constexpr float BIG_SMALL_BALL_RATIO = 3.0f/2.0f;
+	static constexpr float BIG_BALL_SIZE = SMALL_BALL_SIZE * BIG_SMALL_BALL_RATIO;
+	static constexpr float READJUST_SIZE = SMALL_BALL_SIZE * (BIG_SMALL_BALL_RATIO -1.0f);
+	static constexpr float ELASTICITY_RATIO = 1.25f;
+	// the above are the constants for the player object
+	// ABSOLUTE_ACCLERATION_FOR_PLAYER_X is the maximum acceleration in the x direction
+	// ABSOLUTE_ACCLERATION_FOR_PLAYER_Y is the maximum acceleration in the y direction
+	// MOVEMENT_FORCE is the force applied to the player object
+	
+
+	//  FOR GRID OF GAME
+	// JUST MAKE SURE THIS IS MULTIPLE OF 240 FOR BOTH SIZES X and Y
+	static constexpr float WORLD_SIZE_X = WINDOW_WIDTH * 4.0f;
+	static constexpr float WORLD_SIZE_Y = WINDOW_HEIGHT * 2.0f;
+	static constexpr float BASE_GRID_SIZE = 64.0f;
+	static constexpr int GRID_COUNT_X = (int)(WORLD_SIZE_X / BASE_GRID_SIZE);
+	static constexpr int GRID_COUNT_Y = (int)(WORLD_SIZE_Y / BASE_GRID_SIZE);
+	// the above are the constants for the grid of the game
+	// WORLD_SIZE_X is the width of the game world
+	// WORLD_SIZE_Y is the height of the game world
+	// BASE_GRID_SIZE_X is the width of the grid cell
+	// BASE_GRID_SIZE_Y is the height of the grid cell
+	// GRID_COUNT_X is the number of grid cells in the x direction
+	//	GRID_COUNT_Y is the number of grid cells in the y direction
+	// the grid is used to optimize the collision detection and drawing of the objects
+
+
+	// Just make sure UPDATE_DRAW_RANGE is always greater than POTENTIAL_COLLISION_RANGE
+	// It wont make any problem but u r just processing extra chunks of object
+	// which wont ever gets updated or drawn
+	static constexpr unsigned int POTENTIAL_COLLISION_RANGE = 1; // this is a grid range, means it checks n block out of player in all direction
+	static constexpr unsigned int UPDATE_DRAW_RANGE = 3; // this is a grid range ,means it checks n block out of player in all direction
+	// the above two are the constants for the grid of the game
+	// POTENTIAL_COLLISION_RANGE is the range of the grid cells to check for potential collision
+	// UPDATE_DRAW_RANGE is the range of the grid cells to update and draw the objects
+	// the grid is used to optimize the collision detection and drawing of the objects
+
+
+
+	// FOR TILE MAP
+	static constexpr float TILE_SIZE = 48.0f;
+	static constexpr int TILE_COUNT_X = (int)(WORLD_SIZE_X / TILE_SIZE);
+	static constexpr int TILE_COUNT_Y = (int)(WORLD_SIZE_Y / TILE_SIZE);
+	// the above are the constants for the tile map of the game
+};
+
+
+namespace MyColor {
+	static sf::Color purple = sf::Color(128, 0, 128);    // Purple
+	static sf::Color orange = sf::Color(255, 165, 0);    // Orange
+	static sf::Color teal = sf::Color(0, 128, 128);    // Teal
+	static sf::Color chocolate = sf::Color(210, 105, 30);   // Chocolate
+	static sf::Color indigo = sf::Color(75, 0, 130);     // Indigo
+	static sf::Color lightBlue = sf::Color(173, 216, 230);  // Light Blue
+	static sf::Color forestGreen = sf::Color(34, 139, 34);    // Forest Green
+	static sf::Color deepPink = sf::Color(255, 20, 147);   // Deep Pink
+	static sf::Color darkSlateGray = sf::Color(47, 79, 79);     // Dark Slate Gray
+	static sf::Color gold = sf::Color(255, 215, 0);    // Gold
+};
+
+
+
+
+enum CollisionId {
+	PlayerId = 0 ,
+	LightPathId = 2 ,
+	HeavyPathId = 3 ,
+	BouncyPathId = 4,
+	InflatorId = 5,
+	DeflatorId = 6,
+	CollectableId = 7,
+	StaticEnemyId  = 8,
+	CheckPointId = 9,
+	WaterPathId = 10,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class VectorOperation {
+public:
+	VectorOperation() = default;
+public:
+	static inline float DotProduct(const sf::Vector2f& vector)
+	{ return (vector.x * vector.x) +(vector.y * vector.y); }
+
+	static inline float DotProduct(const sf::Vector2f& v1, const sf::Vector2f& v2)
+	{ return (v1.x * v2.x) + (v1.y * v2.y); }
+
+	static inline float Magnitude(const sf::Vector2f& vector) 
+	{return std::sqrt(vector.x * vector.x + vector.y * vector.y);}
+
+	static inline float DistanceBetweenTwoVector(const sf::Vector2f& v1, const sf::Vector2f& v2) {
+		return std::sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
+	}
+	static inline sf::Vector2f Normalize(sf::Vector2f vector) {
+		auto M = std::sqrt(vector.x * vector.x + vector.y * vector.y);
+		if (M == 0) { M = 1; }   // to avoid division by zero
+		return { vector.x / M , vector.y / M };
+	}
+
+	static void ClampForVector(sf::Vector2f& current, const sf::Vector2f& min, const sf::Vector2f& max) {
+		if (current.x < min.x) { current.x = min.x; }
+		if (current.y < min.y) { current.y = min.y; }
+		if (current.x > max.x) { current.x = max.x; }
+		if (current.y > max.y) { current.y = max.y; }
+		return;
+	}
+
+	template<typename T>
+	static T Clamp(T current, const T min, const T max) {
+		if (current < min) { current = min; }
+		if (current > max) { current = max; }
+		return current;
+	}
+};
+
