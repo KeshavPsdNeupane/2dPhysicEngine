@@ -40,8 +40,8 @@ void GameGrid::AddObject(std::shared_ptr<GameShape> shape, bool isStatic){
 void GameGrid::MoveObject(std::shared_ptr<GameShape> shape) {
     sf::Vector2f newPos = shape->GetPosition();
     sf::Vector2f oldPos = shape->GetOldPosition();
-    int oldIndex = CalculateIndex(oldPos);
-    int newIndex = CalculateIndex(newPos);
+    unsigned int oldIndex = CalculateIndex(oldPos);
+    unsigned int newIndex = CalculateIndex(newPos);
 
     if (oldIndex != newIndex && newIndex < this->dynamicGridCell.size()) {
         RemoveObjectAtIndex(shape->GetShapeID(), oldIndex,false);
@@ -53,17 +53,17 @@ void GameGrid::Draw(std::shared_ptr<sf::RenderWindow> window){
  /*   for (int i = 0; i < gridVisual.size(); ++i) {
         window->draw(*gridVisual[i]);
     }*/
-	for (int i = 0; i < tileVisual.size(); ++i) {
+	for (unsigned int i = 0; i < tileVisual.size(); ++i) {
 		window->draw(*tileVisual[i]);
 	}
 }
 
 void GameGrid::ShowGirdObjectCound() {
     size_t count = 0;
-    for (int i = 0; i < staticGridCell.size(); ++i) {
+    for (unsigned int i = 0; i < staticGridCell.size(); ++i) {
         count += staticGridCell[i].size();
     }
-    for (int i = 0; i < dynamicGridCell.size(); ++i) {
+    for (unsigned int i = 0; i < dynamicGridCell.size(); ++i) {
         count += dynamicGridCell[i].size();
     }
     std::cout << " grid object count = " << count << std::endl;
@@ -129,7 +129,7 @@ void GameGrid::AddObjectAtIndex(std::shared_ptr<GameShape> shape, int index, boo
     }
 }
 
-void GameGrid::RemoveObjectAtIndex(int id, int index, bool isStatic) {
+void GameGrid::RemoveObjectAtIndex(int id, unsigned index, bool isStatic) {
     auto& shapeVector = isStatic ? staticGridCell : dynamicGridCell;
     if (index >= 0 && index < shapeVector.size()) {
         auto& objectsInCell = shapeVector[index];

@@ -124,7 +124,7 @@ namespace GMNumber {
 
 
 	// FOR TILE MAP
-	static constexpr float TILE_SIZE = 48.0f;
+	static constexpr float TILE_SIZE = 64.0f;
 	static constexpr int TILE_COUNT_X = (int)(WORLD_SIZE_X / TILE_SIZE);
 	static constexpr int TILE_COUNT_Y = (int)(WORLD_SIZE_Y / TILE_SIZE);
 	// the above are the constants for the tile map of the game

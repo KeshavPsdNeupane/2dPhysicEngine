@@ -31,7 +31,7 @@ class Rect : public GameShape  {
 	struct ForceApplication {
 		//THIS THINGY ADD VELOCITY NOT ACTUAL FORCE
 		float MOVEMENT_FORCE = 150.0f;
-		float JUMP_FORCE = 250.0f;  
+		float JUMP_FORCE = 300.0f;  
 	}ApplyMotionForce;
 
 	sf::Font font;

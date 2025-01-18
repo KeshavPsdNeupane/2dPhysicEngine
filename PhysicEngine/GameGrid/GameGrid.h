@@ -39,7 +39,7 @@ private:
     inline sf::Vector2i GetGridNumber(sf::Vector2f pos);
     inline bool IsValidGridIndex(sf::Vector2i gridNumber) const;
     void AddObjectAtIndex(std::shared_ptr<GameShape> shape, int index, bool isStatic);
-    void RemoveObjectAtIndex(int id, int index, bool isStatic);
+    void RemoveObjectAtIndex(int id, unsigned index, bool isStatic);
     GridResult FindObjectsInRange(std::shared_ptr<GameShape> shape, int range, bool skipSelf);
 };
 

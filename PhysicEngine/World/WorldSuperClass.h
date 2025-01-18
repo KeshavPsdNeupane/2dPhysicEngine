@@ -6,6 +6,9 @@
 
 class WorldSuperClass : public Engine::State{
 protected:
+	sf::Vector2i worldSize;
+	sf::Vector2i tileSize;
+
 	std::shared_ptr<StateData> stateData;
 	sf::View worldView;
 	unsigned int points;

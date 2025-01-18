@@ -17,7 +17,7 @@
 #include"../Objects/CheckPoint.h"
 #include"../World/WorldSuperClass.h"
 #include"../GameGrid/OutlineRect.h"
-#include"../TileGrid/Tile.h"
+#include"../TileGrid/TileResource.h"
 
 class Level1 : public WorldSuperClass{
 private:
@@ -27,13 +27,14 @@ private:
 
 	std::shared_ptr<Rect> rectangle;
 	std::vector<std::shared_ptr<Path>> path;
-	std::shared_ptr<Inflator> inflator;
-	std::shared_ptr<Deflator> deflator;
-	std::shared_ptr<BouncyPath> bouncyPath;
+	std::vector<std::shared_ptr<Inflator>> inflator;
+	std::vector<std::shared_ptr<Deflator>> deflator;
+
+	std::vector<std::shared_ptr<BouncyPath>> bouncyPath;
 	std::vector<std::shared_ptr<Collectable>> collectable;
 
-	std::shared_ptr<StaticEnemy> staticEnemy;
-	std::shared_ptr<CheckPoint> checkPoint;
+	std::vector<std::shared_ptr<StaticEnemy>> staticEnemy;
+	std::vector<std::shared_ptr<CheckPoint>> checkPoint;
 
 
 	ContactMech contactMechanic;
@@ -66,5 +67,12 @@ private:
 	void DeleteUnwanted();
 
 
+	void CreatePath(TotalTileData& data);
+	void CreateInflator(TotalTileData& data);
+	void CreateDeflator(TotalTileData& data);
+	void CreateBouncyPath(TotalTileData& data);
+	void CreateCollectable(TotalTileData& data);
+	void CreateStaticEnemy(TotalTileData& data);
+	void CreateCheckPoint(TotalTileData& data);
 };
 

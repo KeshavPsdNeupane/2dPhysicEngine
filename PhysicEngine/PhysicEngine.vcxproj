@@ -71,11 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\inter\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\output\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\inter\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\inter\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\output\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\inter\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\output\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\inter\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\output\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Platform)\bin\$(Configuration)\inter\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -159,7 +167,7 @@
     <ClCompile Include="States\MenuState\MainMenuState.cpp" />
     <ClCompile Include="States\MenuState\PauseState.cpp" />
     <ClCompile Include="States\StateManager.cpp" />
-    <ClCompile Include="TileGrid\Tile.cpp" />
+    <ClCompile Include="TileGrid\TileResource.cpp" />
     <ClCompile Include="World\Level1.cpp" />
     <ClCompile Include="World\WorldSuperClass.cpp" />
   </ItemGroup>
@@ -186,7 +194,6 @@
     <ClInclude Include="States\MenuState\PauseState.h" />
     <ClInclude Include="States\State.h" />
     <ClInclude Include="States\StateManager.h" />
-    <ClInclude Include="TileGrid\Tile.h" />
     <ClInclude Include="TileGrid\TileResource.h" />
     <ClInclude Include="World\Level1.h" />
     <ClInclude Include="World\WorldSuperClass.h" />

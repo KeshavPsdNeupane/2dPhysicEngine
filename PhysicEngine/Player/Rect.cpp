@@ -48,6 +48,7 @@ void Rect::Update(const float& dt) {
 	ApplyGravity();
 	MovementUpdate();
 	this->shape->setPosition(NewPosition(DT));
+	this->circle.setPosition(this->shape->getPosition());
 }
 
 

@@ -24,9 +24,6 @@
     <ClCompile Include="World\WorldSuperClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TileGrid\Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Body\ContactMechanic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,6 +75,9 @@
     <ClCompile Include="GameLoop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TileGrid\TileResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StateObjects.h">
@@ -87,9 +87,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="World\WorldSuperClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TileGrid\Tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TileGrid\TileResource.h">
