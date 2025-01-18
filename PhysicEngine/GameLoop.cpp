@@ -32,4 +32,5 @@ void Gameloop::Run(){
 void Gameloop::LoadAllAssets(){
 	auto& resource = this->stateData->resourceManager;
 	resource->AddFont(ResourceId::MAIN_FONT, "Asset/Fonts/arial.ttf");
+	resource->AddTexture(ResourceId::PLAYER_TEXTURE, "Asset/BallSprite/Player.png");
 }

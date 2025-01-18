@@ -181,6 +181,8 @@ void ContactMech::InflatorCollisionHandle(std::shared_ptr<GameShape> playerShape
 	sf::Vector2f positionAdjust(0.0f, 0.0f);
 	switch (direction) {
 	case Right:
+        positionAdjust = { 0.0f , -reAdjust };
+        break;
     case Bottom:
 		break;
 	case Left:

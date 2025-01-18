@@ -22,7 +22,7 @@ namespace GMNumber {
 	// 9000.0f acts as a force but you can think of it as a coefficient.
 	// The coefficient maps to a terminal velocity of 200 with a mass of 60.
 	// For other masses, the terminal velocity can be calculated as: vt.x = 9000.0f / mass
-	static constexpr float COEFF_MAX_VELOCITY_X = 18000.0f;
+	static constexpr float COEFF_MAX_VELOCITY_X = 9000.0f;
 
 	// The coefficient for the maximum velocity in the y direction.
 	// The relation is: vt =  sqrt(K * 2 * g * m / (p * a * cd))
@@ -83,11 +83,13 @@ namespace GMNumber {
 	// RECT
 	static constexpr bool IS_PADDING = true;
 	static const sf::Vector2f ABSOLUTE_ACCLERATION_FOR_PLAYER = { 4000.0f, 800.0f };
-	static constexpr float SMALL_BALL_SIZE = 24;
-	static constexpr float BIG_SMALL_BALL_RATIO = 3.0f/2.0f;
+	static constexpr float SMALL_BALL_SIZE = 32;
+	static constexpr float BIG_SMALL_BALL_RATIO = 1.5f;
 	static constexpr float BIG_BALL_SIZE = SMALL_BALL_SIZE * BIG_SMALL_BALL_RATIO;
 	static constexpr float READJUST_SIZE = SMALL_BALL_SIZE * (BIG_SMALL_BALL_RATIO -1.0f);
-	static constexpr float ELASTICITY_RATIO = 1.25f;
+	static constexpr float ELASTICITY_RATIO = 1.414214f;  
+	//   1.144214 is root(2) rather than finding the sqrt is am just caching it 
+
 	// the above are the constants for the player object
 	// ABSOLUTE_ACCLERATION_FOR_PLAYER_X is the maximum acceleration in the x direction
 	// ABSOLUTE_ACCLERATION_FOR_PLAYER_Y is the maximum acceleration in the y direction

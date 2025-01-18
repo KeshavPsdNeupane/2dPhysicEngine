@@ -8,9 +8,7 @@ PlayerReference playerReference;
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
 	const sf::Vector2f coeffOfRest, const float coeffOfFriction):
 	GameShape(id, colid, mass, pos, size, {0.0f,0.0f}, { 0.0f,0.0f }
-		,coeffOfRest, coeffOfFriction),points(0) , isLarge(false){
-	this->circle.setRadius(size.x / 2.0f);
-	this->circle.setPosition(pos);
+		,coeffOfRest, coeffOfFriction), isLarge(false) , sizeOfSprite(25.0f){
 	FindMaxVelocities();
 	JumpTimeConstraintsFinder();
 	std::cout << "max vel" << this->maxVelocity.x << " " << this->maxVelocity.y << std::endl;
@@ -21,7 +19,7 @@ Rect::~Rect(){}
 inline void Rect::SetPosition(const sf::Vector2f position){
 	this->position = position;
 	this->shape->setPosition(position);
-	this->circle.setPosition(position);
+	this->sprite.setPosition(position);
 }
 
 inline void Rect::SetSize(const sf::Vector2f size){
@@ -29,17 +27,18 @@ inline void Rect::SetSize(const sf::Vector2f size){
 	else {this->isLarge = true;}
 	this->size = size;
 	this->shape->setSize(size);
-	this->circle.setRadius(size.x * 0.5f);
+	this->sprite.setScale(size.x / sizeOfSprite, size.y / sizeOfSprite);
 }
 
 
 
 void Rect::Load(std::shared_ptr<Engine::ResourceManager> resources) {
 	this->text.setFont(resources->GetFont(ResourceId::MAIN_FONT));
-	this->shape->setFillColor(sf::Color::Red);
-	this->circle.setFillColor(sf::Color::Red);
-	this->shape->setOutlineColor(sf::Color::Black);
-	this->shape->setOutlineThickness(1.0f);
+	this->texture = resources->GetTexture(ResourceId::PLAYER_TEXTURE);
+	this->sprite.setTexture(this->texture);
+	this->sprite.setTextureRect(sf::IntRect(0, 0, sizeOfSprite, sizeOfSprite));
+	this->sprite.setPosition(this->position);
+	this->sprite.setScale(this->size.x/ sizeOfSprite, this->size.y/ sizeOfSprite);
 	this->text.setCharacterSize(15);
 }
 
@@ -47,13 +46,14 @@ void Rect::Update(const float& dt) {
 	this->DT = dt;	
 	ApplyGravity();
 	MovementUpdate();
+	MOvementAnimation();
 	this->shape->setPosition(NewPosition(DT));
-	this->circle.setPosition(this->shape->getPosition());
+	this->sprite.setPosition(this->shape->getPosition());
 }
 
 
 void Rect::Draw(std::shared_ptr<sf::RenderWindow> window) {
-	window->draw(this->circle);
+	window->draw(this->sprite);
 }
 
 void Rect::ReCentered() {
@@ -74,7 +74,7 @@ void Rect::ReCentered() {
 		oldPosition.x = 0;
 	}
 	this->shape->setPosition(position);
-	this->circle.setPosition(position);
+	this->sprite.setPosition(position);
 }
 
 void Rect::DrawStats(std::shared_ptr<sf::RenderWindow> window){
@@ -84,13 +84,40 @@ void Rect::DrawStats(std::shared_ptr<sf::RenderWindow> window){
 
 void Rect::MovementUpdate() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		this->velocity.x = -ApplyMotionForce.MOVEMENT_FORCE;
+		this->velocity.x += -ApplyMotionForce.MOVEMENT_FORCE;
+		this->bools.isMovingLeft = true;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		this->velocity.x = ApplyMotionForce.MOVEMENT_FORCE;
+		this->velocity.x += ApplyMotionForce.MOVEMENT_FORCE;
+		this->bools.isMovingRight = true;
+	}
+	else {
+		this->bools.isMovingLeft = false;
+		this->bools.isMovingRight = false;
 	}
 	JumpUpdate();
 }
+
+void Rect::MOvementAnimation() {
+	// Check if the player is not moving or moving both left and right simultaneously
+	if ((bools.isMovingLeft == bools.isMovingRight) && (velocity.x == 0)) {
+		return;
+	}
+	// Check if enough time has passed to update the animation frame
+	if (gameClock.movementAnimaton.getElapsedTime().asSeconds()
+		>= TimeConstraints.MOVEMENT_ANIMATION_TIME_CONSTRAINTS) {
+		// Update the animation frame count and wrap around if necessary
+		frameCount.movementFrameCount = (frameCount.movementFrameCount + 1)
+			% frameMaxSize.movementFrameSize;
+		// Restart the animation clock
+		gameClock.movementAnimaton.restart();
+		// Update the sprite's texture rectangle to display the next frame
+		this->sprite.setTextureRect(sf::IntRect(sizeOfSprite * frameCount.movementFrameCount,
+			0, sizeOfSprite, sizeOfSprite));
+	}
+}
+
+
 
 
 void Rect::DisplayPositionAndVelocity() {
@@ -135,7 +162,9 @@ inline void Rect::FindMaxVelocities() {
 
 inline sf::Vector2f& Rect::NewPosition(const float& dt) {
 	this->velocity += this->acceleration * dt;
-	VectorOperation::ClampForVector(this->velocity, -maxVelocity, maxVelocity);
+	float clampY = (!this->isLarge) ? this->maxVelocity.y : 1.25 * this->maxVelocity.y;
+	sf::Vector2f clapVecelocity = { this->maxVelocity.x ,clampY };
+	VectorOperation::ClampForVector(this->velocity, -clapVecelocity, clapVecelocity);
 	this->oldPosition = this->position;
 	this->position += this->velocity * dt;
 	this->acceleration.y = 0.0f;

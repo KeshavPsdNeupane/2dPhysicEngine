@@ -18,28 +18,40 @@ class Rect : public GameShape  {
 
 	struct GameClock{
 		sf::Clock jumpClock;
+		sf::Clock movementAnimaton;
 	}gameClock;
 
 	struct Bools {
 		bool canJump = false;
+		bool isMovingRight = false;
+		bool isMovingLeft = false;
 	}bools;
+
+	struct FrameCount {
+		int movementFrameCount = 0;
+	}frameCount;
+	struct MaxFrameSize {
+		int movementFrameSize = 4;
+	}frameMaxSize;
 
 	struct MaxTimeConstraints {
 		float JUMP_TIME_CONSTRAINTS = 0.0f;
+		float MOVEMENT_ANIMATION_TIME_CONSTRAINTS = 8 * 0.01666777f;
 	}TimeConstraints;
 
 	struct ForceApplication {
 		//THIS THINGY ADD VELOCITY NOT ACTUAL FORCE
-		float MOVEMENT_FORCE = 150.0f;
-		float JUMP_FORCE = 300.0f;  
+		float MOVEMENT_FORCE = 20.0f;
+		float JUMP_FORCE = std::sqrt(2 * GMNumber::GRAVITY *(66.0f));  
 	}ApplyMotionForce;
 
 	sf::Font font;
 	sf::Text text;
-	sf::CircleShape circle;
-
+	sf::Texture texture;
+	sf::Sprite sprite;
 	float DT;
-	int points;
+	float sizeOfSprite;
+	//int points;
 	bool isLarge;
 public:
 	Rect() = default;
@@ -51,9 +63,7 @@ public:
 public:
 	inline void SetPosition(const sf::Vector2f position)override;
 	inline void SetSize(const sf::Vector2f size)override;
-	inline int GetPoints() const { return this->points; }
-	const inline void SetPoints(const int points) { this->points = points; }
-	Bools& GetBools() { return this->bools; }
+	//Bools& GetBools() { return this->bools; }
 
 public:
 	void Load(std::shared_ptr<Engine::ResourceManager> resources) override;
@@ -64,13 +74,14 @@ public:
 	void DrawStats(std::shared_ptr<sf::RenderWindow>window);
 
 private:
-	void MovementUpdate();
+	inline sf::Vector2f& NewPosition(const float& dt)override;
 	void ApplyGravity() { this->acceleration.y = GMNumber::GRAVITY; }
 	inline void FindMaxVelocities() override;
 
-	inline sf::Vector2f& NewPosition(const float& dt)override;
-
+private:
+	void MovementUpdate();
+	void MOvementAnimation();
 	void JumpUpdate();
-
 	void JumpTimeConstraintsFinder();
+
 };
