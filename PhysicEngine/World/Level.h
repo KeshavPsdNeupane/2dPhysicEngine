@@ -19,7 +19,7 @@
 #include"../GameGrid/OutlineRect.h"
 #include"../TileGrid/TileResource.h"
 
-class Level1 : public WorldSuperClass{
+class Level : public WorldSuperClass{
 private:
 	sf::Vector2f worldSize;
 	bool isPaused;
@@ -46,8 +46,8 @@ private:
 	int entityIdCounter;
 
 public:
-	Level1(std::shared_ptr<StateData> state);
-	~Level1();
+	Level(std::shared_ptr<StateData> state);
+	~Level();
 
 private:
 	void Load() override;

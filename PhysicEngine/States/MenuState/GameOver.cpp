@@ -1,5 +1,5 @@
 #include "GameOver.h"
-#include"../../World/Level1.h"
+#include"../../World/Level.h"
 
 GameOver::GameOver(std::shared_ptr<StateData> stateData) :
 	stateData(stateData), DELTA_TIME(0.0f),
@@ -96,7 +96,7 @@ void GameOver::Update(const float& dt) {
 		this->rePlayButton.setFillColor(sf::Color::White);
 	}
 	if (isRePlayButtonPressed) {
-		this->stateData->stateManager->AddState(std::make_unique<Level1>(this->stateData), true);
+		this->stateData->stateManager->AddState(std::make_unique<Level>(this->stateData), true);
 	}
 	else if (isExitButtonPressed) {
 		this->stateData->window->close();

@@ -168,7 +168,7 @@
     <ClCompile Include="States\MenuState\PauseState.cpp" />
     <ClCompile Include="States\StateManager.cpp" />
     <ClCompile Include="TileGrid\TileResource.cpp" />
-    <ClCompile Include="World\Level1.cpp" />
+    <ClCompile Include="World\Level.cpp" />
     <ClCompile Include="World\WorldSuperClass.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -195,7 +195,7 @@
     <ClInclude Include="States\State.h" />
     <ClInclude Include="States\StateManager.h" />
     <ClInclude Include="TileGrid\TileResource.h" />
-    <ClInclude Include="World\Level1.h" />
+    <ClInclude Include="World\Level.h" />
     <ClInclude Include="World\WorldSuperClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

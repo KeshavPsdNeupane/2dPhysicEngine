@@ -18,7 +18,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="World\Level1.cpp">
+    <ClCompile Include="World\Level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="World\WorldSuperClass.cpp">
@@ -83,7 +83,7 @@
     <ClInclude Include="StateObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="World\Level1.h">
+    <ClInclude Include="World\Level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="World\WorldSuperClass.h">

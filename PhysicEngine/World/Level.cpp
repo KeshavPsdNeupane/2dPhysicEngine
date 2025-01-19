@@ -1,27 +1,27 @@
-#include "Level1.h"
+#include "Level.h"
 #include "../States/MenuState/PauseState.h"
 #include "../States/MenuState/GameOver.h"
 
-Level1::Level1(std::shared_ptr<StateData> state) :
+Level::Level(std::shared_ptr<StateData> state) :
     WorldSuperClass(state), contactMechanic(*this),
     isPaused(false), event(), worldSize(),
     updateDrawResultFromGrid(),
     collisionResultFromGrid(),
     text(), DT(0.0f),
-    entityIdCounter(0) { 
-	TileResource tile;
-	std::string path = "Asset/Maps/TestMap3.txt";
-	TotalTileData& data = tile.ListTheEntity(path);
-	this->worldSize = sf::Vector2f((float)data.worldWidth, (float)data.worldHeight);
+    entityIdCounter(0) {
+    TileResource tile;
+    std::string path = "Asset/Maps/TestMap3.txt";
+    TotalTileData& data = tile.ListTheEntity(path);
+    this->worldSize = sf::Vector2f((float)data.worldWidth, (float)data.worldHeight);
     grid.InitializeGameGrid(data.worldWidth, data.worldHeight, data.tileWidth, data.tileHeight);
-	CreatePath(data);
-	CreateInflator(data);
+    CreatePath(data);
+    CreateInflator(data);
     CreateDeflator(data);
-	CreateBouncyPath(data);
-	CreateCollectable(data);    
-	CreateStaticEnemy(data);
-	CreateCheckPoint(data); 
-	sf::Vector2f positionForPlayer = this->checkPoint[0]->GetPosition();
+    CreateBouncyPath(data);
+    CreateCollectable(data);
+    CreateStaticEnemy(data);
+    CreateCheckPoint(data);
+    sf::Vector2f positionForPlayer = this->checkPoint[0]->GetPosition();
     auto size = GMNumber::SMALL_BALL_SIZE;
     this->rectangle = std::make_shared<Rect>(++this->entityIdCounter, CollisionId::PlayerId, 60.0f,
         positionForPlayer, sf::Vector2f(size, size),
@@ -38,11 +38,11 @@ Level1::Level1(std::shared_ptr<StateData> state) :
 
 }
 
-Level1::~Level1() {}
+Level::~Level() {}
 
 
 
-void Level1::Load() {
+void Level::Load() {
     this->rectangle->Load(this->stateData->resourceManager);
     this->grid.AddObject(this->rectangle, false);
 
@@ -77,7 +77,7 @@ void Level1::Load() {
 }
 
 
-void Level1::ProcessInput() {
+void Level::ProcessInput() {
     while (this->stateData->window->pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             this->stateData->window->close();
@@ -102,7 +102,7 @@ void Level1::ProcessInput() {
     }
 }
 
-void Level1::Update(const float& dt) {
+void Level::Update(const float& dt) {
     if (!this->isPaused) {
         this->DT = dt;
         this->updateDrawResultFromGrid =
@@ -134,7 +134,7 @@ void Level1::Update(const float& dt) {
 }
 
 
-void Level1::Draw() {
+void Level::Draw() {
     if (!isPaused) {
         auto& window = this->stateData->window;
         window->clear();
@@ -156,7 +156,7 @@ void Level1::Draw() {
     }
 }
 
-void Level1::CreateViewBasedOnPlayer(std::shared_ptr<sf::RenderWindow> window) {
+void Level::CreateViewBasedOnPlayer(std::shared_ptr<sf::RenderWindow> window) {
     const float Width = (float)window->getSize().x;
     const float Height = (float)window->getSize().y;
     const float halfWidth = Width * 0.5f;
@@ -169,7 +169,7 @@ void Level1::CreateViewBasedOnPlayer(std::shared_ptr<sf::RenderWindow> window) {
 
 }
 
-void Level1::DrawDefaulView(std::shared_ptr<sf::RenderWindow>window) {
+void Level::DrawDefaulView(std::shared_ptr<sf::RenderWindow>window) {
     window->setView(window->getDefaultView());
 
     window->draw(text);
@@ -177,11 +177,11 @@ void Level1::DrawDefaulView(std::shared_ptr<sf::RenderWindow>window) {
     this->rectangle->DrawStats(window);
 }
 
-void Level1::Pause() { this->isPaused = true; }
+void Level::Pause() { this->isPaused = true; }
 
-void Level1::Start() { this->isPaused = false; }
+void Level::Start() { this->isPaused = false; }
 
-void Level1::DisplayStats() {
+void Level::DisplayStats() {
     int maxsize = (int)this->path.size() + (int)this->collectable.size() + 3 + 1;
     // 3 for the object bouncy pad, inflator, deflator , 1 for player
     //this->text.setString(
@@ -198,7 +198,7 @@ void Level1::DisplayStats() {
         "\nLife = " + std::to_string(this->life));
 }
 
-void Level1::DeleteUnwanted() {
+void Level::DeleteUnwanted() {
     auto& collectables = this->collectable;
     for (auto it = collectables.begin(); it != collectables.end(); ) {
         if ((*it)->GetCanBeDeleted()) {
@@ -209,7 +209,7 @@ void Level1::DeleteUnwanted() {
     }
 }
 
-void Level1::CreatePath(TotalTileData& data){
+void Level::CreatePath(TotalTileData& data){
     sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
     sf::Vector2f blockSize{ 64.0f , 64.0f };
     float mass = 400000.0f;
@@ -226,7 +226,7 @@ void Level1::CreatePath(TotalTileData& data){
 
 }
 
-void Level1::CreateInflator(TotalTileData& data){
+void Level::CreateInflator(TotalTileData& data){
 	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
@@ -241,7 +241,7 @@ void Level1::CreateInflator(TotalTileData& data){
 	}
 }
 
-void Level1::CreateDeflator(TotalTileData& data){
+void Level::CreateDeflator(TotalTileData& data){
 	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
@@ -256,7 +256,7 @@ void Level1::CreateDeflator(TotalTileData& data){
 	}
 }
 
-void Level1::CreateBouncyPath(TotalTileData& data){
+void Level::CreateBouncyPath(TotalTileData& data){
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
@@ -270,7 +270,7 @@ void Level1::CreateBouncyPath(TotalTileData& data){
 	}
 }
 
-void Level1::CreateCollectable(TotalTileData& data){
+void Level::CreateCollectable(TotalTileData& data){
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
@@ -284,7 +284,7 @@ void Level1::CreateCollectable(TotalTileData& data){
 	}
 }
 
-void Level1::CreateStaticEnemy(TotalTileData& data){
+void Level::CreateStaticEnemy(TotalTileData& data){
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
@@ -298,7 +298,7 @@ void Level1::CreateStaticEnemy(TotalTileData& data){
 	}
 }
 
-void Level1::CreateCheckPoint(TotalTileData& data){
+void Level::CreateCheckPoint(TotalTileData& data){
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
@@ -312,7 +312,7 @@ void Level1::CreateCheckPoint(TotalTileData& data){
 	}
 }
 
-void Level1::EndLevel(){
+void Level::EndLevel(){
     if (this->life < 1) {
         this->stateData->stateManager->AddState(
             std::make_unique<GameOver>(this->stateData));
