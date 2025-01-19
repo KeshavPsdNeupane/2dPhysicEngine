@@ -11,7 +11,7 @@ Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f p
 		,coeffOfRest, coeffOfFriction), isLarge(false) , sizeOfSprite(25.0f){
 	FindMaxVelocities();
 	JumpTimeConstraintsFinder();
-	std::cout << "max vel" << this->maxVelocity.x << " " << this->maxVelocity.y << std::endl;
+	//std::cout << "max vel" << this->maxVelocity.x << " " << this->maxVelocity.y << std::endl;
 }
 
 Rect::~Rect(){}

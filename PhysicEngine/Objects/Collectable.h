@@ -2,11 +2,23 @@
 #include"../Body/GameShapes.h"
 
 class Collectable :public GameShape {
+    sf::Texture texture;
+    sf::Sprite sprite;
+	sf::Clock frameClock;
+    int frame;
+    int frameSize;
     unsigned int point;
 	bool canBeDeleted;
+    int textureId;
+
+    int textureX;
+    int textureY;
+    int testsize;
+
 public:
     Collectable() = default;
     Collectable(const int id, const int colid, const float mass,const unsigned int points,
+        const int textureId,
         const sf::Vector2f pos,const sf::Vector2f size);
     ~Collectable();
 public:

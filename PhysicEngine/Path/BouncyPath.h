@@ -3,9 +3,12 @@
 
 
 class BouncyPath : public GameShape {
+    int textureId;
+    sf::Sprite sprite;
 public:
     BouncyPath() = default;
-    BouncyPath(const int id, const int colid, const float mass, const sf::Vector2f pos,
+	BouncyPath(const int id, const int colid, const float mass, const int textureId,
+        const sf::Vector2f pos,
         const sf::Vector2f size, const sf::Vector2f coeffOfRest,
         const float ceoffOfFriction);
     ~BouncyPath();

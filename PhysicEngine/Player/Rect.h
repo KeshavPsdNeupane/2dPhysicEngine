@@ -63,8 +63,6 @@ public:
 public:
 	inline void SetPosition(const sf::Vector2f position)override;
 	inline void SetSize(const sf::Vector2f size)override;
-	//Bools& GetBools() { return this->bools; }
-
 public:
 	void Load(std::shared_ptr<Engine::ResourceManager> resources) override;
 	void Update(const float& dt) override;

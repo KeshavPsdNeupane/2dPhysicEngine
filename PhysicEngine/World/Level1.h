@@ -21,10 +21,10 @@
 
 class Level1 : public WorldSuperClass{
 private:
+	sf::Vector2f worldSize;
 	bool isPaused;
 	sf::Event event;
 	GameGrid grid;
-
 	std::shared_ptr<Rect> rectangle;
 	std::vector<std::shared_ptr<Path>> path;
 	std::vector<std::shared_ptr<Inflator>> inflator;
@@ -65,8 +65,6 @@ private:
 
 private:
 	void DeleteUnwanted();
-
-
 	void CreatePath(TotalTileData& data);
 	void CreateInflator(TotalTileData& data);
 	void CreateDeflator(TotalTileData& data);
@@ -74,5 +72,7 @@ private:
 	void CreateCollectable(TotalTileData& data);
 	void CreateStaticEnemy(TotalTileData& data);
 	void CreateCheckPoint(TotalTileData& data);
+	void EndLevel();
+
 };
 

@@ -2,15 +2,10 @@
 #include "GameGrid.h"
 #include <cmath>
 
-GameGrid::GameGrid() {
-	int Gx = GMNumber::GRID_COUNT_X;
-    int Gy = GMNumber::GRID_COUNT_Y;
-    gridVisual.reserve(Gx * Gy);
-    staticGridCell.resize(Gx * Gy);
-    dynamicGridCell.resize(Gx * Gy);
-	tileVisual.reserve(GMNumber::TILE_COUNT_X * GMNumber::TILE_COUNT_Y);
-    VisualGridInit();
-}
+GameGrid::GameGrid():
+    worldWidth(0),worldHeight(0),
+    tileWidth(0), tileHeight(0),
+    tileCountX(0), tileCountY(0){}
 
 
 void GameGrid::RemoveObject(std::shared_ptr<GameShape> shape, bool isStatic) {
@@ -27,6 +22,20 @@ GridResult GameGrid::PotentialCollision(std::shared_ptr<GameShape> shape) {
 
 GridResult GameGrid::FindUpdatableAndDrawableBlock(std::shared_ptr<GameShape> shape) {
     return FindObjectsInRange(shape, GMNumber::UPDATE_DRAW_RANGE, false);
+}
+
+void GameGrid::InitializeGameGrid(int worldWidth, int WorldHeight, 
+    int tileWidth, int tileHeight){
+	this->worldWidth = worldWidth;
+	this->worldHeight = WorldHeight;
+	this->tileWidth = tileWidth;
+	this->tileHeight = tileHeight;
+	this->tileCountX = worldWidth / tileWidth;
+	this->tileCountY = WorldHeight / tileHeight;
+    staticGridCell.resize(this->tileCountX * this->tileCountY);
+    dynamicGridCell.resize(this->tileCountX * this->tileCountY);
+    tileVisual.reserve(this->tileCountX * this->tileCountY);
+    VisualGridInit();
 }
 
 void GameGrid::AddObject(std::shared_ptr<GameShape> shape, bool isStatic){
@@ -50,9 +59,6 @@ void GameGrid::MoveObject(std::shared_ptr<GameShape> shape) {
 }
 
 void GameGrid::Draw(std::shared_ptr<sf::RenderWindow> window){
- /*   for (int i = 0; i < gridVisual.size(); ++i) {
-        window->draw(*gridVisual[i]);
-    }*/
 	for (unsigned int i = 0; i < tileVisual.size(); ++i) {
 		window->draw(*tileVisual[i]);
 	}
@@ -72,20 +78,8 @@ void GameGrid::ShowGirdObjectCound() {
 
 
 void GameGrid::VisualGridInit() {
-    for (int y = 0; y < GMNumber::GRID_COUNT_Y; ++y) {
-        for (int x = 0; x < GMNumber::GRID_COUNT_X; ++x) {
-            float size = GMNumber::BASE_GRID_SIZE;
-            float posX = x * size;
-            float posY = y * size;
-            sf::Vector2f position(posX, posY);
-            sf::Color rectangleColor(162, 42, 42 , 100);
-            std::shared_ptr<OutlineRectangle> out = std::make_shared<OutlineRectangle>(size, size, position, rectangleColor);
-            gridVisual.push_back(out);
-        }
-    }
-
-    for (int y = 0; y < GMNumber::TILE_COUNT_Y; ++y) {
-        for (int x = 0; x < GMNumber::TILE_COUNT_X; ++x) {
+    for (int y = 0; y < this->tileCountY; ++y) {
+        for (int x = 0; x < this->tileCountX; ++x) {
             float size = GMNumber::TILE_SIZE;
             float posX = x * size;
             float posY = y * size;
@@ -95,31 +89,27 @@ void GameGrid::VisualGridInit() {
             tileVisual.push_back(out);
         }
     }
-
-
-
-
 }
 
-inline int GameGrid::CalculateIndex(sf::Vector2f pos) {
-    int x = static_cast<int>(pos.x / GMNumber::BASE_GRID_SIZE);
-    int y = static_cast<int>(pos.y / GMNumber::BASE_GRID_SIZE);
-    return x + y * (int)GMNumber::GRID_COUNT_X;
+inline int GameGrid::CalculateIndex(const sf::Vector2f pos) const {
+    int x = static_cast<int>(pos.x / this->tileWidth);
+    int y = static_cast<int>(pos.y / this->tileHeight);
+    return x + y * (int)this->tileCountX;
 }
 
-inline int GameGrid::CalculateIndex(sf::Vector2i gridId) {
-    return gridId.x + gridId.y * (int)GMNumber::GRID_COUNT_X;
+inline int GameGrid::CalculateIndex(const sf::Vector2i gridId) const {
+    return gridId.x + gridId.y * (int)this->tileCountX;
 }
 
-inline sf::Vector2i GameGrid::GetGridNumber(sf::Vector2f pos) {
-    int x = static_cast<int>(pos.x / GMNumber::BASE_GRID_SIZE);
-    int y = static_cast<int>(pos.y / GMNumber::BASE_GRID_SIZE);
+inline sf::Vector2i GameGrid::GetGridNumber(const sf::Vector2f pos) const {
+    int x = static_cast<int>(pos.x / this->tileWidth);
+    int y = static_cast<int>(pos.y / this->tileHeight);
     return { x, y };
 }
 
 inline bool GameGrid::IsValidGridIndex(sf::Vector2i gridNumber) const{
-    return gridNumber.x >= 0 && gridNumber.x < GMNumber::GRID_COUNT_X &&
-        gridNumber.y >= 0 && gridNumber.y < GMNumber::GRID_COUNT_Y;
+    return gridNumber.x >= 0 && gridNumber.x <this->tileCountX &&
+        gridNumber.y >= 0 && gridNumber.y < this->tileCountY;
 }
 
 void GameGrid::AddObjectAtIndex(std::shared_ptr<GameShape> shape, int index, bool isStatic) {
@@ -150,8 +140,8 @@ GridResult GameGrid::FindObjectsInRange(std::shared_ptr<GameShape> shape, int ra
     sf::Vector2f pos = shape->GetPosition();
     int id = shape->GetShapeID();
     sf::Vector2i objectGridNumber = GetGridNumber(pos);
-    result.dynamicResult.reserve((2 * range + 1) * (2 * range + 1));
-    result.staticResult.reserve((2 * range + 1) * (2 * range + 1));
+    result.dynamicResult.reserve((2 * range + 1));
+    result.staticResult.reserve((2 * range + 1));
     for (int y = -range; y <= range; ++y) {
         for (int x = -range; x <= range; ++x) {
 

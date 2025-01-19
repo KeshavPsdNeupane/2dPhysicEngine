@@ -96,28 +96,11 @@ namespace GMNumber {
 	// MOVEMENT_FORCE is the force applied to the player object
 	
 
-	//  FOR GRID OF GAME
-	// JUST MAKE SURE THIS IS MULTIPLE OF 240 FOR BOTH SIZES X and Y
-	static constexpr float WORLD_SIZE_X = WINDOW_WIDTH * 4.0f;
-	static constexpr float WORLD_SIZE_Y = WINDOW_HEIGHT * 2.0f;
-	static constexpr float BASE_GRID_SIZE = 64.0f;
-	static constexpr int GRID_COUNT_X = (int)(WORLD_SIZE_X / BASE_GRID_SIZE);
-	static constexpr int GRID_COUNT_Y = (int)(WORLD_SIZE_Y / BASE_GRID_SIZE);
-	// the above are the constants for the grid of the game
-	// WORLD_SIZE_X is the width of the game world
-	// WORLD_SIZE_Y is the height of the game world
-	// BASE_GRID_SIZE_X is the width of the grid cell
-	// BASE_GRID_SIZE_Y is the height of the grid cell
-	// GRID_COUNT_X is the number of grid cells in the x direction
-	//	GRID_COUNT_Y is the number of grid cells in the y direction
-	// the grid is used to optimize the collision detection and drawing of the objects
-
-
 	// Just make sure UPDATE_DRAW_RANGE is always greater than POTENTIAL_COLLISION_RANGE
 	// It wont make any problem but u r just processing extra chunks of object
 	// which wont ever gets updated or drawn
 	static constexpr unsigned int POTENTIAL_COLLISION_RANGE = 1; // this is a grid range, means it checks n block out of player in all direction
-	static constexpr unsigned int UPDATE_DRAW_RANGE = 3; // this is a grid range ,means it checks n block out of player in all direction
+	static constexpr unsigned int UPDATE_DRAW_RANGE = 6; // this is a grid range ,means it checks n block out of player in all direction
 	// the above two are the constants for the grid of the game
 	// POTENTIAL_COLLISION_RANGE is the range of the grid cells to check for potential collision
 	// UPDATE_DRAW_RANGE is the range of the grid cells to update and draw the objects
@@ -127,9 +110,13 @@ namespace GMNumber {
 
 	// FOR TILE MAP
 	static constexpr float TILE_SIZE = 64.0f;
-	static constexpr int TILE_COUNT_X = (int)(WORLD_SIZE_X / TILE_SIZE);
-	static constexpr int TILE_COUNT_Y = (int)(WORLD_SIZE_Y / TILE_SIZE);
 	// the above are the constants for the tile map of the game
+
+
+
+	// FOR TEXTURE OF ALL OBJECTS EXCEPT PLAYER
+	static constexpr int TEXTURE_COUNT_X = 12;
+	static constexpr int TEXTURE_SIZE = 64;
 };
 
 

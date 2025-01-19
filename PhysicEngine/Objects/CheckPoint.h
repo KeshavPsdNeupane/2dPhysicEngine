@@ -5,9 +5,12 @@
 
 class CheckPoint : public GameShape{
     bool isFound;
+    int textureId;
+    sf::Sprite sprite;
 public:
     CheckPoint() = default;
-    CheckPoint(const int id, const int colid,const sf::Vector2f pos,const sf::Vector2f size);
+	CheckPoint(const int id, const int colid, const int textureId,
+        const sf::Vector2f pos,const sf::Vector2f size);
     ~CheckPoint();
 public:
 	void SetIsFound(bool isFound = true ) { this->isFound = isFound; }

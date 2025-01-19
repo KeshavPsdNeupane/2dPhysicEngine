@@ -4,14 +4,16 @@
 
 Level1::Level1(std::shared_ptr<StateData> state) :
     WorldSuperClass(state), contactMechanic(*this),
-    isPaused(false), event(),
+    isPaused(false), event(), worldSize(),
     updateDrawResultFromGrid(),
     collisionResultFromGrid(),
     text(), DT(0.0f),
     entityIdCounter(0) { 
 	TileResource tile;
-	std::string path = "Asset/Maps/TestMap2.txt";
+	std::string path = "Asset/Maps/TestMap3.txt";
 	TotalTileData& data = tile.ListTheEntity(path);
+	this->worldSize = sf::Vector2f((float)data.worldWidth, (float)data.worldHeight);
+    grid.InitializeGameGrid(data.worldWidth, data.worldHeight, data.tileWidth, data.tileHeight);
 	CreatePath(data);
 	CreateInflator(data);
     CreateDeflator(data);
@@ -44,31 +46,31 @@ void Level1::Load() {
     this->rectangle->Load(this->stateData->resourceManager);
     this->grid.AddObject(this->rectangle, false);
 
-    for (int i = 0; i < this->path.size(); ++i) {
+    for (unsigned int i = 0; i < this->path.size(); ++i) {
         this->path[i]->Load(this->stateData->resourceManager);
         this->grid.AddObject(this->path[i], true);
     }
-	for (int i = 0; i < inflator.size(); ++i) {
+	for (unsigned int i = 0; i < inflator.size(); ++i) {
 		this->inflator[i]->Load(this->stateData->resourceManager);
 		this->grid.AddObject(this->inflator[i], true);
 	}
-    for (int i = 0; i < deflator.size(); ++i) {
+    for (unsigned int i = 0; i < deflator.size(); ++i) {
         this->deflator[i]->Load(this->stateData->resourceManager);
         this->grid.AddObject(this->deflator[i], true);
     }
-	for (int i = 0; i < this->bouncyPath.size(); ++i) {
+	for (unsigned int i = 0; i < this->bouncyPath.size(); ++i) {
 		this->bouncyPath[i]->Load(this->stateData->resourceManager);
 		this->grid.AddObject(this->bouncyPath[i], true);
 	}
-    for (int i = 0; i < this->collectable.size(); ++i) {
+    for (unsigned int i = 0; i < this->collectable.size(); ++i) {
         this->collectable[i]->Load(this->stateData->resourceManager);
         this->grid.AddObject(this->collectable[i], true);
     }
-    for (int i = 0; i < this->staticEnemy.size(); ++i) {
+    for (unsigned int i = 0; i < this->staticEnemy.size(); ++i) {
         this->staticEnemy[i]->Load(this->stateData->resourceManager);
         this->grid.AddObject(this->staticEnemy[i], true);
     }
-    for (int i = 0; i < this->checkPoint.size(); ++i) {
+    for (unsigned int i = 0; i < this->checkPoint.size(); ++i) {
         this->checkPoint[i]->Load(this->stateData->resourceManager);
         this->grid.AddObject(this->checkPoint[i], true);
     }
@@ -101,20 +103,14 @@ void Level1::ProcessInput() {
 }
 
 void Level1::Update(const float& dt) {
-    if (this->life < 1) {
-        this->stateData->stateManager->AddState(
-            std::make_unique<GameOver>(this->stateData));
-        return;
-    }
-
     if (!this->isPaused) {
         this->DT = dt;
         this->updateDrawResultFromGrid =
             this->grid.FindUpdatableAndDrawableBlock(this->rectangle);
         collisionResultFromGrid = this->grid.PotentialCollision(this->rectangle);
 
-        for (int i = 0; i < updateDrawResultFromGrid.dynamicResult.size(); ++i) {
-            this->updateDrawResultFromGrid.dynamicResult[i]->Update(DT);
+        for (auto obj: updateDrawResultFromGrid.dynamicResult) {
+            obj->Update(this->DT);
         }
 
         for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
@@ -133,6 +129,7 @@ void Level1::Update(const float& dt) {
         DisplayStats();
         this->rectangle->DisplayPositionAndVelocity();
         DeleteUnwanted();
+        EndLevel();
     }
 }
 
@@ -166,8 +163,8 @@ void Level1::CreateViewBasedOnPlayer(std::shared_ptr<sf::RenderWindow> window) {
     const float halfHeight = Height * 0.5f;
     sf::Vector2f playerPosition = this->rectangle->GetPosition();
     this->worldView.setSize(Width, Height);
-    float clampedX = VectorOperation::Clamp(playerPosition.x, halfWidth, GMNumber::WORLD_SIZE_X - halfWidth);
-    float clampedY = VectorOperation::Clamp(playerPosition.y, halfHeight, GMNumber::WORLD_SIZE_Y - halfHeight);
+    float clampedX = VectorOperation::Clamp(playerPosition.x, halfWidth, this->worldSize.x- halfWidth);
+    float clampedY = VectorOperation::Clamp(playerPosition.y, halfHeight, this->worldSize.y - halfHeight);
     this->worldView.setCenter({ clampedX, clampedY });
 
 }
@@ -220,9 +217,11 @@ void Level1::CreatePath(TotalTileData& data){
     float u = GMNumber::COEFF_OF_FRICTION_PATH;
 
 	const auto& pathData = data.loadEntity[EntityId::path];
-    for (int i = 0; i < pathData.size(); ++i) {
-        this->path.push_back(std::make_shared<Path>(++this->entityIdCounter, CollisionId::HeavyPathId, mass,
-            sf::Vector2f(pathData[i].pixelX, pathData[i].pixelY), blockSize, E, u));
+    for ( unsigned int i = 0; i < pathData.size(); ++i) {
+        this->path.push_back(std::make_shared<Path>(++this->entityIdCounter,
+			CollisionId::HeavyPathId, mass, pathData[i].textureIndex,
+            sf::Vector2f((float)pathData[i].pixelX, (float)pathData[i].pixelY),
+            blockSize, E, u));
     }
 
 }
@@ -234,9 +233,11 @@ void Level1::CreateInflator(TotalTileData& data){
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
 	float u = GMNumber::COEFF_OF_FRICTION_PATH;
 	const auto& inflatorData = data.loadEntity[EntityId::inflator];
-	for (int i = 0; i < inflatorData.size(); ++i) {
-		this->inflator.push_back(std::make_shared<Inflator>(++this->entityIdCounter, CollisionId::InflatorId, mass,
-			sf::Vector2f(inflatorData[i].pixelX, inflatorData[i].pixelY), blockSize, E, u));
+	for (unsigned int i = 0; i < inflatorData.size(); ++i) {
+		this->inflator.push_back(std::make_shared<Inflator>(++this->entityIdCounter, 
+			CollisionId::InflatorId, mass, inflatorData[i].textureIndex,
+			sf::Vector2f((float)inflatorData[i].pixelX, (float)inflatorData[i].pixelY),
+            blockSize, E, u));
 	}
 }
 
@@ -247,61 +248,75 @@ void Level1::CreateDeflator(TotalTileData& data){
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
 	float u = GMNumber::COEFF_OF_FRICTION_PATH;
 	const auto& deflatorData = data.loadEntity[EntityId::deflator];
-	for (int i = 0; i < deflatorData.size(); ++i) {
-		this->deflator.push_back(std::make_shared<Deflator>(++this->entityIdCounter, CollisionId::DeflatorId, mass,
-			sf::Vector2f(deflatorData[i].pixelX, deflatorData[i].pixelY), blockSize, E, u));
+	for ( unsigned int i = 0; i < deflatorData.size(); ++i) {
+		this->deflator.push_back(std::make_shared<Deflator>(++this->entityIdCounter, 
+			CollisionId::DeflatorId, mass, deflatorData[i].textureIndex,
+			sf::Vector2f((float)deflatorData[i].pixelX, (float)deflatorData[i].pixelY),
+            blockSize, E, u));
 	}
 }
 
 void Level1::CreateBouncyPath(TotalTileData& data){
-	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
 	float u = GMNumber::COEFF_OF_FRICTION_PATH;
 	const auto& bouncyPathData = data.loadEntity[EntityId::bouncypad];
-	for (int i = 0; i < bouncyPathData.size(); ++i) {
-		this->bouncyPath.push_back(std::make_shared<BouncyPath>(++this->entityIdCounter, CollisionId::HeavyPathId, mass,
-			sf::Vector2f(bouncyPathData[i].pixelX, bouncyPathData[i].pixelY), blockSize, sf::Vector2f(0.4f, 2.1f), u));
+	for (unsigned int i = 0; i < bouncyPathData.size(); ++i) {
+		this->bouncyPath.push_back(std::make_shared<BouncyPath>(++this->entityIdCounter, 
+			CollisionId::HeavyPathId, mass, bouncyPathData[i].textureIndex,
+			sf::Vector2f((float)bouncyPathData[i].pixelX, (float)bouncyPathData[i].pixelY), blockSize,
+            sf::Vector2f(0.4f, 2.1f), u));
 	}
 }
 
 void Level1::CreateCollectable(TotalTileData& data){
-	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
 	float u = GMNumber::COEFF_OF_FRICTION_PATH;
 	const auto& collectableData = data.loadEntity[EntityId::collectable];
-	for (int i = 0; i < collectableData.size(); ++i) {
+	for (unsigned int i = 0; i < collectableData.size(); ++i) {
 		this->collectable.push_back(std::make_shared<Collectable>(++this->entityIdCounter,
-			CollisionId::CollectableId, 1.0f, 10, sf::Vector2f(collectableData[i].pixelX, collectableData[i].pixelY),
+			CollisionId::CollectableId, 1.0f, 10, collectableData[i].textureIndex,
+            sf::Vector2f((float)collectableData[i].pixelX, (float)collectableData[i].pixelY),
 			sf::Vector2f(48.0f, 48.0f)));
 	}
 }
 
 void Level1::CreateStaticEnemy(TotalTileData& data){
-	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
 	float u = GMNumber::COEFF_OF_FRICTION_PATH;
 	const auto& staticEnemyData = data.loadEntity[EntityId::staticEnemy];
-	for (int i = 0; i < staticEnemyData.size(); ++i) {
-		this->staticEnemy.push_back(std::make_shared<StaticEnemy>(++this->entityIdCounter, CollisionId::StaticEnemyId, mass,
-			sf::Vector2f(staticEnemyData[i].pixelX, staticEnemyData[i].pixelY), blockSize, E, u));
+	for (unsigned  int i = 0; i < staticEnemyData.size(); ++i) {
+		this->staticEnemy.push_back(std::make_shared<StaticEnemy>(++this->entityIdCounter, 
+			CollisionId::StaticEnemyId, mass, staticEnemyData[i].textureIndex,
+			sf::Vector2f((float)staticEnemyData[i].pixelX,
+                (float)staticEnemyData[i].pixelY), blockSize, E, u));
 	}
 }
 
 void Level1::CreateCheckPoint(TotalTileData& data){
-	sf::Vector2f nil = sf::Vector2f(0.0f, 0.0f);
 	sf::Vector2f blockSize{ 64.0f , 64.0f };
 	float mass = 400000.0f;
 	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
 	float u = GMNumber::COEFF_OF_FRICTION_PATH;
 	const auto& checkPointData = data.loadEntity[EntityId::checkPoint];
-	for (int i = 0; i < checkPointData.size(); ++i) {
-		this->checkPoint.push_back(std::make_shared<CheckPoint>(++this->entityIdCounter, CollisionId::CheckPointId,
-			sf::Vector2f(checkPointData[i].pixelX, checkPointData[i].pixelY), sf::Vector2f(50.0f, 50.0f)));
+	for ( unsigned int i = 0; i < checkPointData.size(); ++i) {
+		this->checkPoint.push_back(std::make_shared<CheckPoint>(++this->entityIdCounter, 
+			CollisionId::CheckPointId, checkPointData[i].textureIndex,  
+			sf::Vector2f((float)checkPointData[i].pixelX, (float)checkPointData[i].pixelY),
+            sf::Vector2f(50.0f, 50.0f)));
 	}
 }
+
+void Level1::EndLevel(){
+    if (this->life < 1) {
+        this->stateData->stateManager->AddState(
+            std::make_unique<GameOver>(this->stateData));
+        return;
+    }
+}
+

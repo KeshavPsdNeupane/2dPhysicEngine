@@ -16,9 +16,9 @@ ContactMech::ContactMech(WorldSuperClass& w):
 
 void ContactMech::CollsionDetection(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape) {
+    if (playerShape->GetShapeID() == otherShape->GetShapeID()) { return; }
     auto player = sf::FloatRect(playerShape->GetPosition(), playerShape->GetSize());
     auto other = sf::FloatRect(otherShape->GetPosition(), otherShape->GetSize());
-
     if (CollisionBetweenCircleAndRectangle(player, other)) {
         CollisionDetermination(playerShape, otherShape);
     }
@@ -220,7 +220,7 @@ void ContactMech::CollectableCollisionHandle(std::shared_ptr<GameShape> playerSh
 
 void ContactMech::StaticEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape){
-	HeavyObjectCollisionHandle(playerShape, otherShape);
+     if (Direction::Top == HeavyObjectCollisionHandle(playerShape, otherShape)) { return; }
 	this->world.SetLife(this->world.GetLife() - 1);
 	playerShape->SetPosition(this->world.GetCheckPointPosition());
 	playerShape->SetVelocity({ 0.0f, 0.0f });
@@ -236,7 +236,7 @@ void ContactMech::CheckPointCollisionHandle(std::shared_ptr<GameShape> playerSha
 
    const auto& pos = checkPoint->GetPosition() + checkPoint->GetSize()/2.0f;
     this->world.SetCheckPointPosition(pos);
-	std::cout << "CheckPoint Found and position set" << pos.x << " " << pos.y << "\n";
+	//std::cout << "CheckPoint Found and position set" << pos.x << " " << pos.y << "\n";
 }
 
 

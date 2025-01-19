@@ -11,7 +11,7 @@ MainMenu::~MainMenu(){}
 void MainMenu::Load(){
 	// main menu game title
 	this->gameMenuTitle.setFont(this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT));
-	this->gameMenuTitle.setString("PHYSIC ENGINE");
+	this->gameMenuTitle.setString("BOUNCE");
 	this->gameMenuTitle.setCharacterSize(35);
 	auto pos = this->stateData->window->getSize();
 	auto bound = this->gameMenuTitle.getLocalBounds();

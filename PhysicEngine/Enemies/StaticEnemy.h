@@ -5,9 +5,11 @@
 
 
 class StaticEnemy: public GameShape{
+	sf::Sprite sprite;
+	int textureId;
 public:
     StaticEnemy() = default;
-    StaticEnemy(const int id, const int colid, const float mass, const sf::Vector2f pos,
+    StaticEnemy(const int id, const int colid, const float mass,const int textureId, const sf::Vector2f pos,
         const sf::Vector2f size, const sf::Vector2f coeffOfRest,
         const float ceoffOfFriction);
     ~StaticEnemy();

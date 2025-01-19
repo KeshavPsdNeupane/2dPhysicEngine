@@ -8,9 +8,9 @@
 enum ResourceId {
 	MAIN_FONT = 0,
 	PLAYER_TEXTURE,
-	ENEMY_TEXTURE,
 	PLAYER_FONT,
-	ENEMY_FONT
+	ENEMY_FONT,
+	TILE_TEXTURE,
 };
 
 namespace Engine {
