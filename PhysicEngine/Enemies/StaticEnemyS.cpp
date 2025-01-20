@@ -7,10 +7,10 @@ StaticEnemyS::StaticEnemyS(const int id, const int colid, const float mass,
     GameShape(id, colid, mass, pos, size,
         { 0.0f,0.0f }, { 0.0f,0.0f }, coeffOfRest, ceoffOfFriction), textureId(0) {
 
-    this->textureId = textureId +1;
+    this->textureId = textureId;
     this->sprite.setPosition(pos);
     sf::Vector2f apparantSize = { size.x, size.y * (46.0f / 64.0f) };
-    sf::Vector2f apparentPos = { pos.x, pos.y + size.y * (12.0f /64.0f)};
+    sf::Vector2f apparentPos = { pos.x, pos.y + size.y * (18.0f /64.0f)};
     this->shape->setSize(apparantSize);
     this->shape->setPosition(apparentPos);
     this->size = apparantSize;
@@ -26,8 +26,6 @@ void StaticEnemyS::Load(std::shared_ptr<Engine::ResourceManager> resources) {
     this->sprite.setTexture(resources->GetTexture(ResourceId::TILE_TEXTURE));
     this->sprite.setTextureRect(sf::IntRect(textureX * testsize,
         textureY * testsize, testsize, testsize));
-
-    this->shape->setFillColor(MyColor::chocolate);
     if (GMNumber::IS_PADDING) {
         this->shape->setOutlineThickness(0.5f);
         this->shape->setOutlineColor(sf::Color::Black);
@@ -37,7 +35,6 @@ void StaticEnemyS::Update(const float& dT) {}
 
 
 void StaticEnemyS::Draw(std::shared_ptr<sf::RenderWindow>window) {
-	window->draw(*this->shape);
     window->draw(this->sprite);
 }
 

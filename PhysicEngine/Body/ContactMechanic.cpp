@@ -100,6 +100,9 @@ void ContactMech::CollisionDetermination(std::shared_ptr<GameShape> playerShape,
 	case CollisionId::StaticEnemyIdS:
 		StaticEnemySCollisionHandle(playerShape, otherShape);
 		break;
+	case CollisionId::InvisibleEnemyId:
+		InvisibleEnemyCollisionHandle(playerShape, otherShape);
+		break;
     default:
         break;
     }
@@ -224,7 +227,8 @@ void ContactMech::CollectableCollisionHandle(std::shared_ptr<GameShape> playerSh
 
 void ContactMech::StaticEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape){
-     if (Direction::Top == HeavyObjectCollisionHandle(playerShape, otherShape)) { return; }
+	const Direction& dir = HeavyObjectCollisionHandle(playerShape, otherShape);
+     if (Direction::Top == dir || Direction::Bottom == dir) { return; }
 	this->world.SetLife(this->world.GetLife() - 1);
 	playerShape->SetPosition(this->world.GetCheckPointPosition());
 	playerShape->SetVelocity({ 0.0f, 0.0f });
@@ -234,6 +238,13 @@ void ContactMech::StaticEnemySCollisionHandle(std::shared_ptr<GameShape> playerS
     std::shared_ptr<GameShape> otherShape){
     Direction dir = HeavyObjectCollisionHandle(playerShape, otherShape);
     if (Direction::Left == dir || Direction::Right == dir) { return; }
+    this->world.SetLife(this->world.GetLife() - 1);
+    playerShape->SetPosition(this->world.GetCheckPointPosition());
+    playerShape->SetVelocity({ 0.0f, 0.0f });
+}
+
+void ContactMech::InvisibleEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
+    std::shared_ptr<GameShape> otherShape){
     this->world.SetLife(this->world.GetLife() - 1);
     playerShape->SetPosition(this->world.GetCheckPointPosition());
     playerShape->SetVelocity({ 0.0f, 0.0f });

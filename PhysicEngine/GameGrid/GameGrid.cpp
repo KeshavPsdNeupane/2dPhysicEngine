@@ -80,7 +80,7 @@ void GameGrid::ShowGirdObjectCound() {
 void GameGrid::VisualGridInit() {
     for (int y = 0; y < this->tileCountY; ++y) {
         for (int x = 0; x < this->tileCountX; ++x) {
-            float size = GMNumber::TILE_SIZE;
+            float size =this->tileWidth;
             float posX = x * size;
             float posY = y * size;
             sf::Vector2f position(posX, posY);

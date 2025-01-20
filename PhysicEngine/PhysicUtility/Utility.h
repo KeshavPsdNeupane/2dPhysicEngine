@@ -4,8 +4,8 @@
 
 namespace GMNumber {
 	//  FOR WINDOWS 
-	static constexpr float WINDOW_WIDTH = 768.0f;
-	static constexpr float WINDOW_HEIGHT = 576.0f;
+	static constexpr float WINDOW_WIDTH = 800.0f;
+	static constexpr float WINDOW_HEIGHT = 600.0f;
 	static constexpr int MAX_FRAME_RATE = 60; ;
 	static constexpr float PI = 3.14159265359f;
 
@@ -81,9 +81,10 @@ namespace GMNumber {
 	// the above two are the coefficient of friction for the object and path
 
 	// RECT
-	static constexpr bool IS_PADDING = true;
+	static constexpr bool IS_PADDING = false;
 	static const sf::Vector2f ABSOLUTE_ACCLERATION_FOR_PLAYER = { 4000.0f, 800.0f };
 	static constexpr float SMALL_BALL_SIZE = 32;
+	static constexpr float HARDCOADED_SMALL_BALL_SIZE = 25;
 	static constexpr float BIG_SMALL_BALL_RATIO = 1.5f;
 	static constexpr float BIG_BALL_SIZE = SMALL_BALL_SIZE * BIG_SMALL_BALL_RATIO;
 	static constexpr float READJUST_SIZE = SMALL_BALL_SIZE * (BIG_SMALL_BALL_RATIO -1.0f);
@@ -105,13 +106,6 @@ namespace GMNumber {
 	// POTENTIAL_COLLISION_RANGE is the range of the grid cells to check for potential collision
 	// UPDATE_DRAW_RANGE is the range of the grid cells to update and draw the objects
 	// the grid is used to optimize the collision detection and drawing of the objects
-
-
-
-	// FOR TILE MAP
-	static constexpr float TILE_SIZE = 64.0f;
-	// the above are the constants for the tile map of the game
-
 
 
 	// FOR TEXTURE OF ALL OBJECTS EXCEPT PLAYER
@@ -147,6 +141,7 @@ enum CollisionId {
 	StaticEnemyId  = 8,
 	CheckPointId = 9,
 	StaticEnemyIdS = 10,
+	InvisibleEnemyId = 11,
 };
 
 

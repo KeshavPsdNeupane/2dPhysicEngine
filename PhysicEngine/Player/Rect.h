@@ -53,6 +53,7 @@ class Rect : public GameShape  {
 	float sizeOfSprite;
 	//int points;
 	bool isLarge;
+	sf::Vector2f airResistanceConstants;
 public:
 	Rect() = default;
 	Rect(const int id , const int colid, const float mass , const sf::Vector2f pos,
@@ -75,11 +76,15 @@ private:
 	inline sf::Vector2f& NewPosition(const float& dt)override;
 	void ApplyGravity() { this->acceleration.y = GMNumber::GRAVITY; }
 	inline void FindMaxVelocities() override;
+	void FindAirResistanceConstants();
 
 private:
 	void MovementUpdate();
 	void MOvementAnimation();
 	void JumpUpdate();
 	void JumpTimeConstraintsFinder();
+	void ApplyAirResistance();
 
+
+	int Sign(const float& value) { return (value > 0) - (value < 0); }
 };

@@ -26,14 +26,35 @@ TotalTileData& TileResource::ListTheEntity(std::string& filepath) {
 
 	//HERE WE READ THE ENTITY COUNT OF EACH ENTITY
 	//FOR RESERVE THE MEMORY IN VECTOR
-	int GroundCount = 0, EnemyCount = 0, InfilatorCount = 0, DefilatorCount = 0
-		, CheckPointCount = 0, BouncyPaCountd = 0, CoinCount = 0;
-	file >> stringbuffer >> GroundCount >> stringbuffer >> EnemyCount >> stringbuffer >> InfilatorCount
-		>> stringbuffer >> DefilatorCount >> stringbuffer >> CheckPointCount >> stringbuffer >> BouncyPaCountd
-		>> stringbuffer >> CoinCount;
+	int Playercount = 0, GroundCount = 0,
+		StaticEnemyCount = 0, StaticEnemySCount = 0,
+		DynamicEnemyCount = 0, InvisibleCount = 0,
+		InfilatorCount = 0, DefilatorCount = 0
+		, CheckPointCount = 0, BouncyPaCountd = 0,
+		CoinCount = 0;
+
+
+
+	file >> stringbuffer>> Playercount >> 
+		stringbuffer >> GroundCount >> 
+		stringbuffer >> StaticEnemyCount >> 
+		stringbuffer >> StaticEnemySCount >>
+		stringbuffer >> DynamicEnemyCount >>
+		stringbuffer >> InvisibleCount >>
+		stringbuffer >> InfilatorCount>>
+		stringbuffer >> DefilatorCount >> 
+		stringbuffer >> CheckPointCount >> 
+		stringbuffer >> BouncyPaCountd>> 
+		stringbuffer >> CoinCount;
+
+
 	std::getline(file, stringbuffer); // TO MOVE TO NEXT LINE
+	this->totalTileData.loadEntity[EntityId::player].reserve(Playercount);
 	this->totalTileData.loadEntity[EntityId::path].reserve(GroundCount);
-	this->totalTileData.loadEntity[EntityId::staticEnemy].reserve(EnemyCount);
+	this->totalTileData.loadEntity[EntityId::staticEnemy].reserve(StaticEnemyCount);
+	this->totalTileData.loadEntity[EntityId::staticEnemyS].reserve(StaticEnemySCount);
+	this->totalTileData.loadEntity[EntityId::dynamicEnemy].reserve(DynamicEnemyCount);
+	this->totalTileData.loadEntity[EntityId::invisibleEnemy].reserve(InvisibleCount);
 	this->totalTileData.loadEntity[EntityId::inflator].reserve(InfilatorCount);
 	this->totalTileData.loadEntity[EntityId::deflator].reserve(DefilatorCount);
 	this->totalTileData.loadEntity[EntityId::checkPoint].reserve(CheckPointCount);

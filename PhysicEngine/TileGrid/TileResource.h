@@ -9,8 +9,12 @@
 
 
 enum EntityId {
-    path = 0,
+	player = 0,
+    path,
     staticEnemy,
+	staticEnemyS,
+	dynamicEnemy,
+	invisibleEnemy,
     bouncypad,
     collectable,
     inflator,
@@ -21,8 +25,12 @@ enum EntityId {
 };
 
 struct StringEntity {
+	const  std::string player = "Player";
     const  std::string path = "Ground";
-    const  std::string staticEnemy = "Enemy";
+    const  std::string staticEnemy = "StaticEnemy";
+    const  std::string staticEnemyS = "StaticEnemyS";
+    const  std::string dynamicEnemy = "DynamicEnemy";
+    const  std::string invisibleEnemy = "InvisibleEnemy";
     const  std::string bouncypad = "BouncyPad";
     const  std::string collectable =  "Coin" ;
     const  std::string Inflator = "Infilator";
@@ -31,11 +39,23 @@ struct StringEntity {
 
 
 	unsigned int GetEntityId(const std::string& entity) {
-		if (entity == path) {
+		if (entity == player) {
+			return EntityId::player;
+		}
+		else if (entity == path) {
 			return EntityId::path;
 		}
 		else if (entity == staticEnemy) {
 			return EntityId::staticEnemy;
+		}
+		else if (entity == staticEnemyS) {
+			return EntityId::staticEnemyS;
+		}
+		else if (entity == dynamicEnemy) {
+			return EntityId::dynamicEnemy;
+		}
+		else if (entity == invisibleEnemy) {
+			return EntityId::invisibleEnemy;
 		}
 		else if (entity == bouncypad) {
 			return EntityId::bouncypad;

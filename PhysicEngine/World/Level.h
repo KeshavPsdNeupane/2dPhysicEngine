@@ -24,10 +24,10 @@
 
 class Level : public WorldSuperClass{
 private:
-	sf::Vector2f worldSize;
 	bool isPaused;
 	sf::Event event;
 	GameGrid grid;
+
 	std::shared_ptr<Rect> rectangle;
 	std::vector<std::shared_ptr<Path>> path;
 	std::vector<std::shared_ptr<Inflator>> inflator;
@@ -36,14 +36,15 @@ private:
 	std::vector<std::shared_ptr<Collectable>> collectable;
 	std::vector<std::shared_ptr<StaticEnemy>> staticEnemy;
 	std::vector<std::shared_ptr<CheckPoint>> checkPoint;
+	std::vector<std::shared_ptr<StaticEnemyS>> staticEnemyS;
+	std::vector<std::shared_ptr<DynamicEnemy>> dynamicEnemy;
+	std::vector<std::shared_ptr<InvisibleEnemy>> invisibleEnemy;
 
-	std::shared_ptr<InvisibleEnemy> invisibleEnemy;
-	std::shared_ptr<StaticEnemyS> staticEnemyS;
-	std::shared_ptr<DynamicEnemy> dynamicEnemy;
 
 	ContactMech contactMechanic;
 	GridResult updateDrawResultFromGrid;
 	GridResult collisionResultFromGrid;
+
 	sf::Text text;
 	sf::Text text2;
 	float DT;
@@ -69,13 +70,22 @@ private:
 
 private:
 	void DeleteUnwanted();
-	void CreatePath(TotalTileData& data);
-	void CreateInflator(TotalTileData& data);
-	void CreateDeflator(TotalTileData& data);
-	void CreateBouncyPath(TotalTileData& data);
-	void CreateCollectable(TotalTileData& data);
-	void CreateStaticEnemy(TotalTileData& data);
-	void CreateCheckPoint(TotalTileData& data);
+	void CreatePath( const TotalTileData& data , const float& mass,
+		const sf::Vector2f& cowffOfRest ,const float& coeffOfFriection);
+	void CreateInflator(const TotalTileData& data, const float& mass,
+		const sf::Vector2f& cowffOfRest, const float& coeffOfFriection);
+	void CreateDeflator(const TotalTileData& data, const float& mass,
+		const sf::Vector2f& cowffOfRest, const float& coeffOfFriection);
+	void CreateBouncyPath(const TotalTileData& data, const float& mass,
+		const sf::Vector2f& cowffOfRest, const float& coeffOfFriection);
+	void CreateCollectable(const TotalTileData& data);
+	void CreateStaticEnemy(const TotalTileData& data, const float& mass,
+		const sf::Vector2f& cowffOfRest, const float& coeffOfFriection);
+	void CreateStaticSEnemy(const TotalTileData& data, const float& mass,
+		const sf::Vector2f& cowffOfRest, const float& coeffOfFriection);
+	void CreateDynamicEnemy(const TotalTileData& data);
+	void CreateInvisibleEnemy(const TotalTileData& data);
+	void CreateCheckPoint(const TotalTileData& data);
 	void EndLevel();
 
 };

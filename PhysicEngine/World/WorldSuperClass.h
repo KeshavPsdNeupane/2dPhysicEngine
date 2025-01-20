@@ -6,8 +6,8 @@
 
 class WorldSuperClass : public Engine::State{
 protected:
-	sf::Vector2i worldSize;
-	sf::Vector2i tileSize;
+	sf::Vector2f worldSize;
+	sf::Vector2f tileSize;
 
 	std::shared_ptr<StateData> stateData;
 	sf::View worldView;

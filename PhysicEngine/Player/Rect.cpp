@@ -8,9 +8,11 @@ PlayerReference playerReference;
 Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f pos, const sf::Vector2f size,
 	const sf::Vector2f coeffOfRest, const float coeffOfFriction):
 	GameShape(id, colid, mass, pos, size, {0.0f,0.0f}, { 0.0f,0.0f }
-		,coeffOfRest, coeffOfFriction), isLarge(false) , sizeOfSprite(25.0f){
+		,coeffOfRest, coeffOfFriction), isLarge(false) ,
+	sizeOfSprite(25.0f), airResistanceConstants(){
 	FindMaxVelocities();
 	JumpTimeConstraintsFinder();
+	FindAirResistanceConstants();
 	//std::cout << "max vel" << this->maxVelocity.x << " " << this->maxVelocity.y << std::endl;
 }
 
@@ -47,6 +49,7 @@ void Rect::Update(const float& dt) {
 	ApplyGravity();
 	MovementUpdate();
 	MOvementAnimation();
+	ApplyAirResistance();
 	this->shape->setPosition(NewPosition(DT));
 	this->sprite.setPosition(this->shape->getPosition());
 }
@@ -160,6 +163,13 @@ inline void Rect::FindMaxVelocities() {
 	}
 }
 
+void Rect::FindAirResistanceConstants(){
+	float hardcoadedsize = GMNumber::HARDCOADED_SMALL_BALL_SIZE;
+	float area = GMNumber::PI * hardcoadedsize * hardcoadedsize * 0.25f;
+	this->airResistanceConstants.x = 6.0f * area / this->mass;
+	this->airResistanceConstants.y = 3.5f * area / this->mass;
+}
+
 inline sf::Vector2f& Rect::NewPosition(const float& dt) {
 	this->velocity += this->acceleration * dt;
 	float clampY = (!this->isLarge) ? this->maxVelocity.y : 1.25 * this->maxVelocity.y;
@@ -190,4 +200,10 @@ void Rect::JumpUpdate() {
 
 void Rect::JumpTimeConstraintsFinder() {
 	TimeConstraints.JUMP_TIME_CONSTRAINTS = 2.0f * (ApplyMotionForce.JUMP_FORCE / GMNumber::GRAVITY);
+}
+
+void Rect::ApplyAirResistance() {
+	float apparentConst = (!this->isLarge) ? this->airResistanceConstants.x : this->airResistanceConstants.y;
+	float airresistance = -(float)Sign(this->velocity.x) * this->velocity.x / (apparentConst * this->DT * this->velocity.x + 1);
+	this->velocity.x += airresistance;
 }

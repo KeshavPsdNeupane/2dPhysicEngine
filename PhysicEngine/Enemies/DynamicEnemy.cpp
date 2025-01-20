@@ -5,8 +5,8 @@ DynamicEnemy::DynamicEnemy(const int id, const int colid, const float mass,
     const int textureId, const sf::Vector2f pos,
     const sf::Vector2f size, const sf::Vector2f velocity) :
     GameShape(id, colid, mass, pos, size,
-        velocity, { 0.0f,0.0f }, { 0.0f,0.0f },0.0f), textureId(0),
-    orginPosition(pos){
+        velocity, { 0.0f,0.0f }, { 0.0f,0.0f },0.0f), 
+    textureId(0), orginPosition(pos){
     this->textureId = textureId;
     this->sprite.setPosition(pos);
     this->shape->setSize(size);
@@ -28,37 +28,29 @@ void DynamicEnemy::Load(std::shared_ptr<Engine::ResourceManager> resources) {
         this->shape->setOutlineThickness(0.5f);
         this->shape->setOutlineColor(sf::Color::Black);
     }
+	this->gravity = 0.0f;
 }
 void DynamicEnemy::Update(const float& dT) {
 	this->shape->setPosition(NewPosition(dT));
 	this->sprite.setPosition(this->shape->getPosition());
 
-    if (this->position.x < orginPosition.x - size.x) {
-        this->velocity.x = -this->velocity.x;
-		this->position.x = orginPosition.x - size.x;
-		this->sprite.setPosition(this->position);
-	}
-    else if (this->position.x > orginPosition.x + size.x) {
-        this->velocity.x = -this->velocity.x;
-        this->position.x = orginPosition.x + size.x ;
-        this->sprite.setPosition(this->position);
-    }
-
-    if (this->position.y < orginPosition.y - size.y) {
-        this->velocity.y = -this->velocity.y;
-        this->position.y = orginPosition.x - size.y;
-        this->sprite.setPosition(this->position);
-	}
-	else if (this->position.y > orginPosition.y + size.y ) {
+	const auto& pos = this->shape->getPosition();
+	if (pos.y >= orginPosition.y + size.y && this->velocity.y > 0.0f) {
 		this->velocity.y = -this->velocity.y;
-		this->position.y = orginPosition.x + size.y ;
-		this->sprite.setPosition(this->position);
 	}
+	else if (pos.y <= orginPosition.y - size.y && this->velocity.y < 0.0f) {
+		this->velocity.y = -this->velocity.y;
+	}
+	else if (pos.x >= orginPosition.x + size.x && this->velocity.x > 0.0f) {
+		this->velocity.x = -this->velocity.x;
+	}
+    else if (pos.x <= orginPosition.x - size.x && this->velocity.y < 0.0f) {
+        this->velocity.x = -this->velocity.x;
+    }
 }
 
 
 void DynamicEnemy::Draw(std::shared_ptr<sf::RenderWindow>window) {
-	window->draw(*this->shape);
     window->draw(this->sprite);
 }
 

@@ -7,7 +7,7 @@
 class InvisibleEnemy : public GameShape {
 public:
     InvisibleEnemy() = default;
-    InvisibleEnemy(const int id, const int colid, const float mass, const sf::Vector2f pos,
+    InvisibleEnemy(const int id, const int colid, const sf::Vector2f pos,
         const sf::Vector2f size);
     ~InvisibleEnemy();
 public:
