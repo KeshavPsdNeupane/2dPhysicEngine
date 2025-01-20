@@ -150,10 +150,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Body\ContactMechanic.cpp" />
+    <ClCompile Include="Enemies\DynamicEnemy.cpp" />
     <ClCompile Include="Enemies\StaticEnemy.cpp" />
     <ClCompile Include="GameGrid\GameGrid.cpp" />
     <ClCompile Include="GameGrid\OutlineRect.cpp" />
     <ClCompile Include="GameLoop.cpp" />
+    <ClCompile Include="Enemies\InvisibleEnemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\CheckPoint.cpp" />
     <ClCompile Include="Objects\Collectable.cpp" />
@@ -167,6 +169,7 @@
     <ClCompile Include="States\MenuState\MainMenuState.cpp" />
     <ClCompile Include="States\MenuState\PauseState.cpp" />
     <ClCompile Include="States\StateManager.cpp" />
+    <ClCompile Include="Enemies\StaticEnemyS.cpp" />
     <ClCompile Include="TileGrid\TileResource.cpp" />
     <ClCompile Include="World\Level.cpp" />
     <ClCompile Include="World\WorldSuperClass.cpp" />
@@ -175,10 +178,12 @@
     <ClInclude Include="Body\ContactMechanic.h" />
     <ClInclude Include="Body\GameShapes.h" />
     <ClInclude Include="Body\RigidBody.h" />
+    <ClInclude Include="Enemies\DynamicEnemy.h" />
     <ClInclude Include="Enemies\StaticEnemy.h" />
     <ClInclude Include="GameGrid\GameGrid.h" />
     <ClInclude Include="GameGrid\OutlineRect.h" />
     <ClInclude Include="GameLoop.h" />
+    <ClInclude Include="Enemies\InvisibleEnemy.h" />
     <ClInclude Include="Objects\CheckPoint.h" />
     <ClInclude Include="Objects\Collectable.h" />
     <ClInclude Include="Objects\Deflator.h" />
@@ -194,6 +199,7 @@
     <ClInclude Include="States\MenuState\PauseState.h" />
     <ClInclude Include="States\State.h" />
     <ClInclude Include="States\StateManager.h" />
+    <ClInclude Include="Enemies\StaticEnemyS.h" />
     <ClInclude Include="TileGrid\TileResource.h" />
     <ClInclude Include="World\Level.h" />
     <ClInclude Include="World\WorldSuperClass.h" />

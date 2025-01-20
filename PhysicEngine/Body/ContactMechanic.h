@@ -61,6 +61,8 @@ protected:
 		std::shared_ptr<GameShape> otherShape);
 	void StaticEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
+	void StaticEnemySCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
 
 	void CheckPointCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);

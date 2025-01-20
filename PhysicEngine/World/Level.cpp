@@ -28,6 +28,20 @@ Level::Level(std::shared_ptr<StateData> state) :
         GMNumber::COEFF_OF_RESTITUTION_OBJECT,
         GMNumber::COEFF_OF_FRICTION_OBJECT
     );
+
+    this->invisibleEnemy = std::make_shared<InvisibleEnemy>(++this->entityIdCounter,
+        CollisionId::StaticEnemyId, 400000.0f, sf::Vector2f(320.0f, 250.0f),sf::Vector2f(64.0f,64.0f));
+
+	this->staticEnemyS = std::make_shared<StaticEnemyS>(++this->entityIdCounter,
+		CollisionId::StaticEnemyIdS, 400000.0f,43,sf::Vector2f(350.0f, 350.0f), sf::Vector2f(64.0f, 64.0f),
+		GMNumber::COEFF_OF_RESTITUTION_PATH, GMNumber::COEFF_OF_FRICTION_PATH);
+
+    this->dynamicEnemy = std::make_shared<DynamicEnemy>(++this->entityIdCounter,
+        CollisionId::StaticEnemyId, 400000.f,43, sf::Vector2f(150.0f, 150.0f),
+        sf::Vector2f(64.0f, 64.0f), sf::Vector2f(0.0f, 64.0f));
+
+
+
     this->checkPointPosition = positionForPlayer;
     this->text.setFont(this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT));
     this->text.setPosition({ 250.0f,10.0f });
@@ -62,9 +76,12 @@ void Level::Load() {
 		this->bouncyPath[i]->Load(this->stateData->resourceManager);
 		this->grid.AddObject(this->bouncyPath[i], true);
 	}
+    //REMEMBER IF U MAKING COLLECTABLE STATIC ENTITY THEM
+	// MAKE SURE TO UPDATE THE DELETEUNWANTED FUNCTION BOOL TO BE TRUE
+	//OTHERWISE IT WILL NOT DELETE THE OBJECT
     for (unsigned int i = 0; i < this->collectable.size(); ++i) {
         this->collectable[i]->Load(this->stateData->resourceManager);
-        this->grid.AddObject(this->collectable[i], true);
+        this->grid.AddObject(this->collectable[i],false);
     }
     for (unsigned int i = 0; i < this->staticEnemy.size(); ++i) {
         this->staticEnemy[i]->Load(this->stateData->resourceManager);
@@ -74,6 +91,16 @@ void Level::Load() {
         this->checkPoint[i]->Load(this->stateData->resourceManager);
         this->grid.AddObject(this->checkPoint[i], true);
     }
+
+
+	this->invisibleEnemy->Load(this->stateData->resourceManager);
+	this->grid.AddObject(this->invisibleEnemy, true);
+    this->staticEnemyS->Load(this->stateData->resourceManager);
+    this->grid.AddObject(this->staticEnemyS, true);
+
+    this->dynamicEnemy->Load(this->stateData->resourceManager);
+    this->grid.AddObject(this->dynamicEnemy, false);
+
 }
 
 
@@ -119,8 +146,10 @@ void Level::Update(const float& dt) {
         }
 
         for (auto& obj : this->collisionResultFromGrid.dynamicResult) {
-            this->contactMechanic.CollsionDetection(this->rectangle, obj);
+		    this->contactMechanic.CollsionDetection(this->rectangle, obj);
         }
+
+
 
         for (auto& obj : updateDrawResultFromGrid.dynamicResult) {
             this->grid.MoveObject(obj);
@@ -202,7 +231,7 @@ void Level::DeleteUnwanted() {
     auto& collectables = this->collectable;
     for (auto it = collectables.begin(); it != collectables.end(); ) {
         if ((*it)->GetCanBeDeleted()) {
-            this->grid.RemoveObject(*it, true);
+            this->grid.RemoveObject(*it, false);
             it = collectables.erase(it);
         }
         else { ++it; }

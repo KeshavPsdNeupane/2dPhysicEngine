@@ -18,6 +18,9 @@
 #include"../World/WorldSuperClass.h"
 #include"../GameGrid/OutlineRect.h"
 #include"../TileGrid/TileResource.h"
+#include"../Enemies/InvisibleEnemy.h"
+#include"../Enemies/StaticEnemyS.h"
+#include"../Enemies/DynamicEnemy.h"
 
 class Level : public WorldSuperClass{
 private:
@@ -29,13 +32,14 @@ private:
 	std::vector<std::shared_ptr<Path>> path;
 	std::vector<std::shared_ptr<Inflator>> inflator;
 	std::vector<std::shared_ptr<Deflator>> deflator;
-
 	std::vector<std::shared_ptr<BouncyPath>> bouncyPath;
 	std::vector<std::shared_ptr<Collectable>> collectable;
-
 	std::vector<std::shared_ptr<StaticEnemy>> staticEnemy;
 	std::vector<std::shared_ptr<CheckPoint>> checkPoint;
 
+	std::shared_ptr<InvisibleEnemy> invisibleEnemy;
+	std::shared_ptr<StaticEnemyS> staticEnemyS;
+	std::shared_ptr<DynamicEnemy> dynamicEnemy;
 
 	ContactMech contactMechanic;
 	GridResult updateDrawResultFromGrid;

@@ -31,12 +31,12 @@ void Collectable::Load(std::shared_ptr<Engine::ResourceManager> resources) {
 }
 
 void Collectable::Update(const float& dT) {
-	//if (this->frameClock.getElapsedTime().asSeconds() > 0.4f) {
-	//	this->frame = (this->frame + 1) % this->frameSize;
- //       this->sprite.setTextureRect(sf::IntRect( this->testsize*(this->textureX + this->frame),
- //           this->textureY * this->testsize , this->testsize, this->testsize));
- //       this->frameClock.restart();
-	//}
+	if (this->frameClock.getElapsedTime().asSeconds() > 0.4f) {
+		this->frame = (this->frame + 1) % this->frameSize;
+        this->sprite.setTextureRect(sf::IntRect( this->testsize*(this->textureX + this->frame),
+            this->textureY * this->testsize , this->testsize, this->testsize));
+        this->frameClock.restart();
+	}
 }
 
 

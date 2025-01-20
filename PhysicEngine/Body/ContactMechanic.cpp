@@ -11,11 +11,12 @@ ContactMech::ContactMech(WorldSuperClass& w):
 	world(w),
     horizontalOverlap(0.0f), verticalOverlap(0.0f),
     M1(0.0f) , M2(0.0f),
-    gravity(0.0f) , frictionDeceleratedVelocity(0.0f){
+    gravity(0.0f) , frictionDeceleratedVelocity(0.0f) , coeffOfFriction(){
 }
 
 void ContactMech::CollsionDetection(std::shared_ptr<GameShape> playerShape,
     std::shared_ptr<GameShape> otherShape) {
+
     if (playerShape->GetShapeID() == otherShape->GetShapeID()) { return; }
     auto player = sf::FloatRect(playerShape->GetPosition(), playerShape->GetSize());
     auto other = sf::FloatRect(otherShape->GetPosition(), otherShape->GetSize());
@@ -96,6 +97,9 @@ void ContactMech::CollisionDetermination(std::shared_ptr<GameShape> playerShape,
 	case CollisionId::CheckPointId:
 		CheckPointCollisionHandle(playerShape, otherShape);
         break;
+	case CollisionId::StaticEnemyIdS:
+		StaticEnemySCollisionHandle(playerShape, otherShape);
+		break;
     default:
         break;
     }
@@ -224,6 +228,15 @@ void ContactMech::StaticEnemyCollisionHandle(std::shared_ptr<GameShape> playerSh
 	this->world.SetLife(this->world.GetLife() - 1);
 	playerShape->SetPosition(this->world.GetCheckPointPosition());
 	playerShape->SetVelocity({ 0.0f, 0.0f });
+}
+
+void ContactMech::StaticEnemySCollisionHandle(std::shared_ptr<GameShape> playerShape, 
+    std::shared_ptr<GameShape> otherShape){
+    Direction dir = HeavyObjectCollisionHandle(playerShape, otherShape);
+    if (Direction::Left == dir || Direction::Right == dir) { return; }
+    this->world.SetLife(this->world.GetLife() - 1);
+    playerShape->SetPosition(this->world.GetCheckPointPosition());
+    playerShape->SetVelocity({ 0.0f, 0.0f });
 }
 
 void ContactMech::CheckPointCollisionHandle(std::shared_ptr<GameShape> playerShape,

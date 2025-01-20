@@ -146,7 +146,7 @@ enum CollisionId {
 	CollectableId = 7,
 	StaticEnemyId  = 8,
 	CheckPointId = 9,
-	WaterPathId = 10,
+	StaticEnemyIdS = 10,
 };
 
 

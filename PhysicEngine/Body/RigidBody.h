@@ -37,7 +37,9 @@ public:
         acceleration(acceleration),
         coefficientOfRestitution(coefficientOfRestitution),
         ceofficientOfFriction(ceofficientOfFriction),
-        gravity(GMNumber::GRAVITY){}
+        gravity(GMNumber::GRAVITY){
+		FindMaxVelocities();    
+    }
     virtual ~RigidBody(){}
 
 
