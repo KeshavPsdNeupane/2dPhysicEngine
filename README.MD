@@ -6,7 +6,7 @@ This repository houses a physics engine and supporting framework for a bounce ba
 
 ## Core Physics Components
 
-** Rigidbody: **
+**` Rigidbody: `**
 
 The foundational class responsible for implementing core physics properties and behaviors, including velocity, acceleration, friction, and collision responses.
 
