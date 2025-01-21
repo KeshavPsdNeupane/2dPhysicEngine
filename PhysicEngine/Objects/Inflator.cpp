@@ -9,7 +9,7 @@ Inflator::Inflator(const int id, const int colid, const float mass,
     textureId(textureId){
     this->sprite.setPosition(pos);
 
-    sf::Vector2f apparentSize(size.x * (28.0 / 64.0f), size.y * (58.0f / 64.0f));
+    sf::Vector2f apparentSize(size.x * (28.0f / 64.0f), size.y * (58.0f / 64.0f));
     sf::Vector2f apparentPosition = pos +
         sf::Vector2f(size.x * (16.0f / 64.0f), size.y * (6.0f / 64.0f));
     this->shape->setSize(apparentSize);

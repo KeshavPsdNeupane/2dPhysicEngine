@@ -33,7 +33,7 @@ namespace GMNumber {
 	// The coefficient has a direct proportional relation with sqrt(mass) and sqrt(gravity),
 	// and an inverse proportional relation with sqrt(area).
 	// The area and mass are obtained from the respective class functions.
-	static constexpr float COEFF_MAX_VELOCITY_Y = 1672.98f * (2.0f * GRAVITY) / (AIR_DENSITY * AIR_COEFFICIENT_OF_DRAG);
+	static constexpr float COEFF_MAX_VELOCITY_Y = 2972.41f * (2.0f * GRAVITY) / (AIR_DENSITY * AIR_COEFFICIENT_OF_DRAG);
 
 
 	// the  two values are the maximum velocity that can be achieved by the object
@@ -88,13 +88,16 @@ namespace GMNumber {
 	static constexpr float BIG_SMALL_BALL_RATIO = 1.5f;
 	static constexpr float BIG_BALL_SIZE = SMALL_BALL_SIZE * BIG_SMALL_BALL_RATIO;
 	static constexpr float READJUST_SIZE = SMALL_BALL_SIZE * (BIG_SMALL_BALL_RATIO -1.0f);
-	static constexpr float ELASTICITY_RATIO = 1.414214f;  
-	//   1.144214 is root(2) rather than finding the sqrt is am just caching it 
+	static constexpr float ELASTICITY_RATIO = 1.19;  
+	// 1.414214 is root(2) rather than finding the sqrt is am just caching it
+	static constexpr float BALL_BOUNCE_DISTANCE =  64.0f * 3.0f; // 64 is size of grid 2.0f is multiplier  
+
+
 
 	// the above are the constants for the player object
-	// ABSOLUTE_ACCLERATION_FOR_PLAYER_X is the maximum acceleration in the x direction
-	// ABSOLUTE_ACCLERATION_FOR_PLAYER_Y is the maximum acceleration in the y direction
-	// MOVEMENT_FORCE is the force applied to the player object
+	// absolute_accleration_for_player_x is the maximum acceleration in the x direction
+	// absolute_accleration_for_player_y is the maximum acceleration in the y direction
+	// movement_force is the force applied to the player object
 	
 
 	// Just make sure UPDATE_DRAW_RANGE is always greater than POTENTIAL_COLLISION_RANGE
@@ -111,6 +114,8 @@ namespace GMNumber {
 	// FOR TEXTURE OF ALL OBJECTS EXCEPT PLAYER
 	static constexpr int TEXTURE_COUNT_X = 12;
 	static constexpr int TEXTURE_SIZE = 64;
+	static constexpr int PLAYER_SPRITE_SIZE = 25;
+
 };
 
 

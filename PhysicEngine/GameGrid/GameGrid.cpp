@@ -80,12 +80,13 @@ void GameGrid::ShowGirdObjectCound() {
 void GameGrid::VisualGridInit() {
     for (int y = 0; y < this->tileCountY; ++y) {
         for (int x = 0; x < this->tileCountX; ++x) {
-            float size =this->tileWidth;
+            float size = (float)this->tileWidth;
             float posX = x * size;
             float posY = y * size;
             sf::Vector2f position(posX, posY);
             sf::Color color(255,255,255,100);
-            std::shared_ptr<OutlineRectangle> out = std::make_shared<OutlineRectangle>(size, size, position, color);
+            std::shared_ptr<OutlineRectangle> out = std::make_shared<OutlineRectangle>(size,
+                size, position, color);
             tileVisual.push_back(out);
         }
     }

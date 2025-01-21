@@ -11,7 +11,7 @@ Level::Level(std::shared_ptr<StateData> state) :
     entityIdCounter(0) {
 
     TileResource tile;
-    std::string path = "Asset/Maps/TESTFORGAME.txt";
+    std::string path = "Asset/Maps/Level1Gameplay.txt";
     TotalTileData& data = tile.ListTheEntity(path);
     this->worldSize = sf::Vector2f((float)data.worldWidth, (float)data.worldHeight);
 	this->tileSize = sf::Vector2f((float)data.tileWidth, (float)data.tileHeight);
@@ -298,7 +298,7 @@ void Level::CreateBouncyPath(const TotalTileData& data, const float& mass,
             this->bouncyPath.push_back(std::make_shared<BouncyPath>(++this->entityIdCounter,
                 CollisionId::HeavyPathId, mass, bouncyPathData[i].textureIndex,
                 sf::Vector2f((float)bouncyPathData[i].pixelX, (float)bouncyPathData[i].pixelY),
-                this->tileSize, sf::Vector2f(cowffOfRest.x, 2.4f), coeffOfFriection));
+                this->tileSize, sf::Vector2f(cowffOfRest.x, 4.5f), coeffOfFriection));
         }
 }
 

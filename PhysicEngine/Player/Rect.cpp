@@ -9,11 +9,11 @@ Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f p
 	const sf::Vector2f coeffOfRest, const float coeffOfFriction):
 	GameShape(id, colid, mass, pos, size, {0.0f,0.0f}, { 0.0f,0.0f }
 		,coeffOfRest, coeffOfFriction), isLarge(false) ,
-	sizeOfSprite(25.0f), airResistanceConstants(){
+	sizeOfSprite(GMNumber::PLAYER_SPRITE_SIZE), airResistanceConstants(){
 	FindMaxVelocities();
 	JumpTimeConstraintsFinder();
 	FindAirResistanceConstants();
-	//std::cout << "max vel" << this->maxVelocity.x << " " << this->maxVelocity.y << std::endl;
+	std::cout << "max vel" << this->maxVelocity.x << " " << this->maxVelocity.y << std::endl;
 }
 
 Rect::~Rect(){}
