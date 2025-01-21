@@ -86,6 +86,7 @@ private:
 	void CreateDynamicEnemy(const TotalTileData& data);
 	void CreateInvisibleEnemy(const TotalTileData& data);
 	void CreateCheckPoint(const TotalTileData& data);
+	void CreateEndGameMarker(const TotalTileData& data);
 	void EndLevel();
 
 };

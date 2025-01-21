@@ -103,6 +103,9 @@ void ContactMech::CollisionDetermination(std::shared_ptr<GameShape> playerShape,
 	case CollisionId::InvisibleEnemyId:
 		InvisibleEnemyCollisionHandle(playerShape, otherShape);
 		break;
+	case CollisionId::EndGameMarkerId:
+		EndGameMarkerCollisionHandle(playerShape, otherShape);
+		break;
     default:
         break;
     }
@@ -223,6 +226,7 @@ void ContactMech::CollectableCollisionHandle(std::shared_ptr<GameShape> playerSh
     world.SetPoints(world.GetPoints() + collectable->GetPoint());
     collectable->SetCanBeDeleted(true);
     this->world.IncrementLife();
+	this->world.DecrementCoinCount();
 }
 
 void ContactMech::StaticEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
@@ -261,6 +265,13 @@ void ContactMech::CheckPointCollisionHandle(std::shared_ptr<GameShape> playerSha
    const auto& pos = checkPoint->GetPosition() + checkPoint->GetSize()/2.0f;
     this->world.SetCheckPointPosition(pos);
 	//std::cout << "CheckPoint Found and position set" << pos.x << " " << pos.y << "\n";
+}
+
+void ContactMech::EndGameMarkerCollisionHandle(std::shared_ptr<GameShape> playerShape,
+    std::shared_ptr<GameShape> otherShape){
+    if (this->world.GetIsLevelEnd()) {
+		world.PushGameOverState();
+    }
 }
 
 

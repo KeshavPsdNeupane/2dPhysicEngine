@@ -156,6 +156,7 @@
     <ClCompile Include="GameGrid\OutlineRect.cpp" />
     <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="Enemies\InvisibleEnemy.cpp" />
+    <ClCompile Include="Objects\LevelEndMarker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\CheckPoint.cpp" />
     <ClCompile Include="Objects\Collectable.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="GameGrid\OutlineRect.h" />
     <ClInclude Include="GameLoop.h" />
     <ClInclude Include="Enemies\InvisibleEnemy.h" />
+    <ClInclude Include="Objects\LevelEndMarker.h" />
     <ClInclude Include="Objects\CheckPoint.h" />
     <ClInclude Include="Objects\Collectable.h" />
     <ClInclude Include="Objects\Deflator.h" />

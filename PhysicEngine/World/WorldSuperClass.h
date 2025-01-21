@@ -1,20 +1,25 @@
 #pragma once
 #include"../States/State.h"
 #include"../StateObjects.h"
-
+#include"../Objects/LevelEndMarker.h"
 
 
 class WorldSuperClass : public Engine::State{
 protected:
+	std::shared_ptr<StateData> stateData;
 	sf::Vector2f worldSize;
 	sf::Vector2f tileSize;
-
-	std::shared_ptr<StateData> stateData;
 	sf::View worldView;
+	sf::Vector2f checkPointPosition;
 	unsigned int points;
 	unsigned short life;
 	unsigned short maxLife;
-	sf::Vector2f checkPointPosition;
+	bool isLevelEnd;
+	sf::Vector2u totalCoinCount;
+
+
+
+	std::shared_ptr<LevelEndMarker> levelEndMarker;
 public:
 	WorldSuperClass(std::shared_ptr<StateData> stateData , 
 		unsigned short l = 3, unsigned short maxLife = 5 ,unsigned int initpoint = 0 );
@@ -29,12 +34,17 @@ public:
 	void DecrementLife() { --this->life; }
 	void SetCheckPointPosition(const sf::Vector2f& position) { this->checkPointPosition = position; }
 	const sf::Vector2f& GetCheckPointPosition() const { return this->checkPointPosition; }
-
-
+	void DecrementCoinCount();
+	const sf::Vector2u& GetTotalCoinCount() const { return this->totalCoinCount; }
+	const bool& GetIsLevelEnd() const { return this->isLevelEnd; }
 public:
 	void Load() override;
 	void ProcessInput() override;
 	void Update(const float& dt) override;
 	void Draw() override;
+
+
+public:
+	void PushGameOverState();
 };
 

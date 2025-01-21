@@ -56,7 +56,6 @@ protected:
 		std::shared_ptr<GameShape> otherShape);
 	void DeflatorCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
-
 	void CollectableCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
 	void StaticEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
@@ -65,9 +64,9 @@ protected:
 		std::shared_ptr<GameShape> otherShape);
 	void InvisibleEnemyCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
-
-
 	void CheckPointCollisionHandle(std::shared_ptr<GameShape> playerShape,
+		std::shared_ptr<GameShape> otherShape);
+	void EndGameMarkerCollisionHandle(std::shared_ptr<GameShape> playerShape,
 		std::shared_ptr<GameShape> otherShape);
 private:
 	Direction CollisionDirectionFinder(std::shared_ptr<GameShape> playerShape,

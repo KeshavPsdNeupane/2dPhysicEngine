@@ -142,6 +142,7 @@ enum CollisionId {
 	CheckPointId = 9,
 	StaticEnemyIdS = 10,
 	InvisibleEnemyId = 11,
+	EndGameMarkerId = 12,
 };
 
 

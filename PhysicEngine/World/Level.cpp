@@ -11,20 +11,20 @@ Level::Level(std::shared_ptr<StateData> state) :
     entityIdCounter(0) {
 
     TileResource tile;
-    std::string path = "Asset/Maps/wwww.txt";
+    std::string path = "Asset/Maps/TESTFORGAME.txt";
     TotalTileData& data = tile.ListTheEntity(path);
     this->worldSize = sf::Vector2f((float)data.worldWidth, (float)data.worldHeight);
 	this->tileSize = sf::Vector2f((float)data.tileWidth, (float)data.tileHeight);
 
     grid.InitializeGameGrid(data.worldWidth, data.worldHeight, data.tileWidth, data.tileHeight);
 
-    sf::Vector2f blockSize{ 64.0f , 64.0f };
+    this->totalCoinCount.x =  data.loadEntity[EntityId::collectable].size();
+	this->totalCoinCount.y = (int)(0.85f * this->totalCoinCount.x  + 1);
+
     float mass = 400000.0f;
     sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
     float u = GMNumber::COEFF_OF_FRICTION_PATH;
    
-
-
     CreatePath(data, mass, E, u);
     CreateInflator(data, mass, E, u);
     CreateDeflator(data, mass, E, u);
@@ -35,6 +35,7 @@ Level::Level(std::shared_ptr<StateData> state) :
     CreateCheckPoint(data);
 	CreateDynamicEnemy(data);   
 	CreateInvisibleEnemy(data);
+	CreateEndGameMarker(data);
 
     const auto&temep = data.loadEntity[EntityId::player][0];
 
@@ -114,6 +115,8 @@ void Level::Load() {
         this->grid.AddObject(this->checkPoint[i], true);
     }
 
+    this->levelEndMarker->Load(this->stateData->resourceManager);
+	this->grid.AddObject(this->levelEndMarker, true);
 
 }
 
@@ -208,12 +211,10 @@ void Level::CreateViewBasedOnPlayer(std::shared_ptr<sf::RenderWindow> window) {
     float clampedX = VectorOperation::Clamp(playerPosition.x, halfWidth, this->worldSize.x- halfWidth);
     float clampedY = VectorOperation::Clamp(playerPosition.y, halfHeight, this->worldSize.y - halfHeight);
     this->worldView.setCenter({ clampedX, clampedY });
-
 }
 
 void Level::DrawDefaulView(std::shared_ptr<sf::RenderWindow>window) {
     window->setView(window->getDefaultView());
-
     window->draw(text);
     window->draw(text2);
     this->rectangle->DrawStats(window);
@@ -237,7 +238,8 @@ void Level::DisplayStats() {
     //    + " / " + std::to_string(maxsize - 1)  // -1 since player will not collide with itself
     //);
     this->text2.setString("Points = " + std::to_string(this->points) +
-        "\nLife = " + std::to_string(this->life));
+        "\nLife = " + std::to_string(this->life) + 
+        "\nCoinCount =" + std::to_string(this->totalCoinCount.x));
 }
 
 void Level::DeleteUnwanted() {
@@ -254,6 +256,7 @@ void Level::DeleteUnwanted() {
 void Level::CreatePath(const TotalTileData& data, const float& mass,
     const sf::Vector2f& cowffOfRest, const float& coeffOfFriection){
 	const auto& pathData = data.loadEntity[EntityId::path];
+	this->path.reserve(pathData.size());   
     for ( unsigned int i = 0; i < pathData.size(); ++i) {
         this->path.push_back(std::make_shared<Path>(++this->entityIdCounter,
 			CollisionId::HeavyPathId, mass, pathData[i].textureIndex,
@@ -266,6 +269,7 @@ void Level::CreatePath(const TotalTileData& data, const float& mass,
 void Level::CreateInflator(const TotalTileData& data, const float& mass,
     const sf::Vector2f& cowffOfRest, const float& coeffOfFriection){
 	const auto& inflatorData = data.loadEntity[EntityId::inflator];
+	this->inflator.reserve(inflatorData.size());
 	for (unsigned int i = 0; i < inflatorData.size(); ++i) {
 		this->inflator.push_back(std::make_shared<Inflator>(++this->entityIdCounter, 
 			CollisionId::InflatorId, mass, inflatorData[i].textureIndex,
@@ -277,6 +281,7 @@ void Level::CreateInflator(const TotalTileData& data, const float& mass,
 void Level::CreateDeflator(const TotalTileData& data, const float& mass,
     const sf::Vector2f& cowffOfRest, const float& coeffOfFriection){
 	const auto& deflatorData = data.loadEntity[EntityId::deflator];
+	this->deflator.reserve(deflatorData.size());
 	for ( unsigned int i = 0; i < deflatorData.size(); ++i) {
 		this->deflator.push_back(std::make_shared<Deflator>(++this->entityIdCounter, 
 			CollisionId::DeflatorId, mass, deflatorData[i].textureIndex,
@@ -288,6 +293,7 @@ void Level::CreateDeflator(const TotalTileData& data, const float& mass,
 void Level::CreateBouncyPath(const TotalTileData& data, const float& mass, 
     const sf::Vector2f& cowffOfRest, const float& coeffOfFriection){
     	const auto& bouncyPathData = data.loadEntity[EntityId::bouncypad];
+		this->bouncyPath.reserve(bouncyPathData.size());
         for (unsigned int i = 0; i < bouncyPathData.size(); ++i) {
             this->bouncyPath.push_back(std::make_shared<BouncyPath>(++this->entityIdCounter,
                 CollisionId::HeavyPathId, mass, bouncyPathData[i].textureIndex,
@@ -299,6 +305,7 @@ void Level::CreateBouncyPath(const TotalTileData& data, const float& mass,
 
 void Level::CreateCollectable(const TotalTileData& data){
 	const auto& collectableData = data.loadEntity[EntityId::collectable];
+	this->collectable.reserve(collectableData.size());
 	for (unsigned int i = 0; i < collectableData.size(); ++i) {
 		this->collectable.push_back(std::make_shared<Collectable>(++this->entityIdCounter,
 			CollisionId::CollectableId, 1.0f, 10, collectableData[i].textureIndex,
@@ -310,6 +317,7 @@ void Level::CreateCollectable(const TotalTileData& data){
 void Level::CreateStaticEnemy(const TotalTileData& data, const float& mass,
     const sf::Vector2f& cowffOfRest, const float& coeffOfFriection){
 	const auto& staticEnemyData = data.loadEntity[EntityId::staticEnemy];
+	this->staticEnemy.reserve(staticEnemyData.size());
 	for (unsigned  int i = 0; i < staticEnemyData.size(); ++i) {
 		this->staticEnemy.push_back(std::make_shared<StaticEnemy>(++this->entityIdCounter, 
 			CollisionId::StaticEnemyId, mass, staticEnemyData[i].textureIndex,
@@ -321,6 +329,7 @@ void Level::CreateStaticEnemy(const TotalTileData& data, const float& mass,
 void Level::CreateStaticSEnemy(const TotalTileData& data, const float& mass,
     const sf::Vector2f& cowffOfRest, const float& coeffOfFriection){
 	const auto& staticEnemySData = data.loadEntity[EntityId::staticEnemyS];
+	this->staticEnemyS.reserve(staticEnemySData.size());
 	for (unsigned int i = 0; i < staticEnemySData.size(); ++i) {
 		this->staticEnemyS.push_back(std::make_shared<StaticEnemyS>(++this->entityIdCounter,
 			CollisionId::StaticEnemyIdS, mass, staticEnemySData[i].textureIndex,
@@ -330,21 +339,19 @@ void Level::CreateStaticSEnemy(const TotalTileData& data, const float& mass,
 }
 
 void Level::CreateDynamicEnemy(const TotalTileData& data){
-	sf::Vector2f blockSize{ 64.0f , 64.0f };
-	float mass = 400000.0f;
-	sf::Vector2f E = GMNumber::COEFF_OF_RESTITUTION_PATH;
-	float u = GMNumber::COEFF_OF_FRICTION_PATH;
 	const auto& dynamicEnemyData = data.loadEntity[EntityId::dynamicEnemy];
+	this->dynamicEnemy.reserve(dynamicEnemyData.size());
 	for (unsigned int i = 0; i < dynamicEnemyData.size(); ++i) {
 		this->dynamicEnemy.push_back(std::make_shared<DynamicEnemy>(++this->entityIdCounter,
-			CollisionId::InvisibleEnemyId, mass, dynamicEnemyData[i].textureIndex,
+			CollisionId::InvisibleEnemyId, 10.0f, dynamicEnemyData[i].textureIndex,
             sf::Vector2f((float)dynamicEnemyData[i].pixelX,
-				(float)dynamicEnemyData[i].pixelY), blockSize, sf::Vector2f(0.0f, 64.0f)));
+				(float)dynamicEnemyData[i].pixelY), this->tileSize, sf::Vector2f(0.0f, 64.0f)));
 	}
 }
 
 void Level::CreateInvisibleEnemy(const TotalTileData& data){
 	const auto& invisibleEnemyData = data.loadEntity[EntityId::invisibleEnemy];
+	this->invisibleEnemy.reserve(invisibleEnemyData.size());
 	for (unsigned int i = 0; i < invisibleEnemyData.size(); ++i) {
 		this->invisibleEnemy.push_back(std::make_shared<InvisibleEnemy>(++this->entityIdCounter,
 			CollisionId::InvisibleEnemyId, sf::Vector2f((float)invisibleEnemyData[i].pixelX,
@@ -354,6 +361,7 @@ void Level::CreateInvisibleEnemy(const TotalTileData& data){
 
 void Level::CreateCheckPoint(const TotalTileData& data){
 	const auto& checkPointData = data.loadEntity[EntityId::checkPoint];
+	this->checkPoint.reserve(checkPointData.size());
 	for ( unsigned int i = 0; i < checkPointData.size(); ++i) {
 		this->checkPoint.push_back(std::make_shared<CheckPoint>(++this->entityIdCounter, 
 			CollisionId::CheckPointId, checkPointData[i].textureIndex,  
@@ -362,10 +370,16 @@ void Level::CreateCheckPoint(const TotalTileData& data){
 	}
 }
 
+void Level::CreateEndGameMarker(const TotalTileData& data){
+    const auto& endData = data.loadEntity[EntityId::EndGameMarker][0];
+    this->levelEndMarker = std::make_shared<LevelEndMarker>(++this->entityIdCounter,
+        CollisionId::EndGameMarkerId, endData.textureIndex,
+        sf::Vector2f((float)endData.pixelX, (float)endData.pixelY), this->tileSize);
+}
+
 void Level::EndLevel(){
     if (this->life < 1) {
-        this->stateData->stateManager->AddState(
-            std::make_unique<GameOver>(this->stateData));
+        PushGameOverState();
         return;
     }
 }

@@ -50,7 +50,7 @@ class Rect : public GameShape  {
 	sf::Texture texture;
 	sf::Sprite sprite;
 	float DT;
-	float sizeOfSprite;
+	int sizeOfSprite;
 	//int points;
 	bool isLarge;
 	sf::Vector2f airResistanceConstants;

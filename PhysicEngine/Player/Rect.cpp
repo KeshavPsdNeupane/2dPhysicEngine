@@ -172,7 +172,7 @@ void Rect::FindAirResistanceConstants(){
 
 inline sf::Vector2f& Rect::NewPosition(const float& dt) {
 	this->velocity += this->acceleration * dt;
-	float clampY = (!this->isLarge) ? this->maxVelocity.y : 1.25 * this->maxVelocity.y;
+	float clampY = (!this->isLarge) ? this->maxVelocity.y : 1.25f * this->maxVelocity.y;
 	sf::Vector2f clapVecelocity = { this->maxVelocity.x ,clampY };
 	VectorOperation::ClampForVector(this->velocity, -clapVecelocity, clapVecelocity);
 	this->oldPosition = this->position;
