@@ -30,7 +30,16 @@
     <ClCompile Include="Path\Path.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Body\Collision.cpp">
+    <ClCompile Include="Body\ContactMechanic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\Resources.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameGrid\GameGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\GameShapes.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,16 +53,22 @@
     <ClInclude Include="PhysicUtility\Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Body\RigidBody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Objects\Rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Path\Path.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Body\Collision.h">
+    <ClInclude Include="Body\ContactMechanic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Body\RigidBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameGrid\GameGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
