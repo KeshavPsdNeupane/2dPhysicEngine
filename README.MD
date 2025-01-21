@@ -1,8 +1,8 @@
-Bounce Ball Game Physics Engine
+# Bounce Ball Game Physics Engine
 
 This repository houses a physics engine and supporting framework for a bounce ball game. The engine is built with modularity and extensibility in mind, allowing for seamless integration of new features, levels, and mechanics. The primary focus is on creating an efficient physics system combined with gameplay mechanics that enhance player experience.
 
-Classes and Their Purpose
+##Classes and Their Purpose
 
 Core Physics Components
 
