@@ -4,37 +4,37 @@ This repository houses a physics engine and supporting framework for a bounce ba
 
 ## Classes and Their Purpose
 
-###Core Physics Components
+## Core Physics Components
 
-**Rigidbody:
+** 1.Rigidbody:
 
 The foundational class responsible for implementing core physics properties and behaviors, including velocity, acceleration, friction, and collision responses.
 
 Serves as the base class for all objects requiring physics interactions.
 
-**GameShape:
+** 2.GameShape:
 
 An abstract class inheriting from Rigidbody.
 
 Acts as a blueprint for all game objects that need to be drawable and interactable (e.g., handling collisions or updates).
 
-**Game Objects
+** 3.Game Objects
 
 These classes inherit from GameShape and define specific gameplay elements:
 
-**Rect:
+** 4.Rect:
 
 Represents the player.
 
 Implements unique behaviors like user-controlled movement and interactions with the environment.
 
-Path:
+** 5.Path:
 
 Functions as the ground.
 
 Provides a static surface for the player to move on, with no special physics alterations.
 
-BouncePad:
+** 6.BouncePad:
 
 Derived from Path but introduces a high coefficient of restitution.
 
