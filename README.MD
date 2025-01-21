@@ -182,7 +182,3 @@ Update Level class to accept .txt file paths as a constructor argument.
 Implement more advanced enemy behaviors, such as AI-driven movement.
 
 Optimize the collision detection algorithm for complex scenes.
-
-Enhance visual effects and animations for a better player experience.
-
-Add support for multiplayer or cooperative gameplay.
