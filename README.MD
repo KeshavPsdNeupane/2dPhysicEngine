@@ -40,7 +40,7 @@ Derived from Path but introduces a high coefficient of restitution.
 
 Causes objects to rebound with significant force upon contact, adding dynamic gameplay elements.
 
-**Inflator:**
+**`Inflator:`**
 
 Expands the player’s size when interacted with.
 
@@ -130,7 +130,7 @@ Parses .txt files located in the Assets folder to create game levels.
 
 Converts raw text data into game objects, defining their type, position, and properties.
 
-**WorldSuperClass:**
+**`WorldSuperClass:`**
 
 Abstract base class for implementing unique world behavior.
 
@@ -175,7 +175,7 @@ Object-oriented architecture ensures easy extension of classes and features.
 Resource and state managers provide a centralized structure for managing game logic and assets.
 
 
-To-Do
+# To-Do
 
 Update Level class to accept .txt file paths as a constructor argument.
 
