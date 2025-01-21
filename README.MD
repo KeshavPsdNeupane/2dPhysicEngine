@@ -12,29 +12,29 @@ The foundational class responsible for implementing core physics properties and 
 
 Serves as the base class for all objects requiring physics interactions.
 
-** GameShape:** 
+**` GameShape:`** 
 
 An abstract class inheriting from Rigidbody.
 
 Acts as a blueprint for all game objects that need to be drawable and interactable (e.g., handling collisions or updates).
 
-** Game Objects **
+**` Game Objects`**
 
 These classes inherit from GameShape and define specific gameplay elements:
 
-** Rect:**
+**` Rect:`**
 
 Represents the player.
 
 Implements unique behaviors like user-controlled movement and interactions with the environment.
 
-** Path:**
+**` Path:`**
 
 Functions as the ground.
 
 Provides a static surface for the player to move on, with no special physics alterations.
 
-** BouncePad:**
+**` BouncePad:`**
 
 Derived from Path but introduces a high coefficient of restitution.
 
@@ -46,47 +46,47 @@ Expands the player’s size when interacted with.
 
 Alters gameplay by affecting the player’s collision box and movement dynamics.
 
-**Deflator:**
+**`Deflator:`**
 
 Opposite of the Inflator.
 
 Shrinks the player, reducing their size and altering interactions with the environment.
 
-**Collectable:**
+**`Collectable:`**
 
 Represents items like coins or tokens for the player to collect.
 
 Enhances level objectives and progression mechanics.
 
-**Checkpoint:**
+**`Checkpoint:`**
 
 Acts as a save point.
 
 Allows the player to respawn from the checkpoint location after being damaged by enemies or falling out of bounds.
 
-**LevelEndMarker:**
+**`LevelEndMarker:`**
 
 Marks the end of a level.
 
 Enforces progression conditions: the player must collect at least 85% + 1 of the total coins in the level to activate.
 
-**StaticEnemy:**
+**`StaticEnemy:`**
 
 A stationary enemy that deals damage on its left and right sides.
 
-**StaticEnemySidewise:**
+**`StaticEnemySidewise:`**
 
 A variation of StaticEnemy rotated by 90 degrees.
 
 Deals damage on its top and bottom sides instead of the left and right.
 
-**DynamicEnemy:**
+**`DynamicEnemy:`**
 
 A moving enemy that oscillates vertically (up and down) within a defined range from its spawn point.
 
 Adds a dynamic challenge for players to avoid.
 
-**InvisibleEnemy:**
+**`InvisibleEnemy:`**
 
 An undetectable enemy.
 
@@ -94,19 +94,19 @@ Damages the player when they leave the world bounds, effectively punishing unint
 
 ## Managers
 
-**StateManager:**
+**`StateManager:`**
 
 Manages different game states, such as menus, gameplay, and pause screens.
 
 Facilitates transitions between states and ensures the game logic adheres to the active state.
 
-**ResourceManager:**
+**`ResourceManager:`**
 
 Handles the loading, caching, and distribution of game assets like textures, fonts, and sounds.
 
 Reduces redundancy and improves resource management efficiency.
 
-**CollisionManager:**
+**`CollisionManager:`**
 
 Centralized system for managing collision detection and resolution.
 
@@ -114,7 +114,7 @@ Uses a CollisionID enum to map specific collision handling logic between differe
 
 ## Grid System
 
-**GridClass:**
+**`GridClass:`**
 
 Manages the game’s grid-based layout for organizing objects.
 
@@ -124,7 +124,7 @@ Optimizes collision checks by grouping objects into grid cells.
 
 ## Level Creation
 
-**TileResource:**
+**`TileResource:`**
 
 Parses .txt files located in the Assets folder to create game levels.
 
@@ -136,7 +136,7 @@ Abstract base class for implementing unique world behavior.
 
 Defines common functionalities that all levels inherit.
 
-**Level:**
+**`Level:`**
 
 A concrete implementation of a playable level.
 
@@ -150,25 +150,25 @@ Fully implemented physics with properties like gravity, restitution, and collisi
 
 ## Supports dynamic and static objects.
 
-**Grid-Based Optimization:**
+**`Grid-Based Optimization:`**
 
 Efficiently tracks and updates game objects based on proximity to the player.
 
 Reduces computational overhead by limiting updates to relevant objects.
 
-**Collision System:**
+**`Collision System:`**
 
 Unique CollisionID system for managing and resolving specific interactions.
 
 Supports multiple object types with custom behaviors.
 
-**Level Design:**
+**`Level Design:`**
 
 Text-based level creation allows rapid prototyping and editing.
 
 Modular world system enables the addition of new levels with minimal effort.
 
-**Modularity:**
+**`Modularity:`**
 
 Object-oriented architecture ensures easy extension of classes and features.
 
