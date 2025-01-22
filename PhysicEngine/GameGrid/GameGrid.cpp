@@ -24,6 +24,33 @@ GridResult GameGrid::FindUpdatableAndDrawableBlock(std::shared_ptr<GameShape> sh
     return FindObjectsInRange(shape, GMNumber::UPDATE_DRAW_RANGE, false);
 }
 
+GridResult GameGrid::FindUpdatableAndDrawableBlock1(sf::Vector2f halfScreenPosition){
+    GridResult result;
+    sf::Vector2f pos = halfScreenPosition;
+	sf::Vector2i range(GMNumber::SEARCH_RANGE_FOR_UPDATE_DRAW);
+    sf::Vector2i objectGridNumber = GetGridNumber(pos);
+    result.dynamicResult.reserve(2*(range.x + range.y +1));
+    result.staticResult.reserve(2 * (range.x + range.y + 1));
+    for (int y = -range.y; y <= range.y; ++y) {
+        for (int x = -range.x; x <= range.x; ++x) {
+            sf::Vector2i potentialGridNumber = objectGridNumber + sf::Vector2i(x, y);
+            if (IsValidGridIndex(potentialGridNumber)) {
+                int gridCellIndex = CalculateIndex(potentialGridNumber);
+                for (const auto& obj : staticGridCell[gridCellIndex]) {
+                    result.staticResult.push_back(obj);
+                }
+                for (const auto& obj : dynamicGridCell[gridCellIndex]) {
+                    result.dynamicResult.push_back(obj);
+                }
+            }
+        }
+    }
+
+    result.dynamicResult.shrink_to_fit();
+    result.staticResult.shrink_to_fit();
+    return result;
+}
+
 void GameGrid::InitializeGameGrid(int worldWidth, int WorldHeight, 
     int tileWidth, int tileHeight){
 	this->worldWidth = worldWidth;
@@ -145,9 +172,7 @@ GridResult GameGrid::FindObjectsInRange(std::shared_ptr<GameShape> shape, int ra
     result.staticResult.reserve((2 * range + 1));
     for (int y = -range; y <= range; ++y) {
         for (int x = -range; x <= range; ++x) {
-
             sf::Vector2i potentialGridNumber = objectGridNumber + sf::Vector2i(x, y);
-
             if (IsValidGridIndex(potentialGridNumber)) {
                 int gridCellIndex = CalculateIndex(potentialGridNumber);
 

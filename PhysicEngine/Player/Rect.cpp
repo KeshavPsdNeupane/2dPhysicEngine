@@ -13,7 +13,6 @@ Rect::Rect(const int id, const int colid, const float mass, const sf::Vector2f p
 	FindMaxVelocities();
 	JumpTimeConstraintsFinder();
 	FindAirResistanceConstants();
-	std::cout << "max vel" << this->maxVelocity.x << " " << this->maxVelocity.y << std::endl;
 }
 
 Rect::~Rect(){}
@@ -199,7 +198,7 @@ void Rect::JumpUpdate() {
 
 
 void Rect::JumpTimeConstraintsFinder() {
-	TimeConstraints.JUMP_TIME_CONSTRAINTS = 2.0f * (ApplyMotionForce.JUMP_FORCE / GMNumber::GRAVITY);
+	TimeConstraints.JUMP_TIME_CONSTRAINTS = (ApplyMotionForce.JUMP_FORCE / GMNumber::GRAVITY);
 }
 
 void Rect::ApplyAirResistance() {

@@ -128,7 +128,7 @@ Direction ContactMech::HeavyObjectCollisionHandle(std::shared_ptr<GameShape> pla
     this->M2 = otherShape->GetMass();
     this->u1 = playerShape->GetVelocity();
     this->u2 = otherShape->GetVelocity();
-    NewPenetrationResoluter(*playerShape, *otherShape , collisionDirection);
+    PenetrationResoluter(*playerShape, *otherShape , collisionDirection);
     EffectiveEFinder(*playerShape, *otherShape);
     switch (collisionDirection) {
     case Right:

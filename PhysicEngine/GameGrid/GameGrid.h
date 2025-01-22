@@ -34,6 +34,7 @@ public:
     void RemoveObject(std::shared_ptr<GameShape> shape , bool isStatic);
     GridResult PotentialCollision(std::shared_ptr<GameShape> shape);
     GridResult FindUpdatableAndDrawableBlock(std::shared_ptr<GameShape> shape);
+    GridResult FindUpdatableAndDrawableBlock1(sf::Vector2f halfScreenPosition);
 	void Draw(std::shared_ptr<sf::RenderWindow>window);
     void ShowGirdObjectCound();
 

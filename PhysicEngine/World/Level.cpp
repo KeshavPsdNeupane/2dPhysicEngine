@@ -149,25 +149,25 @@ void Level::ProcessInput() {
 void Level::Update(const float& dt) {
     if (!this->isPaused) {
         this->DT = dt;
-        this->updateDrawResultFromGrid = this->grid.FindUpdatableAndDrawableBlock(this->rectangle);
+
+        sf::Vector2f viewCenter = this->worldView.getCenter();
+        this->updateDrawResultFromGrid = this->grid.FindUpdatableAndDrawableBlock1(viewCenter);
         this->collisionResultFromGrid = this->grid.PotentialCollision(this->rectangle);
 
-        for (auto obj: updateDrawResultFromGrid.dynamicResult) {
+        for (const auto& obj : updateDrawResultFromGrid.dynamicResult) {
             obj->Update(this->DT);
         }
 
-        for (auto& obj : this->updateDrawResultFromGrid.staticResult) {
+        for (const auto& obj : this->updateDrawResultFromGrid.staticResult) {
             this->contactMechanic.ApplyFriction(this->rectangle, obj, this->DT);
             this->contactMechanic.CollsionDetection(this->rectangle, obj);
         }
 
-        for (auto& obj : this->collisionResultFromGrid.dynamicResult) {
-		    this->contactMechanic.CollsionDetection(this->rectangle, obj);
+        for (const auto& obj : this->collisionResultFromGrid.dynamicResult) {
+            this->contactMechanic.CollsionDetection(this->rectangle, obj);
         }
 
-
-
-        for (auto& obj : updateDrawResultFromGrid.dynamicResult) {
+        for (const auto& obj : updateDrawResultFromGrid.dynamicResult) {
             this->grid.MoveObject(obj);
         }
 
@@ -177,6 +177,7 @@ void Level::Update(const float& dt) {
         EndLevel();
     }
 }
+
 
 
 void Level::Draw() {

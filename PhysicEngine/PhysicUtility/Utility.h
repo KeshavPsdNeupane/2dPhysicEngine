@@ -22,7 +22,7 @@ namespace GMNumber {
 	// 9000.0f acts as a force but you can think of it as a coefficient.
 	// The coefficient maps to a terminal velocity of 200 with a mass of 60.
 	// For other masses, the terminal velocity can be calculated as: vt.x = 9000.0f / mass
-	static constexpr float COEFF_MAX_VELOCITY_X = 9000.0f;
+	static constexpr float COEFF_MAX_VELOCITY_X = 12000.0f;
 
 	// The coefficient for the maximum velocity in the y direction.
 	// The relation is: vt =  sqrt(K * 2 * g * m / (p * a * cd))
@@ -87,17 +87,10 @@ namespace GMNumber {
 	static constexpr float HARDCOADED_SMALL_BALL_SIZE = 25;
 	static constexpr float BIG_SMALL_BALL_RATIO = 1.5f;
 	static constexpr float BIG_BALL_SIZE = SMALL_BALL_SIZE * BIG_SMALL_BALL_RATIO;
-	static constexpr float READJUST_SIZE = SMALL_BALL_SIZE * (BIG_SMALL_BALL_RATIO -1.0f);
-	static constexpr float ELASTICITY_RATIO = 1.19;  
-	// 1.414214 is root(2) rather than finding the sqrt is am just caching it
+	static constexpr float READJUST_SIZE = SMALL_BALL_SIZE * (BIG_SMALL_BALL_RATIO - 1.0f);
 	static constexpr float BALL_BOUNCE_DISTANCE =  64.0f * 3.0f; // 64 is size of grid 2.0f is multiplier  
-
-
-
-	// the above are the constants for the player object
-	// absolute_accleration_for_player_x is the maximum acceleration in the x direction
-	// absolute_accleration_for_player_y is the maximum acceleration in the y direction
-	// movement_force is the force applied to the player object
+	static constexpr float ELASTICITY_RATIO = 1.19f;  
+	// 1.19 is the ratio of the jump force of big ball to small ball
 	
 
 	// Just make sure UPDATE_DRAW_RANGE is always greater than POTENTIAL_COLLISION_RANGE
@@ -109,6 +102,16 @@ namespace GMNumber {
 	// POTENTIAL_COLLISION_RANGE is the range of the grid cells to check for potential collision
 	// UPDATE_DRAW_RANGE is the range of the grid cells to update and draw the objects
 	// the grid is used to optimize the collision detection and drawing of the objects
+
+	const static sf::Vector2i SEARCH_RANGE_FOR_UPDATE_DRAW = {7,5};
+
+
+
+
+
+
+
+
 
 
 	// FOR TEXTURE OF ALL OBJECTS EXCEPT PLAYER

@@ -42,7 +42,8 @@ class Rect : public GameShape  {
 	struct ForceApplication {
 		//THIS THINGY ADD VELOCITY NOT ACTUAL FORCE
 		float MOVEMENT_FORCE = 20.0f;
-		float JUMP_FORCE = std::sqrt(2 * GMNumber::GRAVITY *(GMNumber::BALL_BOUNCE_DISTANCE + 3.0f)); // 3,0f is a bias  
+		float JUMP_FORCE = std::sqrt(2 * GMNumber::GRAVITY *(GMNumber::BALL_BOUNCE_DISTANCE + 5.0f)); 
+		// 5.0f is a bias  
 	}ApplyMotionForce;
 
 	sf::Font font;
