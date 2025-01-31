@@ -2,24 +2,20 @@
 #include"../State.h"
 #include<SFML/Graphics.hpp>
 #include"../../StateObjects.h"
+#include<array>
 
 class GameOver : public Engine::State {
 private:
 	std::shared_ptr<StateData> stateData;
+	std::string previousLevelFilePath;
 	sf::Event event;
-	float DELTA_TIME;
-
-	sf::Text title;
 	sf::Text gameMenuTitle;
-	sf::Text rePlayButton;
-	sf::Text exitButton;
-	bool isRePlayButtonSelected;
-	bool isExitButtonSelected;
+	std::array<sf::Text, 3> texts;
+	short IsSetectedIndex;
+	short IsPressedIndex;
 
-	bool isRePlayButtonPressed;
-	bool isExitButtonPressed;
 public:
-	GameOver(std::shared_ptr<StateData> stateData);
+	GameOver(std::shared_ptr<StateData> stateData , const std::string& previousLevelFilePath);
 	~GameOver();
 
 public:

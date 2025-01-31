@@ -25,9 +25,9 @@
 class Level : public WorldSuperClass{
 private:
 	bool isPaused;
+	ContactMech contactMechanic;
 	sf::Event event;
 	GameGrid grid;
-
 	std::shared_ptr<Rect> rectangle;
 	std::vector<std::shared_ptr<Path>> path;
 	std::vector<std::shared_ptr<Inflator>> inflator;
@@ -40,18 +40,14 @@ private:
 	std::vector<std::shared_ptr<DynamicEnemy>> dynamicEnemy;
 	std::vector<std::shared_ptr<InvisibleEnemy>> invisibleEnemy;
 
-
-	ContactMech contactMechanic;
 	GridResult updateDrawResultFromGrid;
 	GridResult collisionResultFromGrid;
-
 	sf::Text text;
-	sf::Text text2;
 	float DT;
 	int entityIdCounter;
-
 public:
-	Level(std::shared_ptr<StateData> state);
+
+	Level(std::shared_ptr<StateData> state,const std::string& filePath);
 	~Level();
 
 private:

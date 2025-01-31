@@ -35,16 +35,16 @@ void DynamicEnemy::Update(const float& dT) {
 	this->sprite.setPosition(this->shape->getPosition());
 
 	const auto& pos = this->shape->getPosition();
-	if (pos.y >= orginPosition.y + size.y && this->velocity.y > 0.0f) {
+	if (pos.y >= orginPosition.y + size.y + size.y && this->velocity.y > 0.0f) {
 		this->velocity.y = -this->velocity.y;
 	}
-	else if (pos.y <= orginPosition.y - size.y && this->velocity.y < 0.0f) {
+	else if (pos.y <= orginPosition.y - size.y - size.y && this->velocity.y < 0.0f) {
 		this->velocity.y = -this->velocity.y;
 	}
-	else if (pos.x >= orginPosition.x + size.x && this->velocity.x > 0.0f) {
+	else if (pos.x >= orginPosition.x + size.x + size.x && this->velocity.x > 0.0f) {
 		this->velocity.x = -this->velocity.x;
 	}
-    else if (pos.x <= orginPosition.x - size.x && this->velocity.y < 0.0f) {
+    else if (pos.x <= orginPosition.x - size.x - size.x && this->velocity.y < 0.0f) {
         this->velocity.x = -this->velocity.x;
     }
 }

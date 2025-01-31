@@ -1,6 +1,6 @@
 #pragma once
 #include<cmath>
-
+#include<SFML/Graphics.hpp>
 
 namespace GMNumber {
 	//  FOR WINDOWS 
@@ -22,7 +22,7 @@ namespace GMNumber {
 	// 9000.0f acts as a force but you can think of it as a coefficient.
 	// The coefficient maps to a terminal velocity of 200 with a mass of 60.
 	// For other masses, the terminal velocity can be calculated as: vt.x = 9000.0f / mass
-	static constexpr float COEFF_MAX_VELOCITY_X = 12000.0f;
+	static constexpr float COEFF_MAX_VELOCITY_X = 16000.0f;
 
 	// The coefficient for the maximum velocity in the y direction.
 	// The relation is: vt =  sqrt(K * 2 * g * m / (p * a * cd))
@@ -106,14 +106,6 @@ namespace GMNumber {
 	const static sf::Vector2i SEARCH_RANGE_FOR_UPDATE_DRAW = {7,5};
 
 
-
-
-
-
-
-
-
-
 	// FOR TEXTURE OF ALL OBJECTS EXCEPT PLAYER
 	static constexpr int TEXTURE_COUNT_X = 12;
 	static constexpr int TEXTURE_SIZE = 64;
@@ -136,8 +128,6 @@ namespace MyColor {
 };
 
 
-
-
 enum CollisionId {
 	PlayerId = 0 ,
 	LightPathId = 2 ,
@@ -152,23 +142,6 @@ enum CollisionId {
 	InvisibleEnemyId = 11,
 	EndGameMarkerId = 12,
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

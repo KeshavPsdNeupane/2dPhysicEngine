@@ -2,21 +2,20 @@
 #include"../State.h"
 #include<SFML/Graphics.hpp>
 #include"../../StateObjects.h"
+#include<array>
 
-class MainMenu: public Engine::State{
+class LevelSelect : public Engine::State {
 private:
 	std::shared_ptr<StateData> stateData;
 	sf::Event event;
 	sf::Text gameMenuTitle;
-	sf::Text playButton;
-	sf::Text exitButton;
-
+	std::array<sf::Text, 4> texts;
 	short IsSetectedIndex;
 	short IsPressedIndex;
 
 public:
-	MainMenu(std::shared_ptr<StateData> stateData);
-	~MainMenu();
+	LevelSelect(std::shared_ptr<StateData> stateData);
+	~LevelSelect();
 
 public:
 	void Load() override;

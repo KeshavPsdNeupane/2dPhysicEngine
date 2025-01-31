@@ -2,22 +2,16 @@
 #include"../State.h"
 #include<SFML/Graphics.hpp>
 #include"../../StateObjects.h"
+#include<array>
 
 class PauseState : public Engine::State {
 private:
 	std::shared_ptr<StateData> stateData;
 	sf::Event event;
-	float DELTA_TIME;
-
-	sf::Text title;
 	sf::Text gameMenuTitle;
-	sf::Text resumeButton;
-	sf::Text exitButton;
-	bool isResumeButtonSelected;
-	bool isExitButtonSelected;
-
-	bool isResumeButtonPressed;
-	bool isExitButtonPressed;
+	std::array<sf::Text, 3> texts;
+	short IsSetectedIndex;
+	short IsPressedIndex;
 	bool isEscPressed;	
 public:
 	PauseState(std::shared_ptr<StateData> stateData);

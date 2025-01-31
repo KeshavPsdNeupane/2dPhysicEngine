@@ -2,22 +2,21 @@
 #include "../States/MenuState/PauseState.h"
 #include "../States/MenuState/GameOver.h"
 
-Level::Level(std::shared_ptr<StateData> state) :
-    WorldSuperClass(state), contactMechanic(*this),
+Level::Level(std::shared_ptr<StateData> state, const std::string& filePath) :
+    WorldSuperClass(state , filePath), contactMechanic(*this),
     isPaused(false), event(),
     updateDrawResultFromGrid(),
     collisionResultFromGrid(),
     text(), DT(0.0f),
     entityIdCounter(0) {
 
+
     TileResource tile;
-    std::string path = "Asset/Maps/Level1Gameplay.txt";
-    TotalTileData& data = tile.ListTheEntity(path);
+    TotalTileData& data = tile.ListTheEntity(filePath);
     this->worldSize = sf::Vector2f((float)data.worldWidth, (float)data.worldHeight);
 	this->tileSize = sf::Vector2f((float)data.tileWidth, (float)data.tileHeight);
 
     grid.InitializeGameGrid(data.worldWidth, data.worldHeight, data.tileWidth, data.tileHeight);
-
     this->totalCoinCount.x =  data.loadEntity[EntityId::collectable].size();
 	this->totalCoinCount.y = (int)(0.85f * this->totalCoinCount.x  + 1);
 
@@ -49,11 +48,8 @@ Level::Level(std::shared_ptr<StateData> state) :
 
     this->checkPointPosition = positionForPlayer;
     this->text.setFont(this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT));
-    this->text.setPosition({ 250.0f,10.0f });
-    this->text.setCharacterSize(15);
-    this->text2.setFont(this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT));
-    this->text2.setPosition({ 550.0f,10.0f });
-    this->text2.setCharacterSize(30);
+    this->text.setPosition({ 550.0f,0.0f });
+    this->text.setCharacterSize(20);
 
 }
 
@@ -130,26 +126,13 @@ void Level::ProcessInput() {
                 this->stateData->stateManager->AddState(
                     std::make_unique<PauseState>(this->stateData), false);
             }
-            if (event.key.code == sf::Keyboard::Period) {
-                IncrementLife();
-            }
-            else if (event.key.code == sf::Keyboard::Comma) {
-                DecrementLife();
-            }
-            else if (event.key.code == sf::Keyboard::P) {
-                this->rectangle->SetPosition(this->checkPointPosition);
-                this->rectangle->SetVelocity(sf::Vector2f(0.0f, 0.0f));
-                this->grid.MoveObject(this->rectangle);
-            }
-
         }
     }
 }
 
 void Level::Update(const float& dt) {
+    this->DT = dt;
     if (!this->isPaused) {
-        this->DT = dt;
-
         sf::Vector2f viewCenter = this->worldView.getCenter();
         this->updateDrawResultFromGrid = this->grid.FindUpdatableAndDrawableBlock1(viewCenter);
         this->collisionResultFromGrid = this->grid.PotentialCollision(this->rectangle);
@@ -174,8 +157,8 @@ void Level::Update(const float& dt) {
         DisplayStats();
         this->rectangle->DisplayPositionAndVelocity();
         DeleteUnwanted();
-        EndLevel();
     }
+    EndLevel();
 }
 
 
@@ -217,7 +200,6 @@ void Level::CreateViewBasedOnPlayer(std::shared_ptr<sf::RenderWindow> window) {
 void Level::DrawDefaulView(std::shared_ptr<sf::RenderWindow>window) {
     window->setView(window->getDefaultView());
     window->draw(text);
-    window->draw(text2);
     this->rectangle->DrawStats(window);
 }
 
@@ -226,21 +208,9 @@ void Level::Pause() { this->isPaused = true; }
 void Level::Start() { this->isPaused = false; }
 
 void Level::DisplayStats() {
-    int maxsize = (int)this->path.size() + (int)this->collectable.size() + 3 + 1;
-    // 3 for the object bouncy pad, inflator, deflator , 1 for player
-    //this->text.setString(
-    //    "Objects Updated & Rendered: "
-    //    + std::to_string((int)(updateDrawResultFromGrid.dynamicResult.size()
-    //        + updateDrawResultFromGrid.staticResult.size()))
-    //    + " / " + std::to_string(maxsize) + "\n" +
-    //    "Objects for Collision Checking: "
-    //    + std::to_string((int)(collisionResultFromGrid.dynamicResult.size()
-    //        + collisionResultFromGrid.staticResult.size()))
-    //    + " / " + std::to_string(maxsize - 1)  // -1 since player will not collide with itself
-    //);
-    this->text2.setString("Points = " + std::to_string(this->points) +
-        "\nLife = " + std::to_string(this->life) + 
-        "\nCoinCount =" + std::to_string(this->totalCoinCount.x));
+    this->text.setString("Total Points = " + std::to_string(this->points) +
+        "\nLife Left = " + std::to_string(this->life) + 
+        "\nRemaning Coins =" + std::to_string(this->totalCoinCount.x));
 }
 
 void Level::DeleteUnwanted() {
@@ -381,7 +351,6 @@ void Level::CreateEndGameMarker(const TotalTileData& data){
 void Level::EndLevel(){
     if (this->life < 1) {
         PushGameOverState();
-        return;
     }
 }
 

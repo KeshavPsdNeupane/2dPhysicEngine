@@ -2,11 +2,12 @@
 #include"../States/State.h"
 #include"../StateObjects.h"
 #include"../Objects/LevelEndMarker.h"
-
+#include<string>
 
 class WorldSuperClass : public Engine::State{
 protected:
 	std::shared_ptr<StateData> stateData;
+	std::string pathLocation;
 	sf::Vector2f worldSize;
 	sf::Vector2f tileSize;
 	sf::View worldView;
@@ -17,12 +18,10 @@ protected:
 	bool isLevelEnd;
 	sf::Vector2u totalCoinCount;
 
-
-
 	std::shared_ptr<LevelEndMarker> levelEndMarker;
 public:
-	WorldSuperClass(std::shared_ptr<StateData> stateData , 
-		unsigned short l = 3, unsigned short maxLife = 5 ,unsigned int initpoint = 0 );
+	WorldSuperClass(std::shared_ptr<StateData> stateData , const std::string filePath,
+		unsigned short l = 2, unsigned short maxLife = 3 ,unsigned int initpoint = 0 );
 	~WorldSuperClass();
 
 public:

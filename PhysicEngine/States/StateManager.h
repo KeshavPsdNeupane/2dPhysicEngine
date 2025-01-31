@@ -2,7 +2,7 @@
 #include<stack>
 #include<memory>
 #include"State.h"
-
+#include"../PhysicUtility/Utility.h"
 namespace Engine {
 	class StateManager {
 	private:
@@ -11,6 +11,7 @@ namespace Engine {
 		bool isAdd;
 		bool isReplace;
 		bool isRemove;
+
 	public:
 		StateManager();
 		~StateManager();
@@ -22,4 +23,6 @@ namespace Engine {
 		std::unique_ptr<State>& GetActiveState();
 	};
 
+
 }
+

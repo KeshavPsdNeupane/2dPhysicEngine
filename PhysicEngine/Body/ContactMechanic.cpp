@@ -42,13 +42,11 @@ void ContactMech::ApplyFriction(std::shared_ptr<GameShape> playerShape, std::sha
             this->frictionDeceleratedVelocity = -this->coeffOfFriction * gravity * Sign(this->u1.y) * dt /4.0f;
             if (std::abs(this->u1.y) < GMNumber::LOWEST_VELOCITY_THRESHOLD) { this->u1.y = 0.0f; }
             this->u1 += {0.0f, this->frictionDeceleratedVelocity};
-			//std::cout << "FRICTION DECELERATED VERTICAL VERTICAL " << this->frictionDeceleratedVelocity << std::endl;
         }
 		else if (direction == Bottom || direction == Top) { // HORIZONTAL FRICTION
             this->frictionDeceleratedVelocity = - this->coeffOfFriction * gravity * Sign(this->u1.x) * dt;
             if (std::abs(this->u1.x) < GMNumber::LOWEST_VELOCITY_THRESHOLD) { this->u1.x = 0.0f; }
             this->u1 += {this->frictionDeceleratedVelocity, 0.0f};
-            //std::cout << "FRICTION DECELERATED VELOCITY HORIZONTAL " << this->frictionDeceleratedVelocity << std::endl;
         }
         playerShape->SetVelocity(this->u1);
     }
@@ -264,7 +262,6 @@ void ContactMech::CheckPointCollisionHandle(std::shared_ptr<GameShape> playerSha
 
    const auto& pos = checkPoint->GetPosition() + checkPoint->GetSize()/2.0f;
     this->world.SetCheckPointPosition(pos);
-	//std::cout << "CheckPoint Found and position set" << pos.x << " " << pos.y << "\n";
 }
 
 void ContactMech::EndGameMarkerCollisionHandle(std::shared_ptr<GameShape> playerShape,
@@ -346,7 +343,6 @@ void ContactMech::NewPenetrationResoluter(GameShape& player,
 
 	float magnitude = VectorOperation::Magnitude(normal);
 	if (magnitude == 0.0f) {
-        std::cout << "zero " << "\n";
         magnitude = 1.0f; 
     }
 
@@ -381,12 +377,10 @@ void ContactMech::EffectiveEFinder(RigidBody& F1, RigidBody& F2){
 
 inline void ContactMech::CollisionThreshold(){
     const auto& Threshold = GMNumber::COlliSION_VELOCITY_THRESHOLD;
-   // std::cout << "th y " << Threshold.y << "\n";
     if (std::abs(v1.x) <= Threshold.x) { v1.x = 0.0f; }
     if (std::abs(v1.y) <= Threshold.y) { v1.y = 0.0f; }
     if (std::abs(v2.x) <= Threshold.x) { v2.x = 0.0f; }
     if (std::abs(v2.y) <= Threshold.y) { v2.y = 0.0f; }
-	//std::cout << "vy " << v1.y << "\n";
 }
 
 

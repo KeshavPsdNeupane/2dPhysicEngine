@@ -1,43 +1,47 @@
 #include "MainMenuState.h"
 #include"../../World/Level.h"
+#include"LevelSelect.h"
 
 MainMenu::MainMenu(std::shared_ptr<StateData> stateData):
-	stateData(stateData), DELTA_TIME(0.0f),
-isPlayButtonSelected(true), isPlayButtonPressed(false),
-isExitButtonSelected(false) , isExitButtonPressed(false) ,event(){}
+	stateData(stateData),event(),
+IsSetectedIndex(0), IsPressedIndex(-1){}
 
 MainMenu::~MainMenu(){}
 
 void MainMenu::Load(){
 	// main menu game title
-	this->gameMenuTitle.setFont(this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT));
+	const sf::Font& font = this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT);
+	auto pos = this->stateData->window->getSize();
+	sf::Vector2f half(pos.x * 0.5f, pos.y * 0.5f);
+	sf::FloatRect bound;
+
+	this->gameMenuTitle.setFont(font);
 	this->gameMenuTitle.setString("BOUNCE");
 	this->gameMenuTitle.setCharacterSize(35);
-	auto pos = this->stateData->window->getSize();
-	auto bound = this->gameMenuTitle.getLocalBounds();
+	bound = this->gameMenuTitle.getLocalBounds();
 	this->gameMenuTitle.setOrigin(bound.width / 2.0f, bound.height / 2.0f);
-	this->gameMenuTitle.setPosition(pos.x / 2.0f, pos.y / 2.0f - 150.f);
+	this->gameMenuTitle.setPosition(half.x , half.x * 0.5f);
 
 	// play button
-	this->playButton.setFont(this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT));
+	this->playButton.setFont(font);
 	this->playButton.setString("PLAY");
 	this->playButton.setCharacterSize(24);
 	bound = this->playButton.getLocalBounds();
 	this->playButton.setOrigin(bound.width / 2.0f, bound.height / 2.0f);
-	this->playButton.setPosition(pos.x / 2.0f, pos.y / 2.0f - 25.0f);
+	this->playButton.setPosition(half.x, half.y - 25.0f);
 
 	// exit button
-	this->exitButton.setFont(this->stateData->resourceManager->GetFont(ResourceId::MAIN_FONT));
+	this->exitButton.setFont(font);
 	this->exitButton.setString("EXIT");
 	this->exitButton.setCharacterSize(24);
 	bound = this->exitButton.getLocalBounds();
 	this->exitButton.setOrigin(bound.width / 2.0f, bound.height / 2.0f);
-	this->exitButton.setPosition(pos.x / 2.0f, pos.y / 2.0f + 25.0f);
+	this->exitButton.setPosition(half.x, half.y + 25.0f);
 
 
 }
 
-void MainMenu::ProcessInput(){
+void MainMenu::ProcessInput() {
 	while (this->stateData->window->pollEvent(this->event)) {
 		if (this->event.type == sf::Event::Closed) {
 			this->stateData->window->close();
@@ -46,34 +50,16 @@ void MainMenu::ProcessInput(){
 			switch (this->event.key.code) {
 			case sf::Keyboard::Up:
 			case sf::Keyboard::W:
-				if (!this->isPlayButtonSelected) {
-					this->isPlayButtonSelected = true;
-					this->isExitButtonSelected = false;
-				}
+				this->IsSetectedIndex = VectorOperation::Clamp(this->IsSetectedIndex - 1, 0, 1);
 				break;
 
 			case sf::Keyboard::Down:
 			case sf::Keyboard::S:
-				if (!this->isExitButtonSelected) {
-					this->isExitButtonSelected = true;
-					this->isPlayButtonSelected = false;
-				}
+				this->IsSetectedIndex = VectorOperation::Clamp(this->IsSetectedIndex + 1, 0, 1);
 				break;
 
-
-
 			case sf::Keyboard::Return:
-				this->isPlayButtonPressed = false;
-				this->isExitButtonPressed = false;
-
-				if (this->isPlayButtonSelected) {
-					this->isPlayButtonPressed = true;
-					this->isExitButtonPressed = false;
-				}
-				else {
-					this->isExitButtonPressed = true;
-					this->isPlayButtonPressed = false;
-				}
+				this->IsPressedIndex = this->IsSetectedIndex;
 				break;
 
 			default:
@@ -85,33 +71,29 @@ void MainMenu::ProcessInput(){
 }
 
 void MainMenu::Update(const float& dt){
-    this->DELTA_TIME = dt;
-	if (this->isPlayButtonSelected) {
+	if (this->IsSetectedIndex == 0) {
 		this->playButton.setFillColor(sf::Color::Red);
 		this->exitButton.setFillColor(sf::Color::White);
 	}
-	else {
+	else if (this->IsSetectedIndex == 1) {
 		this->exitButton.setFillColor(sf::Color::Red);
 		this->playButton.setFillColor(sf::Color::White);
 	}
-	if (isPlayButtonPressed) {
-		this->stateData->stateManager->AddState(std::make_unique<Level>(this->stateData), true);
-	}
-	else if (isExitButtonPressed) {
-		this->stateData->window->close();
-	}
-	else {
+
+	if (this->IsPressedIndex > -1) {
+		if (this->IsPressedIndex == 0) {
+			this->stateData->stateManager->AddState(std::make_unique<LevelSelect>(this->stateData), true);
+		}
+		else if (this->IsPressedIndex == 1) {
+			this->stateData->window->close();
+		}
 	}
 }
 
 void MainMenu::Draw(){
 	this->stateData->window->clear(sf::Color::Black);
-
-
 	this->stateData->window->draw(this->gameMenuTitle);
 	this->stateData->window->draw(this->playButton);
 	this->stateData->window->draw(this->exitButton);
-
-
 	this->stateData->window->display();
 }
