@@ -137,10 +137,7 @@ Abstract base class for implementing unique world behavior.
 Defines common functionalities that all levels inherit.
 
 **`Level:`**
-
-A concrete implementation of a playable level.
-
-(TODO: Update to accept .txt file paths as a constructor argument for greater flexibility.)
+Three simple complete concrete Level Implementation  is made.
 
 ## Features
 
